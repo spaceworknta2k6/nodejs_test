@@ -1,3 +1,51 @@
 extends ../../layouts/default.pug
-block main 
-    h1 Product list Page
+
+block main
+    section.product-page
+        .container
+
+            // Head của trang
+            .product-page__head
+                h1.product-page__title Danh sách sản phẩm
+                p.product-page__desc Khám phá các sản phẩm nổi bật của NTA Shop.
+
+            // Box head của product list
+            .product-list-head
+                .product-list-head__left
+                    h2.product-list-head__title Sản phẩm nổi bật
+                    span.product-list-head__count 12 sản phẩm
+
+                .product-list-head__right
+                    span.product-list-head__sort Sắp xếp:
+                    select
+                        option Mặc định
+                        option Giá tăng dần
+                        option Giá giảm dần
+                        option Đánh giá cao
+
+            // Product Grid
+            .product-grid
+
+                // Product Card
+                .product-card
+                    .product-card__image
+                        img(src="https://cdn.dummyjson.com/product-images/beauty/essence-mascara-lash-princess/1.webp" alt="product")
+
+                        span.product-card__badge -30%
+
+                    .product-card__body
+                        .product-card__top
+                            span.product-card__category Beauty
+                            span.product-card__rating ★ 5
+
+                        h2.product-card__title Essence Mascara Lash Princess
+
+                        p.product-card__text Mascara giúp mi dày và cong tự nhiên.
+
+                        .product-card__bottom
+                            .product-card__price
+                                span.price-current $50
+
+                            .product-card__actions
+                                a.btn-view(href="#") Xem chi tiết
+                                a.btn-buy(href="#") Mua ngay
