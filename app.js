@@ -8,6 +8,7 @@ app.set('view engine', 'pug')
 app.use(express.static('public'))
 
 const database = require('./config/database')
+database.connect();
 
 const port = process.env.PORT
 // app.use(express.static('public'))
