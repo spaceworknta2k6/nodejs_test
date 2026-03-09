@@ -1,3 +1,68 @@
 extends ../../layouts/default.pug
-block main 
-    h1 Trang tong quan
+
+block main
+    section.stats-grid
+        article.stat-card
+            p.stat-title Doanh thu hôm nay
+            h3.stat-value 48.200.000đ
+            span.stat-trend.up +12.4% so với hôm qua
+        article.stat-card
+            p.stat-title Đơn hàng mới
+            h3.stat-value 126
+            span.stat-trend.up +8 đơn mới trong 1 giờ
+        article.stat-card
+            p.stat-title Tỷ lệ chuyển đổi
+            h3.stat-value 5.8%
+            span.stat-trend.down -0.4% so với tuần trước
+        article.stat-card
+            p.stat-title Khách online
+            h3.stat-value 892
+            span.stat-trend.up +21% trong khung giờ cao điểm
+
+    section.dashboard-grid
+        article.panel.panel-large
+            .panel-head
+                h4 Xu hướng doanh thu 7 ngày
+                button.btn.btn-outline-secondary.btn-sm Xem chi tiết
+            .mock-chart
+                .chart-line
+                .chart-line.secondary
+            ul.chart-labels
+                li T2
+                li T3
+                li T4
+                li T5
+                li T6
+                li T7
+                li CN
+
+        article.panel
+            .panel-head
+                h4 Kênh bán hàng
+            ul.channel-list
+                li
+                    span Shopee
+                    strong 42%
+                li
+                    span Website
+                    strong 33%
+                li
+                    span TikTok Shop
+                    strong 17%
+                li
+                    span Cửa hàng
+                    strong 8%
+
+        article.panel
+            .panel-head
+                h4 Đơn hàng gần đây
+            ul.activity-list
+                li
+                    span #DH1008
+                    small Thành công · 2 phút trước
+                li
+                    span #DH1007
+                    small Đang giao · 11 phút trước
+                li
+                    span #DH1006
+                    small Đã xác nhận · 20 phút trước
