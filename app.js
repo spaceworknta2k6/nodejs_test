@@ -12,10 +12,13 @@ database.connect();
 
 const port = process.env.PORT
 // app.use(express.static('public'))
-const Router = require('./routes/client/index.route')
+const RouterClient = require('./routes/client/index.route')
+const RouterAdmin = require('./routes/admin/index.routes')
 
 
-Router(app)
+RouterAdmin(app)
+RouterClient(app)
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
