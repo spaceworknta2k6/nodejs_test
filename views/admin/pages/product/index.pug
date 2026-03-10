@@ -1,7 +1,168 @@
 extends ../../layouts/default.pug
+
 block main
-    section.panel
-        .panel-head
-            h4 Danh sách sản phẩm
-            button.btn.btn-primary.btn-sm + Thêm sản phẩm
-        p.text-muted.mb-0 Khu vực sản phẩm đang được nâng cấp giao diện để đồng bộ với dashboard mới.
+    -
+        const products = Array.isArray(product) ? product : [];
+        const totalProducts = products.length;
+
+        let activeProducts = 0;
+        products.forEach(item => {
+            const status = String(item && item.active ? item.active : '').toLowerCase().trim();
+            const isActive = ['active', 'on', 'true', '1', 'hoat-dong'].includes(status) || item.active === true;
+            if (isActive) activeProducts++;
+        });
+
+        const inactiveProducts = totalProducts - activeProducts;
+
+    .product-page
+        .page-hero
+            .page-hero__top
+                div
+                    h1.page-hero__title Quản lý sản phẩm
+                    p.page-hero__desc Giao diện danh sách sản phẩm theo phong cách hiện đại. Phần lọc, sửa, xóa và phân trang đã có sẵn UI để bạn nối logic sau.
+                .hero-actions
+                    button.hero-btn.hero-btn--light(type="button") + Thêm sản phẩm
+                    button.hero-btn.hero-btn--ghost(type="button") Xuất dữ liệu
+
+        .stats-grid
+            .stat-card
+                .stat-card__label Tổng sản phẩm
+                .stat-card__value= totalProducts
+                .stat-card__sub Tất cả sản phẩm đang hiển thị trong hệ thống
+            .stat-card
+                .stat-card__label Đang hoạt động
+                .stat-card__value= activeProducts
+                .stat-card__sub Sản phẩm có trạng thái hoạt động
+            .stat-card
+                .stat-card__label Ngưng hoạt động
+                .stat-card__value= inactiveProducts
+                .stat-card__sub Sản phẩm đang tạm ẩn hoặc đã tắt
+
+        .toolbar-card
+            .toolbar-grid
+                .toolbar-group
+                    label(for="keyword") Tìm kiếm sản phẩm
+                    input#keyword.toolbar-input(type="text" placeholder="Nhập tên sản phẩm, danh mục...")
+                .toolbar-group
+                    label(for="statusFilter") Lọc trạng thái
+                    select#statusFilter.toolbar-select
+                        option(value="") Tất cả trạng thái
+                        option(value="active") Hoạt động
+                        option(value="inactive") Không hoạt động
+                .toolbar-group
+                    label(for="sortFilter") Sắp xếp
+                    select#sortFilter.toolbar-select
+                        option(value="newest") Mới nhất
+                        option(value="name-asc") Tên A-Z
+                        option(value="price-desc") Giá giảm dần
+                        option(value="price-asc") Giá tăng dần
+                .toolbar-actions
+                    button.toolbar-btn.toolbar-btn--primary(type="button") Áp dụng
+                    button.toolbar-btn.toolbar-btn--secondary(type="button") Đặt lại
+
+        .table-card
+            .table-card__head
+                div
+                    h2.table-card__title Danh sách sản phẩm
+                    p.table-card__meta Hiển thị #{totalProducts} sản phẩm
+
+            if products.length
+                .product-table-wrap
+                    table.table.product-table
+                        thead
+                            tr
+                                th Sản phẩm
+                                th Danh mục
+                                th Giá
+                                th Đánh giá
+                                th Trạng thái
+                                th Hành động
+                        tbody
+                            each item, index in products
+                                -
+                                    const statusText = String(item && item.active ? item.active : '').toLowerCase().trim();
+                                    const isActive = ['active', 'on', 'true', '1', 'hoat-dong'].includes(statusText) || item.active === true;
+                                    const thumb = item.thumbnail || (item.images && item.images.length ? item.images[0] : 'https://placehold.co/120x120?text=No+Image');
+                                    const shortDesc = item.description || 'Chưa có mô tả sản phẩm';
+                                    const priceText = typeof item.price === 'number' ? item.price.toLocaleString('vi-VN') + ' ₫' : 'Đang cập nhật';
+                                    const ratingText = item.rating ? item.rating + ' / 5' : 'Chưa có';
+                                tr
+                                    td
+                                        .product-media
+                                            img.product-thumb(src=thumb, alt=item.title || 'product')
+                                            div
+                                                .product-name= item.title || 'Chưa có tên sản phẩm'
+                                                .product-desc= shortDesc
+                                    td
+                                        span.chip.chip--category= item.category || 'Chưa phân loại'
+                                    td
+                                        .price-box= priceText
+                                        if item.discountPercentage
+                                            .price-sale Giảm #{item.discountPercentage}%
+                                    td
+                                        .rating-box= ratingText
+                                        .rating-sub Mã SP: #{item._id || index + 1}
+                                    td
+                                        label.switch
+                                            input.status-toggle(
+                                                type="checkbox",
+                                                checked=isActive,
+                                                data-id=item._id
+                                            )
+                                            span.slider
+                                    td
+                                        .action-group
+                                            button.action-btn.action-btn--edit(type="button") Sửa
+                                            button.action-btn.action-btn--delete(type="button") Xóa
+
+                .mobile-list
+                    each item, index in products
+                        -
+                            const statusText = String(item && item.active ? item.active : '').toLowerCase().trim();
+                            const isActive = ['active', 'on', 'true', '1', 'hoat-dong'].includes(statusText) || item.active === true;
+                            const thumb = item.thumbnail || (item.images && item.images.length ? item.images[0] : 'https://placehold.co/120x120?text=No+Image');
+                            const shortDesc = item.description || 'Chưa có mô tả sản phẩm';
+                            const priceText = typeof item.price === 'number' ? item.price.toLocaleString('vi-VN') + ' ₫' : 'Đang cập nhật';
+                        .mobile-product-card
+                            .mobile-product-top
+                                img.product-thumb(src=thumb, alt=item.title || 'product')
+                                div
+                                    .product-name= item.title || 'Chưa có tên sản phẩm'
+                                    .product-desc= shortDesc
+                            .mobile-product-body
+                                .mobile-meta
+                                    span
+                                        strong Danh mục:
+                                        |  #{item.category || 'Chưa phân loại'}
+                                    span
+                                        strong Giá:
+                                        |  #{priceText}
+                                .mobile-meta
+                                    span
+                                        strong Rating:
+                                        |  #{item.rating || 'Chưa có'}
+                                    span
+                                        if isActive
+                                            span.chip.chip--success Hoạt động
+                                        else
+                                            span.chip.chip--danger Không hoạt động
+                                if item.discountPercentage
+                                    div
+                                        span.price-sale Giảm #{item.discountPercentage}%
+                                .action-group
+                                    button.action-btn.action-btn--edit(type="button") Sửa
+                                    button.action-btn.action-btn--delete(type="button") Xóa
+
+                .pagination-ui
+                    .pagination-info
+                    .pagination-list
+                        button.page-btn(type="button") ←
+                        button.page-btn.is-active(type="button") 1
+                        button.page-btn(type="button") 2
+                        button.page-btn(type="button") 3
+                        button.page-btn(type="button") →
+            else
+                .empty-state
+                    .empty-state__icon 📦
+                    h3.mb-2 Chưa có sản phẩm nào
+                    p.mb-0 Hãy thêm sản phẩm mới hoặc kiểm tra lại dữ liệu
