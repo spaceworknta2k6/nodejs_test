@@ -73,8 +73,7 @@ body {
   transition: all 0.2s ease;
 }
 
-.nav-item:hover,
-.nav-item.active {
+.nav-item:hover {
   background: rgba(255, 255, 255, 0.12);
   color: #fff;
 }

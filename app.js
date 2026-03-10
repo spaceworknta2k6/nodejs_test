@@ -15,6 +15,11 @@ const port = process.env.PORT
 const RouterClient = require('./routes/client/index.route')
 const RouterAdmin = require('./routes/admin/index.routes')
 
+const SystemConfig = require('./config/system')
+
+// local variable
+app.locals.PrefixAdmin = SystemConfig.prefixAdmin
+
 
 RouterAdmin(app)
 RouterClient(app)
