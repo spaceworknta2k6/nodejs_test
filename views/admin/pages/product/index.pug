@@ -46,9 +46,9 @@ block main
                 .toolbar-group
                     label(for="statusFilter") Lọc trạng thái
                     select#statusFilter.toolbar-select
-                        option(value="") Tất cả trạng thái
-                        option(value="active") Hoạt động
-                        option(value="inactive") Không hoạt động
+                        option(value="" selected!=status) Tất cả trạng thái
+                        option(value="active" selected=status=="active") Hoạt động
+                        option(value="inactive" selected=status=="inactive") Không hoạt động
                 .toolbar-group
                     label(for="sortFilter") Sắp xếp
                     select#sortFilter.toolbar-select
