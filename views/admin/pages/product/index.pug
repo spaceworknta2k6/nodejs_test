@@ -9,7 +9,7 @@ block main
             .page-hero__top
                 div
                     h1.page-hero__title Quản lý sản phẩm
-                    p.page-hero__desc Giao diện danh sách sản phẩm theo phong cách hiện đại. Phần lọc, sửa, xóa và phân trang đã có sẵn UI để bạn nối logic sau.
+                    p.page-hero__desc Giao diện danh sách sản phẩm theo phong cách hiện đại
                 .hero-actions
                     button.hero-btn.hero-btn--light(type="button") + Thêm sản phẩm
                     button.hero-btn.hero-btn--ghost(type="button") Xuất dữ liệu
@@ -32,11 +32,11 @@ block main
             .toolbar-grid
                 .toolbar-group
                     label(for="keyword") Tìm kiếm sản phẩm
-                    input#keyword.toolbar-input(type="text" placeholder="Nhập tên sản phẩm, danh mục...")
+                    input#keyword.toolbar-input(type="text" value=`${keyword}` placeholder="Nhập tên sản phẩm, danh mục...")
                 .toolbar-group
                     label(for="statusFilter") Lọc trạng thái
                     select#statusFilter.toolbar-select
-                        option(value="" selected!=status) Tất cả trạng thái
+                        option(value="" selected=status=="") Tất cả trạng thái
                         option(value="active" selected=status=="active") Hoạt động
                         option(value="inactive" selected=status=="inactive") Không hoạt động
                 .toolbar-group
@@ -47,8 +47,8 @@ block main
                         option(value="price-desc") Giá giảm dần
                         option(value="price-asc") Giá tăng dần
                 .toolbar-actions
-                    button.toolbar-btn.toolbar-btn--primary(type="button") Áp dụng
-                    button.toolbar-btn.toolbar-btn--secondary(type="button") Đặt lại
+                    button#apply.toolbar-btn.toolbar-btn--primary(type="button") Áp dụng
+                    button#reset.toolbar-btn.toolbar-btn--secondary(type="button") Đặt lại
 
         .table-card
             .table-card__head
