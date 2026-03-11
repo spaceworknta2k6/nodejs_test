@@ -3,16 +3,6 @@ extends ../../layouts/default.pug
 block main
     -
         const products = Array.isArray(product) ? product : [];
-        const totalProducts = products.length;
-
-        let activeProducts = 0;
-        products.forEach(item => {
-            const status = String(item && item.active ? item.active : '').toLowerCase().trim();
-            const isActive = ['active', 'on', 'true', '1', 'hoat-dong'].includes(status) || item.active === true;
-            if (isActive) activeProducts++;
-        });
-
-        const inactiveProducts = totalProducts - activeProducts;
 
     .product-page
         .page-hero
@@ -31,11 +21,11 @@ block main
                 .stat-card__sub Tất cả sản phẩm đang hiển thị trong hệ thống
             .stat-card
                 .stat-card__label Đang hoạt động
-                .stat-card__value= activeProducts
+                .stat-card__value= activeProduct
                 .stat-card__sub Sản phẩm có trạng thái hoạt động
             .stat-card
                 .stat-card__label Ngưng hoạt động
-                .stat-card__value= inactiveProducts
+                .stat-card__value= inactiveProduct
                 .stat-card__sub Sản phẩm đang tạm ẩn hoặc đã tắt
 
         .toolbar-card
