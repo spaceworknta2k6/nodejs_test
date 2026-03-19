@@ -1,5 +1,6 @@
 // [GET] /admin/product
 const Product = require("../../models/product.model");
+const sortHelper = require("../../helper/sort");
 module.exports.products = async (req, res) => {
   const status = req.query.status || "";
   const keyword = req.query.keyword || "";
@@ -39,28 +40,12 @@ module.exports.products = async (req, res) => {
       { description: keywordRegex },
     ];
   }
+  // sort
+  
+  const sort = sortHelper(sortQuery);
+  // end sort
 
-  let sort = {};
-
-  switch (sortQuery) {
-    case "name-asc":
-      sort.title = 1;
-      break;
-    case "name-desc":
-      sort.title = -1;
-      break;
-    case "price-asc":
-      sort.price = 1;
-      break;
-    case "price-desc":
-      sort.price = -1;
-      break;
-    default:
-      sort._id = -1;
-      break;
-  }
-
-  const product = await Product.find(find).sort();
+  const product = await Product.find(find).sort(sort);
   // end submitButton
   res.render("admin/pages/product/index", {
     PageTitle: "Trang san pham",
@@ -75,11 +60,10 @@ module.exports.products = async (req, res) => {
 };
 
 module.exports.changeStatus = async (req, res) => {
-  const status = req.params.status
-  const id = req.params.id
-  
-  await Product.updateOne({_id : id}, {active : status})
+  const status = req.params.status;
+  const id = req.params.id;
 
-  res.redirect("/admin/product")
+  await Product.updateOne({ _id: id }, { active: status });
 
-}
+  res.redirect("/admin/product");
+};
