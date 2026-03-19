@@ -73,3 +73,13 @@ module.exports.products = async (req, res) => {
     inactiveProduct: inactiveProduct,
   });
 };
+
+module.exports.changeStatus = async (req, res) => {
+  const status = req.params.status
+  const id = req.params.id
+  
+  await Product.updateOne({_id : id}, {active : status})
+
+  res.redirect("/admin/product")
+
+}

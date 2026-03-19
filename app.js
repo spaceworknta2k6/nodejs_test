@@ -1,7 +1,9 @@
 const express = require('express')
 const app = express()
-
+const methodOverride = require('method-override')
 require("dotenv").config()
+
+app.use(methodOverride('_method'))
 
 app.set('views', './views')
 app.set('view engine', 'pug')
