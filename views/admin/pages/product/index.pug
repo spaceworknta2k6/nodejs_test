@@ -1,4 +1,7 @@
 extends ../../layouts/default.pug
+include ../../mixins/admin/stat_card.pug
+include ../../mixins/admin/product.pug
+include ../../mixins/admin/product-table.pug
 
 block main
     -
@@ -15,30 +18,16 @@ block main
                     button.hero-btn.hero-btn--ghost(type="button") Xuất dữ liệu
 
         .stats-grid
-            .stat-card
-                .stat-card__label Tổng sản phẩm
-                .stat-card__value= totalProducts
-                .stat-card__sub Tất cả sản phẩm đang hiển thị trong hệ thống
-            .stat-card
-                .stat-card__label Đang hoạt động
-                .stat-card__value= activeProduct
-                .stat-card__sub Sản phẩm có trạng thái hoạt động
-            .stat-card
-                .stat-card__label Ngưng hoạt động
-                .stat-card__value= inactiveProduct
-                .stat-card__sub Sản phẩm đang tạm ẩn hoặc đã tắt
-
+            +statCard('Tổng sản phẩm', totalProducts, 'Tất cả sản phẩm đang hiển thị trong hệ thống')
+            +statCard('Đang hoạt động', activeProduct, 'Sản phẩm có trạng thái hoạt động')
+            +statCard('Ngưng hoạt động', inactiveProduct, 'Sản phẩm đang tạm ẩn hoặc đã tắt')
         .toolbar-card
             .toolbar-grid
-                .toolbar-group
-                    label(for="keyword") Tìm kiếm sản phẩm
-                    input#keyword.toolbar-input(type="text" value=`${keyword}` placeholder="Nhập tên sản phẩm, danh mục...")
-                .toolbar-group
-                    label(for="statusFilter") Lọc trạng thái
-                    select#statusFilter.toolbar-select
-                        option(value="" selected=status=="") Tất cả trạng thái
-                        option(value="active" selected=status=="active") Hoạt động
-                        option(value="inactive" selected=status=="inactive") Không hoạt động
+                +toolbarInput('Tìm kiếm sản phẩm', 'keyword', `${keyword}`, 'Nhập tên sản phẩm, danh mục...')
+                +toolbarSelect('Lọc trạng thái', 'statusFilter')
+                    option(value="" selected=status=="") Tất cả trạng thái
+                    option(value="active" selected=status=="active") Hoạt động
+                    option(value="inactive" selected=status=="inactive") Không hoạt động
                 .toolbar-group
                     label(for="sortFilter") Sắp xếp
                     select#sortFilter.toolbar-select
@@ -69,80 +58,11 @@ block main
                                 th Hành động
                         tbody
                             each item, index in products
-                                -
-                                    const statusText = String(item && item.active ? item.active : '').toLowerCase().trim();
-                                    const isActive = ['active', 'on', 'true', '1', 'hoat-dong'].includes(statusText) || item.active === true;
-                                    const thumb = item.thumbnail || (item.images && item.images.length ? item.images[0] : 'https://placehold.co/120x120?text=No+Image');
-                                    const shortDesc = item.description || 'Chưa có mô tả sản phẩm';
-                                    const priceText = typeof item.price === 'number' ? item.price.toLocaleString('vi-VN') + ' ₫' : 'Đang cập nhật';
-                                    const ratingText = item.rating ? item.rating + ' / 5' : 'Chưa có';
-                                tr
-                                    td
-                                        .product-media
-                                            img.product-thumb(src=thumb, alt=item.title || 'product')
-                                            div
-                                                .product-name= item.title || 'Chưa có tên sản phẩm'
-                                                .product-desc= shortDesc
-                                    td
-                                        span.chip.chip--category= item.category || 'Chưa phân loại'
-                                    td
-                                        .price-box= priceText
-                                        if item.discountPercentage
-                                            .price-sale Giảm #{item.discountPercentage}%
-                                    td
-                                        .rating-box= ratingText
-                                        .rating-sub Mã SP: #{item._id || index + 1}
-                                    td
-                                        label.switch
-                                            input.status-toggle(
-                                                type="checkbox",
-                                                checked=isActive,
-                                                data-id=item._id
-                                            )
-                                            span.slider
-                                    td
-                                        .action-group
-                                            button.action-btn.action-btn--edit(type="button") Sửa
-                                            button.action-btn.action-btn--delete(type="button") Xóa
+                                +productTableRow(item, index)
 
                 .mobile-list
                     each item, index in products
-                        -
-                            const statusText = String(item && item.active ? item.active : '').toLowerCase().trim();
-                            const isActive = ['active', 'on', 'true', '1', 'hoat-dong'].includes(statusText) || item.active === true;
-                            const thumb = item.thumbnail || (item.images && item.images.length ? item.images[0] : 'https://placehold.co/120x120?text=No+Image');
-                            const shortDesc = item.description || 'Chưa có mô tả sản phẩm';
-                            const priceText = typeof item.price === 'number' ? item.price.toLocaleString('vi-VN') + ' ₫' : 'Đang cập nhật';
-                        .mobile-product-card
-                            .mobile-product-top
-                                img.product-thumb(src=thumb, alt=item.title || 'product')
-                                div
-                                    .product-name= item.title || 'Chưa có tên sản phẩm'
-                                    .product-desc= shortDesc
-                            .mobile-product-body
-                                .mobile-meta
-                                    span
-                                        strong Danh mục:
-                                        |  #{item.category || 'Chưa phân loại'}
-                                    span
-                                        strong Giá:
-                                        |  #{priceText}
-                                .mobile-meta
-                                    span
-                                        strong Rating:
-                                        |  #{item.rating || 'Chưa có'}
-                                    span
-                                        if isActive
-                                            span.chip.chip--success Hoạt động
-                                        else
-                                            span.chip.chip--danger Không hoạt động
-                                if item.discountPercentage
-                                    div
-                                        span.price-sale Giảm #{item.discountPercentage}%
-                                .action-group
-                                    button.action-btn.action-btn--edit(type="button") Sửa
-                                    button.action-btn.action-btn--delete(type="button") Xóa
-
+                        +productMobileCard(item, index)
                 .pagination-ui
                     .pagination-info
                     .pagination-list

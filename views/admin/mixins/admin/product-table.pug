@@ -1,0 +1,76 @@
+mixin actionButtons()
+    .action-group
+        button.action-btn.action-btn--edit(type="button") Sửa
+        button.action-btn.action-btn--delete(type="button") Xóa
+
+mixin productTableRow(item, index)
+    -
+        const statusText = String(item && item.active ? item.active : '').toLowerCase().trim();
+        const isActive = ['active', 'on', 'true', '1', 'hoat-dong'].includes(statusText) || item.active === true;
+        const thumb = item.thumbnail || (item.images && item.images.length ? item.images[0] : 'https://placehold.co/120x120?text=No+Image');
+        const shortDesc = item.description || 'Chưa có mô tả sản phẩm';
+        const priceText = typeof item.price === 'number' ? item.price.toLocaleString('vi-VN') + ' ₫' : 'Đang cập nhật';
+        const ratingText = item.rating ? item.rating + ' / 5' : 'Chưa có';
+
+    tr
+        td
+            .product-media
+                img.product-thumb(src=thumb, alt=item.title || 'product')
+                div
+                    .product-name= item.title || 'Chưa có tên sản phẩm'
+                    .product-desc= shortDesc
+        td
+            span.chip.chip--category= item.category || 'Chưa phân loại'
+        td
+            .price-box= priceText
+            if item.discountPercentage
+                .price-sale Giảm #{item.discountPercentage}%
+        td
+            .rating-box= ratingText
+            .rating-sub Mã SP: #{item._id || index + 1}
+        td
+            label.switch
+                input.status-toggle(
+                    type="checkbox",
+                    checked=isActive,
+                    data-id=item._id
+                )
+                span.slider
+        td
+            +actionButtons()
+
+mixin productMobileCard(item, index)
+    -
+        const statusText = String(item && item.active ? item.active : '').toLowerCase().trim();
+        const isActive = ['active', 'on', 'true', '1', 'hoat-dong'].includes(statusText) || item.active === true;
+        const thumb = item.thumbnail || (item.images && item.images.length ? item.images[0] : 'https://placehold.co/120x120?text=No+Image');
+        const shortDesc = item.description || 'Chưa có mô tả sản phẩm';
+        const priceText = typeof item.price === 'number' ? item.price.toLocaleString('vi-VN') + ' ₫' : 'Đang cập nhật';
+
+    .mobile-product-card
+        .mobile-product-top
+            img.product-thumb(src=thumb, alt=item.title || 'product')
+            div
+                .product-name= item.title || 'Chưa có tên sản phẩm'
+                .product-desc= shortDesc
+        .mobile-product-body
+            .mobile-meta
+                span
+                    strong Danh mục:
+                    |  #{item.category || 'Chưa phân loại'}
+                span
+                    strong Giá:
+                    |  #{priceText}
+            .mobile-meta
+                span
+                    strong Rating:
+                    |  #{item.rating || 'Chưa có'}
+                span
+                    if isActive
+                        span.chip.chip--success Hoạt động
+                    else
+                        span.chip.chip--danger Không hoạt động
+            if item.discountPercentage
+                div
+                    span.price-sale Giảm #{item.discountPercentage}%
+            +actionButtons()

@@ -1,0 +1,15 @@
+mixin toolbarInput(labelText, inputId, inputValue, placeholderText)
+    .toolbar-group
+        label(for=inputId)= labelText
+        input.toolbar-input(
+            type="text"
+            id=inputId
+            value=inputValue
+            placeholder=placeholderText
+        )
+
+mixin toolbarSelect(labelText, selectId)
+    .toolbar-group
+        label(for=selectId)= labelText
+        select.toolbar-select(id=selectId)
+            block
