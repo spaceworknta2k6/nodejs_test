@@ -63,14 +63,11 @@ block main
                 .mobile-list
                     each item, index in products
                         +productMobileCard(item, index)
-                .pagination-ui
-                    .pagination-info
+                .pagination-ui(data-current-page=pagination.currentPage data-total-page=pagination.totalpage)
                     .pagination-list
-                        button.page-btn(type="button") ←
-                        button.page-btn.is-active(type="button") 1
-                        button.page-btn(type="button") 2
-                        button.page-btn(type="button") 3
-                        button.page-btn(type="button") →
+                        button.page-btn.page-btn-prev(type="button") ←
+                        .pagination-pages
+                        button.page-btn.page-btn-next(type="button") →
             else
                 .empty-state
                     .empty-state__icon 📦

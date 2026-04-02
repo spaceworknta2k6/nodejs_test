@@ -41,12 +41,31 @@ module.exports.products = async (req, res) => {
     ];
   }
   // sort
-  
+
   const sort = sortHelper(sortQuery);
   // end sort
 
-  const product = await Product.find(find).sort(sort);
   // end submitButton
+
+  // pagination
+  let objectPagination = {
+    currentPage: 1,
+    limitItem: 6,
+  };
+
+  if (req.query.page) {
+    objectPagination.currentPage = parseInt(req.query.page);
+  }
+  objectPagination.skip =
+    (objectPagination.currentPage - 1) * objectPagination.limitItem;
+  const totalpage = await Product.countDocuments(find);
+  objectPagination.totalpage = Math.ceil(totalpage/objectPagination.limitItem);
+  // end pagination
+
+  const product = await Product.find(find)
+    .sort(sort)
+    .limit(objectPagination.limitItem)
+    .skip(objectPagination.skip);
   res.render("admin/pages/product/index", {
     PageTitle: "Trang san pham",
     product: product,
@@ -56,6 +75,7 @@ module.exports.products = async (req, res) => {
     totalProducts: totalProducts,
     activeProduct: activeProduct,
     inactiveProduct: inactiveProduct,
+    pagination : objectPagination
   });
 };
 
