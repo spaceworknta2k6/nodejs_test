@@ -30,6 +30,8 @@ if(applyButton) {
             url.searchParams.delete("sort")
         }
 
+        url.searchParams.set("page", "1")
+
         window.location.href = url.href
     })
 }

@@ -56,10 +56,19 @@ module.exports.products = async (req, res) => {
   if (req.query.page) {
     objectPagination.currentPage = parseInt(req.query.page);
   }
+  const totalpage = await Product.countDocuments(find);
+  objectPagination.totalpage = Math.ceil(totalpage / objectPagination.limitItem);
+
+  if (objectPagination.totalpage > 0 && objectPagination.currentPage > objectPagination.totalpage) {
+    objectPagination.currentPage = objectPagination.totalpage;
+  }
+
+  if (objectPagination.currentPage < 1 || Number.isNaN(objectPagination.currentPage)) {
+    objectPagination.currentPage = 1;
+  }
+
   objectPagination.skip =
     (objectPagination.currentPage - 1) * objectPagination.limitItem;
-  const totalpage = await Product.countDocuments(find);
-  objectPagination.totalpage = Math.ceil(totalpage/objectPagination.limitItem);
   // end pagination
 
   const product = await Product.find(find)
