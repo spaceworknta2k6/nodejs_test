@@ -21,58 +21,88 @@ block main
             +statCard('Tổng sản phẩm', totalProducts, 'Tất cả sản phẩm đang hiển thị trong hệ thống')
             +statCard('Đang hoạt động', activeProduct, 'Sản phẩm có trạng thái hoạt động')
             +statCard('Ngưng hoạt động', inactiveProduct, 'Sản phẩm đang tạm ẩn hoặc đã tắt')
-        .toolbar-card
-            .toolbar-grid
-                +toolbarInput('Tìm kiếm sản phẩm', 'keyword', `${keyword}`, 'Nhập tên sản phẩm, danh mục...')
-                +toolbarSelect('Lọc trạng thái', 'statusFilter')
-                    option(value="" selected=status=="") Tất cả trạng thái
-                    option(value="active" selected=status=="active") Hoạt động
-                    option(value="inactive" selected=status=="inactive") Không hoạt động
-                .toolbar-group
-                    label(for="sortFilter") Sắp xếp
-                    select#sortFilter.toolbar-select
-                        option(value="newest") Mới nhất
-                        option(value="name-asc") Tên A-Z
-                        option(value="price-desc") Giá giảm dần
-                        option(value="price-asc") Giá tăng dần
-                .toolbar-actions
-                    button#apply.toolbar-btn.toolbar-btn--primary(type="button") Áp dụng
-                    button#reset.toolbar-btn.toolbar-btn--secondary(type="button") Đặt lại
+        .product-layout
+            .product-content
+                .toolbar-card
+                    .toolbar-grid
+                        +toolbarInput('Tìm kiếm sản phẩm', 'keyword', `${keyword}`, 'Nhập tên sản phẩm, danh mục...')
+                        .toolbar-row
+                            +toolbarSelect('Lọc trạng thái', 'statusFilter')
+                                option(value="" selected=status=="") Tất cả trạng thái
+                                option(value="active" selected=status=="active") Hoạt động
+                                option(value="inactive" selected=status=="inactive") Không hoạt động
+                            .toolbar-group
+                                label(for="sortFilter") Sắp xếp
+                                select#sortFilter.toolbar-select(name="sort")
+                                    option(value="" disabled selected=sort=="") Chọn kiểu sắp xếp
+                                    option(value="newest" selected=sort=="newest") Mới nhất
+                                    option(value="name-asc" selected=sort=="name-asc") Tên A-Z
+                                    option(value="price-desc" selected=sort=="price-desc") Giá giảm dần
+                                    option(value="price-asc" selected=sort=="price-asc") Giá tăng dần
+                            .toolbar-actions
+                                button#apply.toolbar-btn.toolbar-btn--primary(type="button") Áp dụng
+                                button#reset.toolbar-btn.toolbar-btn--secondary(type="button") Đặt lại
 
-        .table-card
-            .table-card__head
-                div
-                    h2.table-card__title Danh sách sản phẩm
-                    p.table-card__meta Hiển thị #{totalProducts} sản phẩm
+                .table-action-section
+                    .table-card
+                        .table-card__head
+                            div
+                                h2.table-card__title Danh sách sản phẩm
+                                p.table-card__meta Hiển thị #{totalProducts} sản phẩm
 
-            if products.length
-                .product-table-wrap
-                    table.table.product-table
-                        thead
-                            tr
-                                th Sản phẩm
-                                th Danh mục
-                                th Giá
-                                th Đánh giá
-                                th Trạng thái
-                                th Hành động
-                        tbody
-                            each item, index in products
-                                +productTableRow(item, index)
+                        if products.length
+                            .product-table-wrap
+                                table.table.product-table
+                                    thead
+                                        tr
+                                            th
+                                                input.select-all(type="checkbox")
+                                            th Sản phẩm
+                                            th Danh mục
+                                            th Giá
+                                            th Đánh giá
+                                            th Trạng thái
+                                            th Hành động
+                                    tbody
+                                        each item, index in products
+                                            +productTableRow(item, index)
 
-                .mobile-list
-                    each item, index in products
-                        +productMobileCard(item, index)
-                .pagination-ui(data-current-page=pagination.currentPage data-total-page=pagination.totalpage)
-                    .pagination-list
-                        button.page-btn.page-btn-prev(type="button") ←
-                        .pagination-pages
-                        button.page-btn.page-btn-next(type="button") →
-            else
-                .empty-state
-                    .empty-state__icon 📦
-                    h3.mb-2 Chưa có sản phẩm nào
-                    p.mb-0 Hãy thêm sản phẩm mới
+                            .mobile-list
+                                each item, index in products
+                                    +productMobileCard(item, index)
+                            .pagination-ui(data-current-page=pagination.currentPage data-total-page=pagination.totalpage)
+                                .pagination-list
+                                    button.page-btn.page-btn-prev(type="button") ←
+                                    .pagination-pages
+                                    button.page-btn.page-btn-next(type="button") →
+                        else
+                            .empty-state
+                                .empty-state__icon 📦
+                                h3.mb-2 Chưa có sản phẩm nào
+                                p.mb-0 Hãy thêm sản phẩm mới
+
+                    aside.bulk-action-panel
+                        form.bulk-action-card(method="POST" action="#")
+                            .bulk-action-card__header
+                                h3.bulk-action-card__title Thao tác hàng loạt
+                                p.bulk-action-card__desc Chọn sản phẩm từ bảng bên cạnh rồi chọn trạng thái.
+
+                            .bulk-action-row.bulk-action-row--info
+                                label.bulk-action-label Chọn sản phẩm
+                                input.bulk-action-input(type="text" readonly value="Chưa có sản phẩm nào được chọn")
+                            .bulk-action-row
+                                label.radio-card
+                                    input(type="radio" name="bulkAction" value="active")
+                                    span.radio-label Hoạt động
+                            .bulk-action-row
+                                label.radio-card
+                                    input(type="radio" name="bulkAction" value="inactive")
+                                    span.radio-label Dừng hoạt động
+                            .bulk-action-row
+                                label.radio-card
+                                    input(type="radio" name="bulkAction" value="delete")
+                                    span.radio-label Xóa
+                            button.btn-submit(type="submit") Áp dụng
 
     form(
         action=""

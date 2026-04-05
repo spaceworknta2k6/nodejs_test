@@ -13,6 +13,8 @@ mixin productTableRow(item, index)
         const ratingText = item.rating ? item.rating + ' / 5' : 'Chưa có';
 
     tr
+        td.select-cell
+            input.row-checkbox(type="checkbox" name="selectedProducts[]" value=item._id)
         td
             .product-media
                 img.product-thumb(src=thumb, alt=item.title || 'product')
