@@ -96,3 +96,10 @@ module.exports.changeStatus = async (req, res) => {
 
   res.redirect("/admin/product");
 };
+
+module.exports.deleteItem = async (req, res) => {
+  const id = req.params.id;
+  await Product.updateOne({ _id: id }, { deleted: true });
+  const referer = req.get("referer");
+  res.redirect(referer || "/admin/product");
+}
