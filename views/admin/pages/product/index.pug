@@ -82,7 +82,13 @@ block main
                                 p.mb-0 Hãy thêm sản phẩm mới
 
                     aside.bulk-action-panel
-                        form.bulk-action-card(method="POST" action="#")
+                        form.bulk-action-card(
+                            method="POST" 
+                            action=`${PrefixAdmin}/product/change-multi?_method=PATCH`
+                            id="form-change-multi"
+                            )
+                            input(type="hidden" name="ids" id="bulk-ids")
+
                             .bulk-action-card__header
                                 h3.bulk-action-card__title Thao tác hàng loạt
                                 p.bulk-action-card__desc Chọn sản phẩm từ bảng bên cạnh rồi chọn trạng thái.

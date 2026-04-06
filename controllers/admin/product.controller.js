@@ -96,10 +96,47 @@ module.exports.changeStatus = async (req, res) => {
 
   res.redirect("/admin/product");
 };
-
+// [delete] /admin/product/delete
 module.exports.deleteItem = async (req, res) => {
   const id = req.params.id;
-  await Product.updateOne({ _id: id }, { deleted: true });
+  await Product.updateOne({ _id: id }, { deleted: true, deletedAt: new Date() });
+  const referer = req.get("referer");
+  res.redirect(referer || "/admin/product");
+}
+
+// [patch] /admin/product/change-multi
+
+module.exports.changeMulti = async (req, res) => {
+  const type = req.body.bulkAction;
+  const ids = req.body.ids ? req.body.ids.split(",") : [];
+
+  if(!type || ids.length === 0) {
+    const referer = req.get("referer");
+    return res.redirect(referer || "/admin/product");
+  }
+  switch (type) {
+    case "active":
+      await Product.updateMany(
+        {_id: { $in : ids} },
+        {active : true}
+      );
+      break;
+    case "inactive":
+      await Product.updateMany(
+        {_id: { $in : ids} },
+        {active : false}
+      );
+      break;
+    case "delete":
+      await Product.updateMany(
+        {_id: { $in : ids} },
+        { deleted : true,
+          deleteAt: new Date()
+        }
+      );
+      break;
+  }
+
   const referer = req.get("referer");
   res.redirect(referer || "/admin/product");
 }

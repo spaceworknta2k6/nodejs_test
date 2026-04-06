@@ -114,3 +114,39 @@ if (buttonModify.length > 0) {
 }
 
 // end delete item
+
+
+// form change multi
+const formChangeMulti = document.querySelector("#form-change-multi")
+const inputIds = document.querySelector("#bulk-ids")
+
+if(formChangeMulti) {
+  // console.log(formChangeMulti)
+  formChangeMulti.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const checkedBox = document.querySelectorAll(".row-checkbox:checked");
+    const ids = Array.from(checkedBox).map((item) => item.value);
+    const checkedType = formChangeMulti.querySelector("input[name='bulkAction']:checked")
+
+    if(ids.length === 0) {
+      alert("Vui lòng chọn ít nhất 1 sản phẩm")
+      return;
+    }
+
+    if(!checkedType) {
+      alert("Vui lòng chọn thao tác ")
+      return;
+    }
+
+    if(checkedType.value === "delete") {
+      const iscomfirm = confirm("Bạn có chắc muốn xóa sản phẩm không ")
+      if(!iscomfirm) {
+        return;
+      }
+    }
+
+    inputIds.value = ids.join(",");
+    formChangeMulti.submit();
+  })
+}
+// end form change multi

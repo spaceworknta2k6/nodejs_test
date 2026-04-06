@@ -9,6 +9,7 @@ const ProductSchema = new mongoose.Schema({
   rating: Number,
   active: Boolean,
   deleted:Boolean,
+  deletedAt: Date,
   images: {
     type: [String],
     default: []

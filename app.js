@@ -4,6 +4,7 @@ const methodOverride = require('method-override')
 require("dotenv").config()
 
 app.use(methodOverride('_method'))
+app.use(express.urlencoded({ extended: true }));
 
 app.set('views', './views')
 app.set('view engine', 'pug')
@@ -13,7 +14,7 @@ const database = require('./config/database')
 database.connect();
 
 const port = process.env.PORT
-// app.use(express.static('public'))
+
 const RouterClient = require('./routes/client/index.route')
 const RouterAdmin = require('./routes/admin/index.routes')
 
