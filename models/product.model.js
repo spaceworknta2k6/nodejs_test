@@ -10,6 +10,7 @@ const ProductSchema = new mongoose.Schema({
   active: Boolean,
   deleted:Boolean,
   deletedAt: Date,
+  position: Number,
   images: {
     type: [String],
     default: []

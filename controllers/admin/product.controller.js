@@ -134,6 +134,12 @@ module.exports.changeMulti = async (req, res) => {
           deleteAt: new Date()
         }
       );
+    case "change-position":
+      for(const item of ids) {
+        let [id, position] = item.split("-");
+        position = parseInt(position);
+        await Product.updateOne({_id : id}, {position : position});
+      }
       break;
   }
 

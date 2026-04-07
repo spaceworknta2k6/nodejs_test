@@ -11,6 +11,7 @@ mixin productTableRow(item, index)
         const shortDesc = item.description || 'Chưa có mô tả sản phẩm';
         const priceText = typeof item.price === 'number' ? item.price.toLocaleString('vi-VN') + ' ₫' : 'Đang cập nhật';
         const ratingText = item.rating ? item.rating + ' / 5' : 'Chưa có';
+        const positionValue = item.position || index + 1;
 
     tr
         td.select-cell
@@ -39,6 +40,15 @@ mixin productTableRow(item, index)
                 )
                 span.slider
         td
+            input.position-input(
+                type="number"
+                min="1"
+                step="1"
+                value=item.position
+                data-id=item._id
+                name="position"
+            )
+        td
             +actionButtons(item)
 
 mixin productMobileCard(item, index)
@@ -48,6 +58,7 @@ mixin productMobileCard(item, index)
         const thumb = item.thumbnail || (item.images && item.images.length ? item.images[0] : 'https://placehold.co/120x120?text=No+Image');
         const shortDesc = item.description || 'Chưa có mô tả sản phẩm';
         const priceText = typeof item.price === 'number' ? item.price.toLocaleString('vi-VN') + ' ₫' : 'Đang cập nhật';
+        const positionValue = item.position || index + 1;
 
     .mobile-product-card
         .mobile-product-top
@@ -72,6 +83,17 @@ mixin productMobileCard(item, index)
                         span.chip.chip--success Hoạt động
                     else
                         span.chip.chip--danger Không hoạt động
+            .mobile-meta
+                span
+                    strong Vị trí:
+                input.position-input(
+                    type="number"
+                    min="1"
+                    step="1"
+                    value=positionValue
+                    data-id=item._id
+                    aria-label="Vi tri san pham"
+                )
             if item.discountPercentage
                 div
                     span.price-sale Giảm #{item.discountPercentage}%

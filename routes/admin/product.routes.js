@@ -10,4 +10,5 @@ router.patch("/changeStatus/:id/:status", ProductController.changeStatus)
 router.delete("/delete/:id", ProductController.deleteItem)
 
 router.patch("/change-multi", ProductController.changeMulti)
+
 module.exports = router

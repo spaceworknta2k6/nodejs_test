@@ -115,38 +115,52 @@ if (buttonModify.length > 0) {
 
 // end delete item
 
-
 // form change multi
-const formChangeMulti = document.querySelector("#form-change-multi")
-const inputIds = document.querySelector("#bulk-ids")
+const formChangeMulti = document.querySelector("#form-change-multi");
+const inputIds = document.querySelector("#bulk-ids");
 
-if(formChangeMulti) {
+if (formChangeMulti) {
   // console.log(formChangeMulti)
   formChangeMulti.addEventListener("submit", (e) => {
     e.preventDefault();
     const checkedBox = document.querySelectorAll(".row-checkbox:checked");
-    const ids = Array.from(checkedBox).map((item) => item.value);
-    const checkedType = formChangeMulti.querySelector("input[name='bulkAction']:checked")
+    // const ids = Array.from(checkedBox).map((item) => item.value);
+    const checkedType = formChangeMulti.querySelector(
+      "input[name='bulkAction']:checked",
+    );
 
-    if(ids.length === 0) {
-      alert("Vui lòng chọn ít nhất 1 sản phẩm")
-      return;
-    }
+    let ids = [];
 
-    if(!checkedType) {
-      alert("Vui lòng chọn thao tác ")
-      return;
-    }
-
-    if(checkedType.value === "delete") {
-      const iscomfirm = confirm("Bạn có chắc muốn xóa sản phẩm không ")
-      if(!iscomfirm) {
+    if (checkedType.value === "delete") {
+      const iscomfirm = confirm("Bạn có chắc muốn xóa sản phẩm không ");
+      if (!iscomfirm) {
         return;
       }
     }
 
+    if (checkedType.value != "change-position") {
+      ids = Array.from(checkedBox).map((item) => item.value);
+    } else {
+      checkedBox.forEach((item) => {
+        const position = item
+          .closest("tr")
+          .querySelector("input[name='position']").value;
+        ids.push(`${item.value}-${position}`);
+      });
+    }
+
+    if (ids.length === 0) {
+      alert("Vui lòng chọn ít nhất 1 sản phẩm");
+      return;
+    }
+
+    if (!checkedType) {
+      alert("Vui lòng chọn thao tác ");
+      return;
+    }
+    
     inputIds.value = ids.join(",");
     formChangeMulti.submit();
-  })
+  });
 }
 // end form change multi

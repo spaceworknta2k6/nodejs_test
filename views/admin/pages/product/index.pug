@@ -21,6 +21,7 @@ block main
             +statCard('Tổng sản phẩm', totalProducts, 'Tất cả sản phẩm đang hiển thị trong hệ thống')
             +statCard('Đang hoạt động', activeProduct, 'Sản phẩm có trạng thái hoạt động')
             +statCard('Ngưng hoạt động', inactiveProduct, 'Sản phẩm đang tạm ẩn hoặc đã tắt')
+
         .product-layout
             .product-content
                 .toolbar-card
@@ -43,6 +44,39 @@ block main
                                 button#apply.toolbar-btn.toolbar-btn--primary(type="button") Áp dụng
                                 button#reset.toolbar-btn.toolbar-btn--secondary(type="button") Đặt lại
 
+                aside.bulk-action-panel
+                    form.bulk-action-card(
+                        method="POST"
+                        action=`${PrefixAdmin}/product/change-multi?_method=PATCH`
+                        id="form-change-multi"
+                    )
+                        input(type="hidden" name="ids" id="bulk-ids")
+
+                        .bulk-action-card__header
+                            h3.bulk-action-card__title Thao tác hàng loạt
+                            p.bulk-action-card__desc Chọn sản phẩm từ danh sách bên dưới rồi chọn thao tác phù hợp.
+
+                        .bulk-action-row.bulk-action-row--info
+                            label.bulk-action-label Đã chọn
+                            input.bulk-action-input(type="text" readonly value="Chưa chọn sản phẩm")
+                        .bulk-action-row
+                            label.radio-card
+                                input(type="radio" name="bulkAction" value="active")
+                                span.radio-label Hoạt động
+                        .bulk-action-row
+                            label.radio-card
+                                input(type="radio" name="bulkAction" value="inactive")
+                                span.radio-label Dừng hoạt động
+                        .bulk-action-row
+                            label.radio-card
+                                input(type="radio" name="bulkAction" value="delete")
+                                span.radio-label Xóa
+                        .bulk-action-row
+                            label.radio-card
+                                input(type="radio" name="bulkAction" value="change-position")
+                                span.radio-label Thay đổi vị trí
+                        button.btn-submit(type="submit") Áp dụng
+
                 .table-action-section
                     .table-card
                         .table-card__head
@@ -62,6 +96,7 @@ block main
                                             th Giá
                                             th Đánh giá
                                             th Trạng thái
+                                            th Vị trí
                                             th Hành động
                                     tbody
                                         each item, index in products
@@ -81,35 +116,6 @@ block main
                                 h3.mb-2 Chưa có sản phẩm nào
                                 p.mb-0 Hãy thêm sản phẩm mới
 
-                    aside.bulk-action-panel
-                        form.bulk-action-card(
-                            method="POST" 
-                            action=`${PrefixAdmin}/product/change-multi?_method=PATCH`
-                            id="form-change-multi"
-                            )
-                            input(type="hidden" name="ids" id="bulk-ids")
-
-                            .bulk-action-card__header
-                                h3.bulk-action-card__title Thao tác hàng loạt
-                                p.bulk-action-card__desc Chọn sản phẩm từ bảng bên cạnh rồi chọn trạng thái.
-
-                            .bulk-action-row.bulk-action-row--info
-                                label.bulk-action-label Chọn sản phẩm
-                                input.bulk-action-input(type="text" readonly value="Chưa có sản phẩm nào được chọn")
-                            .bulk-action-row
-                                label.radio-card
-                                    input(type="radio" name="bulkAction" value="active")
-                                    span.radio-label Hoạt động
-                            .bulk-action-row
-                                label.radio-card
-                                    input(type="radio" name="bulkAction" value="inactive")
-                                    span.radio-label Dừng hoạt động
-                            .bulk-action-row
-                                label.radio-card
-                                    input(type="radio" name="bulkAction" value="delete")
-                                    span.radio-label Xóa
-                            button.btn-submit(type="submit") Áp dụng
-
     form(
         action=""
         method="POST"
@@ -117,9 +123,9 @@ block main
         data-path=`${PrefixAdmin}/product/changeStatus`
     )
     form(
-        action="" 
+        action=""
         method="post"
         id="form-delete-item"
         data-path=`${PrefixAdmin}/product/delete`
-        ) 
+    )
     script(src="/admin/js/product.js")
