@@ -94,6 +94,7 @@ module.exports.changeStatus = async (req, res) => {
 
   await Product.updateOne({ _id: id }, { active: status });
 
+  req.flash("success", "Status update successful");
   res.redirect("/admin/product");
 };
 // [delete] /admin/product/delete
@@ -101,6 +102,7 @@ module.exports.deleteItem = async (req, res) => {
   const id = req.params.id;
   await Product.updateOne({ _id: id }, { deleted: true, deletedAt: new Date() });
   const referer = req.get("referer");
+  req.flash("success", "Product deleted successfully");
   res.redirect(referer || "/admin/product");
 }
 
@@ -142,6 +144,8 @@ module.exports.changeMulti = async (req, res) => {
       }
       break;
   }
+
+  req.flash("success", "Status update successful");
 
   const referer = req.get("referer");
   res.redirect(referer || "/admin/product");

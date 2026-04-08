@@ -1,9 +1,13 @@
-extends ../../layouts/default.pug
+﻿extends ../../layouts/default.pug
 include ../../mixins/admin/stat_card.pug
 include ../../mixins/admin/product.pug
 include ../../mixins/admin/product-table.pug
 
 block main
+    - if(messages.success)
+        .alert.alert--success.show(data-time=3000)
+            span.alert__text= messages.success
+            button.alert__close(type="button" aria-label="Đóng thông báo") ×
     -
         const products = Array.isArray(product) ? product : [];
 

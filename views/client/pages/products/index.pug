@@ -1,55 +1,63 @@
-extends ../../layouts/default.pug
+﻿extends ../../layouts/default.pug
 
 block main
     section.product-page
         .container
             .product-page__head
-                h1.product-page__title Danh sách sản phẩm
-                p.product-page__desc Khám phá các sản phẩm nổi bật của NTA Shop.
+                h1.product-page__title Product list
+                p.product-page__desc Discover the featured products at NTA Shop
 
             .product-list-head
                 .product-list-head__left
-                    h2.product-list-head__title Sản phẩm nổi bật
-                    span.product-list-head__count #{products.length} sản phẩm
+                    h2.product-list-head__title Outstanding product
+                    span.product-list-head__count #{products.length} product
 
                 .product-list-head__right
-                    span.product-list-head__sort Sắp xếp:
+                    span.product-list-head__sort Arrange:
                     select
-                        option Mặc định
-                        option Giá tăng dần
-                        option Giá giảm dần
-                        option Đánh giá cao
+                        option Default
+                        option Price ascending
+                        option Price descending
+                        option Highly rated
 
             .product-grid
                 if products.length > 0
                     each product in products
-                        .product-card
+                        -
+                            const imageSrc = product.thumbnail || (product.images && product.images.length > 0 ? product.images[0] : "https://via.placeholder.com/300x300?text=No+Image");
+                            const hasDiscount = product.discountPercentage && product.discountPercentage > 0;
+                            const rawPrice = typeof product.price === "number" ? product.price : 0;
+                            const finalPrice = hasDiscount ? Math.round(rawPrice * (1 - product.discountPercentage / 100)) : rawPrice;
+                            const savedAmount = rawPrice - finalPrice;
+                        article.product-card
                             .product-card__image
-                                if product.thumbnail
-                                    img(src=product.thumbnail, alt=product.title)
-                                else if product.images && product.images.length > 0
-                                    img(src=product.images[0], alt=product.title)
-                                else
-                                    img(src="https://via.placeholder.com/300x300?text=No+Image", alt=product.title)
+                                img(src=imageSrc, alt=product.title)
 
-                                if product.discountPercentage && product.discountPercentage > 0
+                                if hasDiscount
                                     span.product-card__badge -#{Math.round(product.discountPercentage)}%
 
                             .product-card__body
                                 .product-card__top
-                                    span.product-card__category= product.category
+                                    span.product-card__category= product.category || "Chưa phân loại"
                                     span.product-card__rating ★ #{product.rating || 0}
 
-                                h2.product-card__title= product.title
+                                h2.product-card__title= product.title || "Sản phẩm đang cập nhật"
 
-                                p.product-card__text= product.description
+                                p.product-card__text= product.description || "Thông tin sản phẩm đang được cập nhật."
 
                                 .product-card__bottom
                                     .product-card__price
-                                        span.price-current $#{product.price}
+                                        if hasDiscount
+                                            .product-card__price-row
+                                                span.price-current $#{finalPrice.toLocaleString("en-US")}
+                                                span.price-original $#{rawPrice.toLocaleString("en-US")}
+                                            span.product-card__saving Save $#{savedAmount.toLocaleString("en-US")}
+                                        else
+                                            .product-card__price-row
+                                                span.price-current $#{rawPrice.toLocaleString("en-US")}
 
                                     .product-card__actions
-                                        a.btn-view(href="/products") Xem chi tiết
-                                        a.btn-buy(href="#") Mua ngay
+                                        a.btn-view(href="/products") See details
+                                        a.btn-buy(href="#") Buy now
                 else
-                    p Không có sản phẩm nào.
+                    p No products
