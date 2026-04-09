@@ -9,7 +9,7 @@ mixin productTableRow(item, index)
         const isActive = ['active', 'on', 'true', '1', 'hoat-dong'].includes(statusText) || item.active === true;
         const thumb = item.thumbnail || (item.images && item.images.length ? item.images[0] : 'https://placehold.co/120x120?text=No+Image');
         const shortDesc = item.description || 'Chưa có mô tả sản phẩm';
-        const priceText = typeof item.price === 'number' ? item.price.toLocaleString('vi-VN') + ' ₫' : 'Đang cập nhật';
+        const priceText = typeof item.price === 'number' ? item.price.toLocaleString('en-US') + ' USD' : 'Đang cập nhật';
         const ratingText = item.rating ? item.rating + ' / 5' : 'Chưa có';
         const positionValue = item.position || index + 1;
 
@@ -57,7 +57,7 @@ mixin productMobileCard(item, index)
         const isActive = ['active', 'on', 'true', '1', 'hoat-dong'].includes(statusText) || item.active === true;
         const thumb = item.thumbnail || (item.images && item.images.length ? item.images[0] : 'https://placehold.co/120x120?text=No+Image');
         const shortDesc = item.description || 'Chưa có mô tả sản phẩm';
-        const priceText = typeof item.price === 'number' ? item.price.toLocaleString('vi-VN') + ' ₫' : 'Đang cập nhật';
+        const priceText = typeof item.price === 'number' ? item.price.toLocaleString('en-US') + ' USD' : 'Đang cập nhật';
         const positionValue = item.position || index + 1;
 
     .mobile-product-card

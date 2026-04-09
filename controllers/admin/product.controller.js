@@ -1,6 +1,8 @@
 // [GET] /admin/product
 const Product = require("../../models/product.model");
 const sortHelper = require("../../helper/sort");
+const systemConfig = require("../../config/system");
+
 module.exports.products = async (req, res) => {
   const status = req.query.status || "";
   const keyword = req.query.keyword || "";
@@ -57,13 +59,21 @@ module.exports.products = async (req, res) => {
     objectPagination.currentPage = parseInt(req.query.page);
   }
   const totalpage = await Product.countDocuments(find);
-  objectPagination.totalpage = Math.ceil(totalpage / objectPagination.limitItem);
+  objectPagination.totalpage = Math.ceil(
+    totalpage / objectPagination.limitItem,
+  );
 
-  if (objectPagination.totalpage > 0 && objectPagination.currentPage > objectPagination.totalpage) {
+  if (
+    objectPagination.totalpage > 0 &&
+    objectPagination.currentPage > objectPagination.totalpage
+  ) {
     objectPagination.currentPage = objectPagination.totalpage;
   }
 
-  if (objectPagination.currentPage < 1 || Number.isNaN(objectPagination.currentPage)) {
+  if (
+    objectPagination.currentPage < 1 ||
+    Number.isNaN(objectPagination.currentPage)
+  ) {
     objectPagination.currentPage = 1;
   }
 
@@ -84,7 +94,7 @@ module.exports.products = async (req, res) => {
     totalProducts: totalProducts,
     activeProduct: activeProduct,
     inactiveProduct: inactiveProduct,
-    pagination : objectPagination
+    pagination: objectPagination,
   });
 };
 
@@ -100,11 +110,14 @@ module.exports.changeStatus = async (req, res) => {
 // [delete] /admin/product/delete
 module.exports.deleteItem = async (req, res) => {
   const id = req.params.id;
-  await Product.updateOne({ _id: id }, { deleted: true, deletedAt: new Date() });
+  await Product.updateOne(
+    { _id: id },
+    { deleted: true, deletedAt: new Date() },
+  );
   const referer = req.get("referer");
   req.flash("success", "Product deleted successfully");
   res.redirect(referer || "/admin/product");
-}
+};
 
 // [patch] /admin/product/change-multi
 
@@ -112,35 +125,27 @@ module.exports.changeMulti = async (req, res) => {
   const type = req.body.bulkAction;
   const ids = req.body.ids ? req.body.ids.split(",") : [];
 
-  if(!type || ids.length === 0) {
+  if (!type || ids.length === 0) {
     const referer = req.get("referer");
     return res.redirect(referer || "/admin/product");
   }
   switch (type) {
     case "active":
-      await Product.updateMany(
-        {_id: { $in : ids} },
-        {active : true}
-      );
+      await Product.updateMany({ _id: { $in: ids } }, { active: true });
       break;
     case "inactive":
-      await Product.updateMany(
-        {_id: { $in : ids} },
-        {active : false}
-      );
+      await Product.updateMany({ _id: { $in: ids } }, { active: false });
       break;
     case "delete":
       await Product.updateMany(
-        {_id: { $in : ids} },
-        { deleted : true,
-          deleteAt: new Date()
-        }
+        { _id: { $in: ids } },
+        { deleted: true, deleteAt: new Date() },
       );
     case "change-position":
-      for(const item of ids) {
+      for (const item of ids) {
         let [id, position] = item.split("-");
         position = parseInt(position);
-        await Product.updateOne({_id : id}, {position : position});
+        await Product.updateOne({ _id: id }, { position: position });
       }
       break;
   }
@@ -149,4 +154,39 @@ module.exports.changeMulti = async (req, res) => {
 
   const referer = req.get("referer");
   res.redirect(referer || "/admin/product");
-}
+};
+
+// [get] /admin/product/create
+
+module.exports.create = (req, res) => {
+  res.render("admin/pages/product/create", {
+    PageTitle: "Trang tao san pham",
+  });
+};
+
+module.exports.createPost = async (req, res) => {
+  if (req.body.position != "") {
+    req.body.position = parseInt(req.body.position);
+  } else {
+    var count = await Product.countDocuments();
+    req.body.position = count + 1;
+  }
+
+  if (req.body.rating != "") {
+    req.body.rating = parseFloat(req.body.rating);
+  }
+
+  req.body.price = parseFloat(req.body.price);
+  req.body.discountPercentage = parseInt(req.body.discountPercentage);
+
+  req.body.images = Array.isArray(req.files)
+    ? req.files.map((file) => `/uploads/${file.filename}`)
+    : [];
+  if (req.body.images.length > 0) {
+    req.body.thumbnail = req.body.images[0];
+  }
+
+  const product = new Product(req.body);
+  await product.save();
+  res.redirect(`${systemConfig.prefixAdmin}/product`);
+};

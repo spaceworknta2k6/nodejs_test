@@ -1,311 +1,167 @@
-extends ../../layouts/default.pug
+﻿extends ../../layouts/default.pug
 
 block main
-  section.create-product-page
-    .create-page-head
-      .create-page-head__left
-        .breadcrumb-mini
-          a(href=`${PrefixAdmin}/dashboard`) Dashboard
-          span /
-          a(href=`${PrefixAdmin}/product`) Sản phẩm
-          span /
-          span.active Tạo mới
+  section.product-create-page
+    .create-decor.create-decor--one
+    .create-decor.create-decor--two
+    .create-hero
+      .create-hero__content
+        span.create-hero__kicker Product Studio
+        h1.create-hero__title Create new products
+    .create-shell
+      .create-panel
+        form.create-product-form(
+          action=`${PrefixAdmin}/product/create`
+          id="form-create-product"
+          method="POST"
+          enctype="multipart/form-data"
+        )
+          .create-section
+            .section-heading
+              span.section-heading__eyebrow Key information
+              h2.section-heading__title Product content
+              p.section-heading__desc Fill in the basic information first; optional information can be left blank
 
-        h1.create-page-title Tạo sản phẩm mới
-        p.create-page-desc
-          | Hoàn thiện thông tin sản phẩm với giao diện rõ ràng, hiện đại và dễ nâng cấp sau này.
-
-      .create-page-head__right
-        button.btn-page-action.btn-page-action--light(type="button") Lưu nháp
-        button.btn-page-action.btn-page-action--dark(type="button") Xuất bản
-
-    .create-layout
-      .create-main
-        form.create-form(method="POST" action="")
-          .form-section
-            .form-section__head
-              .form-section__icon 🛍
-              .form-section__copy
-                h2 Thông tin cơ bản
-                p Nhập những thông tin quan trọng nhất của sản phẩm.
-
-            .form-grid
-              .form-field.form-field--full
-                label(for="title") Tên sản phẩm
-                input#create-title.input-modern(
+            .create-grid
+              .field-group.field-group--full
+                label.field-label(for="title")
+                  | Product title
+                  span.required-badge Obligatory
+                input#title.form-control-modern(
                   type="text"
                   name="title"
-                  id="title"
-                  placeholder="Ví dụ: Tai nghe Bluetooth Pro X9"
+                  required
+                  placeholder="For example: Bluetooth headset Pro X9"
                 )
 
-              .form-field
-                label(for="category") Danh mục
-                select#category.select-modern(name="category")
-                  option(value="" selected) Chọn danh mục
-                  option(value="dien-thoai") Điện thoại
-                  option(value="phu-kien") Phụ kiện
-                  option(value="thoi-trang") Thời trang
-                  option(value="gia-dung") Gia dụng
-
-              .form-field
-                label(for="brand") Thương hiệu
-                input#brand.input-modern(
-                  type="text"
-                  name="brand"
-                  placeholder="Ví dụ: Apple, Samsung, Xiaomi..."
-                )
-
-              .form-field
-                label(for="status") Trạng thái
-                select#status.select-modern(name="status")
-                  option(value="active" selected) Hoạt động
-                  option(value="draft") Bản nháp
-                  option(value="inactive") Tạm ẩn
-
-              .form-field
-                label(for="featured") Nổi bật
-                select#featured.select-modern(name="featured")
-                  option(value="0" selected) Không
-                  option(value="1") Có
-
-              .form-field.form-field--full
-                label(for="shortDescription") Mô tả ngắn
-                textarea#shortDescription.textarea-modern(
-                  name="shortDescription"
-                  rows="3"
-                  placeholder="Tóm tắt ngắn gọn điểm nổi bật của sản phẩm..."
-                )
-
-              .form-field.form-field--full
-                label(for="description") Mô tả chi tiết
-                textarea#description.textarea-modern(
+              .field-group.field-group--full
+                label.field-label(for="description") Describe
+                textarea#description.form-control-modern.form-control-modern--textarea(
                   name="description"
-                  rows="7"
-                  placeholder="Viết mô tả chi tiết, thông số, ưu điểm, chính sách bảo hành..."
+                  rows="5"
+                  placeholder="A brief or detailed description of the product..."
                 )
 
-          .form-section
-            .form-section__head
-              .form-section__icon 💰
-              .form-section__copy
-                h2 Giá bán & kho hàng
-                p Khu vực dành cho dữ liệu kinh doanh và vận hành.
+              .field-group
+                label.field-label(for="category") Category
+                input#category.form-control-modern(
+                  type="text"
+                  name="category"
+                  placeholder="Example: Accessories"
+                )
 
-            .form-grid
-              .form-field
-                label(for="price") Giá gốc
-                .input-affix
-                  input#price.input-modern(
+              .field-group
+                label.field-label(for="position") Position
+                input#position.form-control-modern(
+                  type="number"
+                  name="position"
+                  min="0"
+                  placeholder="Example: 1"
+                )
+
+          .create-section
+            .section-heading
+              span.section-heading__eyebrow Prices & reviews
+              h2.section-heading__title Data displayed
+
+            .create-grid
+              .field-group
+                label.field-label(for="price")
+                  | Price
+                  span.required-badge Obligatory
+                .input-addon
+                  input#price.form-control-modern(
                     type="number"
                     name="price"
-                    placeholder="0"
                     min="0"
-                  )
-                  span VNĐ
-
-              .form-field
-                label(for="discountPrice") Giá khuyến mãi
-                .input-affix
-                  input#discountPrice.input-modern(
-                    type="number"
-                    name="discountPrice"
+                    step="0.01"
+                    required
                     placeholder="0"
-                    min="0"
                   )
-                  span VNĐ
+                  span.input-addon__text USD
 
-              .form-field
-                label(for="discountPercentage") Phần trăm giảm
-                .input-affix
-                  input#discountPercentage.input-modern(
+              .field-group
+                label.field-label(for="discountPercentage")
+                  | Discount (%)
+                  span.required-badge Obligatory
+                .input-addon
+                  input#discountPercentage.form-control-modern(
                     type="number"
                     name="discountPercentage"
-                    placeholder="0"
                     min="0"
                     max="100"
+                    step="0.01"
+                    required
+                    placeholder="0"
                   )
-                  span %
+                  span.input-addon__text %
 
-              .form-field
-                label(for="stock") Tồn kho
-                input#stock.input-modern(
+              .field-group
+                label.field-label(for="rating") Rating
+                input#rating.form-control-modern(
                   type="number"
-                  name="stock"
-                  placeholder="0"
+                  name="rating"
                   min="0"
+                  max="5"
+                  step="0.1"
+                  placeholder="0 - 5"
                 )
 
-              .form-field
-                label(for="sku") Mã SKU
-                input#sku.input-modern(
-                  type="text"
-                  name="sku"
-                  placeholder="VD: SP-0001"
+          .create-section
+            .section-heading
+              span.section-heading__eyebrow Status & photos
+              h2.section-heading__title Additional settings
+
+            .create-grid
+              .field-group.field-group--full
+                label.field-label
+                  | Active
+                  span.optional-note Choose a state
+                .choice-grid
+                  label.choice-card
+                    input(type="radio" name="active" value="true" checked)
+                    span.choice-card__content
+                      strong Active
+                      small The product is displayed normally.
+                  label.choice-card
+                    input(type="radio" name="active" value="false")
+                    span.choice-card__content
+                      strong Inactive
+                      small Hide products from the display list
+
+              .field-group.field-group--full
+                label.field-label(for="images") Images
+                input#images.form-control-modern.form-control-modern--file(
+                  type="file"
+                  name="images"
+                  accept="image/*"
+                  multiple
                 )
-
-              .form-field
-                label(for="barcode") Mã vạch
-                input#barcode.input-modern(
-                  type="text"
-                  name="barcode"
-                  placeholder="Nhập barcode nếu có"
-                )
-
-          .form-section
-            .form-section__head
-              .form-section__icon 🖼
-              .form-section__copy
-                h2 Hình ảnh sản phẩm
-                p Khu vực giao diện cho upload hoặc nhập URL ảnh về sau.
-
-            .form-grid
-              .form-field.form-field--full
-                label(for="thumbnail") Ảnh đại diện
-                input#thumbnail.input-modern(
-                  type="text"
-                  name="thumbnail"
-                  placeholder="Dán URL ảnh đại diện hoặc xử lý upload ở backend"
-                )
-
-              .form-field.form-field--full
-                label(for="gallery") Bộ ảnh sản phẩm
-                textarea#gallery.textarea-modern(
-                  name="gallery"
-                  rows="4"
-                  placeholder="Mỗi dòng một URL ảnh, hoặc bạn có thể thay bằng upload nhiều file ở backend."
-                )
-
-            .mock-upload-grid
-              .mock-upload-card
-                .mock-upload-card__icon ⬆
-                strong Kéo & thả ảnh
-                p Hỗ trợ JPG, PNG, WEBP
-
-              .mock-upload-card
-                .mock-upload-card__icon 🧩
-                strong Ảnh 1:1
-                p Phù hợp ảnh thumbnail
-
-              .mock-upload-card
-                .mock-upload-card__icon 🎞
-                strong Ảnh gallery
-                p Dùng cho slider chi tiết
-
-          .form-section
-            .form-section__head
-              .form-section__icon ⚙
-              .form-section__copy
-                h2 Thuộc tính mở rộng
-                p Có thể dùng để mở rộng về sau mà không phải sửa giao diện nhiều.
-
-            .form-grid
-              .form-field
-                label(for="color") Màu sắc
-                input#color.input-modern(
-                  type="text"
-                  name="color"
-                  placeholder="Đen, Trắng, Xanh..."
-                )
-
-              .form-field
-                label(for="size") Kích thước
-                input#size.input-modern(
-                  type="text"
-                  name="size"
-                  placeholder="S, M, L hoặc 13 inch..."
-                )
-
-              .form-field
-                label(for="weight") Khối lượng
-                input#weight.input-modern(
-                  type="text"
-                  name="weight"
-                  placeholder="Ví dụ: 250g"
-                )
-
-              .form-field
-                label(for="warranty") Bảo hành
-                input#warranty.input-modern(
-                  type="text"
-                  name="warranty"
-                  placeholder="Ví dụ: 12 tháng"
-                )
-
-              .form-field.form-field--full
-                label(for="tags") Tags
-                input#tags.input-modern(
-                  type="text"
-                  name="tags"
-                  placeholder="Cách nhau bởi dấu phẩy. Ví dụ: bluetooth, premium, pin trâu"
-                )
-
-          .form-bottom-bar
-            .form-bottom-bar__left
-              p.mb-0
-                strong Lưu ý:
-                |  Giao diện này chỉ là phần hiển thị, bạn có thể tự nối backend sau.
-            .form-bottom-bar__right
-              button.btn-page-action.btn-page-action--light(type="reset") Đặt lại
-              button.btn-page-action.btn-page-action--dark(type="submit") Lưu sản phẩm
+          .form-footer
+            p.form-footer__note Designed for product managers who need a clean draft flow before wiring backend logic.
+            .form-footer__actions
+              button.create-btn.create-btn--ghost(type="reset") Re-enter
+              button.create-btn.create-btn--primary(type="submit") Save
 
       aside.create-sidebar
-        .side-panel.preview-panel
-          .side-panel__head
-            h3 Xem nhanh
-            span.badge-soft Preview
+        .sidebar-card.sidebar-card--highlight
+          span.sidebar-card__eyebrow Quick input
+          h3 Quick input suggestion
+          ul.sidebar-list
+            li Titles should be short, clear, and under 70 characters
+            li The discount should be entered as a percentage to match the model
+            li Images are currently being used in a row-by-row format to make array separation easier later
+            li The position can be left blank if manual sorting is not yet required
 
-          .product-preview-card
-            .product-preview-media
-              span.product-preview-badge Mới
-              .product-preview-placeholder
-                span Ảnh sản phẩm
-
-            .product-preview-body
-              h4 Tai nghe Bluetooth Pro X9
-              p
-                | Âm thanh sống động, chống ồn chủ động, pin lâu và thiết kế hiện đại.
-              .product-preview-price
-                strong 1.990.000₫
-                span 2.490.000₫
-              .product-preview-meta
-                span Danh mục: Phụ kiện
-                span Tồn kho: 120
-
-        .side-panel
-          .side-panel__head
-            h3 Checklist
-            span.badge-soft Ready
-
-          ul.check-list
-            li
-              span.check-icon ✓
-              span Tên sản phẩm rõ ràng
-            li
-              span.check-icon ✓
-              span Có ảnh đại diện đẹp
-            li
-              span.check-icon ✓
-              span Giá và tồn kho đầy đủ
-            li
-              span.check-icon ✓
-              span Mô tả ngắn dễ đọc
-            li
-              span.check-icon ✓
-              span Danh mục đúng cấu trúc
-
-        .side-panel
-          .side-panel__head
-            h3 Gợi ý giao diện
-            span.badge-soft UX
-
-          .tip-list
-            .tip-item
-              strong Ảnh nổi bật
-              p Dùng ảnh nền sáng, tỷ lệ đồng đều để danh sách sản phẩm đẹp hơn.
-            .tip-item
-              strong Tiêu đề ngắn gọn
-              p Nên giữ tên sản phẩm dưới 70 ký tự để dễ đọc ở mobile.
-            .tip-item
-              strong Mô tả có cấu trúc
-              p Tách rõ lợi ích, thông số và bảo hành để dễ nâng cấp SEO sau này.
+        .sidebar-card
+          span.sidebar-card__eyebrow Preview card
+          h3 Preview image
+          .preview-card
+            .preview-card__thumb
+              span IMAGE
+            .preview-card__body
+              strong Tai nghe Bluetooth Pro X9
+              p Âm thanh rõ, pin bền, thiết kế gọn cho nhu cầu di chuyển hằng ngày.
+              .preview-card__meta
+                span Price: $1,990
+                span Discount: 15%

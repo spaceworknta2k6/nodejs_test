@@ -4,6 +4,7 @@ const methodOverride = require('method-override')
 const flash = require('express-flash')
 const cookieParser = require("cookie-parser")
 const session = require("express-session")
+
 require("dotenv").config()
 
 app.use(methodOverride('_method'))

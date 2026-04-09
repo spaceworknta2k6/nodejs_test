@@ -18,6 +18,8 @@
     "express-session": "^1.19.0",
     "method-override": "^3.0.0",
     "mongoose": "^9.2.4",
+    "mongoose-slug-updater": "^3.3.0",
+    "multer": "^2.1.1",
     "pug": "^3.0.3"
   },
   "devDependencies": {

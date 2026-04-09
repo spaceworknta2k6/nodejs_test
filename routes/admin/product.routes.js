@@ -1,14 +1,22 @@
-const express = require('express')
-const router = express.Router()
+const express = require("express");
+const router = express.Router();
+const multer = require("multer");
+const storage = require("../../helper/storageMulter")
+const upload = multer({ storage: storage() });
+const ProductController = require("../../controllers/admin/product.controller");
 
-const ProductController = require('../../controllers/admin/product.controller')
+router.get("/", ProductController.products);
 
-router.get("/", ProductController.products)
+router.patch("/changeStatus/:id/:status", ProductController.changeStatus);
 
-router.patch("/changeStatus/:id/:status", ProductController.changeStatus)
+router.delete("/delete/:id", ProductController.deleteItem);
 
-router.delete("/delete/:id", ProductController.deleteItem)
+router.patch("/change-multi", ProductController.changeMulti);
 
-router.patch("/change-multi", ProductController.changeMulti)
-
-module.exports = router
+router.get("/create", ProductController.create);
+router.post(
+  "/create",
+  upload.array("images", 12),
+  ProductController.createPost,
+);
+module.exports = router;

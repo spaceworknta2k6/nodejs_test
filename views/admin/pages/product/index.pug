@@ -2,12 +2,9 @@
 include ../../mixins/admin/stat_card.pug
 include ../../mixins/admin/product.pug
 include ../../mixins/admin/product-table.pug
-
+include ../../mixins/admin/alert.pug
 block main
-    - if(messages.success)
-        .alert.alert--success.show(data-time=3000)
-            span.alert__text= messages.success
-            button.alert__close(type="button" aria-label="Đóng thông báo") ×
+    +alert-success("3000")
     -
         const products = Array.isArray(product) ? product : [];
 
@@ -18,7 +15,7 @@ block main
                     h1.page-hero__title Quản lý sản phẩm
                     p.page-hero__desc Giao diện danh sách sản phẩm theo phong cách hiện đại
                 .hero-actions
-                    button.hero-btn.hero-btn--light(type="button") + Thêm sản phẩm
+                    a.hero-btn.hero-btn--light(href=`${PrefixAdmin}/product/create`) + Thêm sản phẩm
                     button.hero-btn.hero-btn--ghost(type="button") Xuất dữ liệu
 
         .stats-grid

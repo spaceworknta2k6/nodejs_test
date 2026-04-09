@@ -1,0 +1,5 @@
+mixin alert-success(time)
+    - if(messages.success)
+        .alert.alert--success.show(data-time=time)
+            span.alert__text= messages.success
+            button.alert__close(type="button" aria-label="Close notification") ×
