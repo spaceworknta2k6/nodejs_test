@@ -1,60 +1,120 @@
 ﻿extends ../../layouts/default.pug
 
 block main
-    section.product-page
-        .container
-            .product-page__head
-                h1.product-page__title Product list
-                p.product-page__desc Discover the featured products at NTA Shop
+    if featuredProduct
+        .apple-products
+            section.apl-ribbon
+                p.apl-ribbon__text New season picks. Shop standout favorites and everyday essentials.
 
-            .product-list-head
-                .product-list-head__left
-                    h2.product-list-head__title Outstanding product
-                    span.product-list-head__count #{products.length} product
+            section.apl-hero
+                .apl-hero__copy
+                    p.apl-hero__eyebrow= featuredProduct.category || "NTA Shop"
+                    h1.apl-hero__title= featuredProduct.title || "Featured product"
+                    p.apl-hero__desc= featuredProduct.description || "Fresh arrivals, beautifully presented and ready to explore."
+                    .apl-hero__meta
+                        span.apl-hero__price= featuredProduct.hasDiscount ? featuredProduct.formattedFinalPrice : featuredProduct.formattedRawPrice
+                        if featuredProduct.hasDiscount
+                            span.apl-hero__price-old= featuredProduct.formattedRawPrice
+                        span.apl-hero__rating Rating #{featuredProduct.rating || 0}
+                    .apl-hero__actions
+                        a.apl-link(href="#highlights") Explore more
+                        a.apl-link.apl-link--muted(href="#catalog") View lineup
+                .apl-hero__visual
+                    img(src=featuredProduct.imageSrc, alt=featuredProduct.title)
 
-                .product-list-head__right
-                    span.product-list-head__sort Arrange:
-                    select
-                        option Default
-                        option Price ascending
-                        option Price descending
-                        option Highly rated
+            if spotlightProducts.length > 0
+                section#highlights(class=`apl-highlights ${spotlightProducts.length === 1 ? 'apl-highlights--single' : ''}`)
+                    each product, index in spotlightProducts
+                        article(class=`apl-highlight apl-highlight--${index === 0 ? 'light' : 'dark'}`)
+                            .apl-highlight__copy
+                                p.apl-section-kicker= product.category || "Collection"
+                                h2.apl-highlight__title= product.title || "Featured story"
+                                p.apl-highlight__desc= product.description || "A closer look at one of the standout products in the lineup."
+                                .apl-highlight__meta
+                                    span.apl-highlight__price= product.hasDiscount ? product.formattedFinalPrice : product.formattedRawPrice
+                                    if product.hasDiscount
+                                        span.apl-highlight__save Save #{product.formattedSavedAmount}
+                            .apl-highlight__visual
+                                img(src=product.imageSrc, alt=product.title)
 
-            .product-grid
-                if products.length > 0
+            section.apl-specs
+                .apl-spec
+                    span.apl-spec__label Products
+                    strong.apl-spec__value #{productStats.totalProducts}
+                .apl-spec
+                    span.apl-spec__label On sale
+                    strong.apl-spec__value #{productStats.discountedCount}
+                .apl-spec
+                    span.apl-spec__label Main category
+                    strong.apl-spec__value= productStats.leadingCategory
+                .apl-spec
+                    span.apl-spec__label Visible value
+                    strong.apl-spec__value= productStats.totalInventoryValue
+
+            if galleryProducts.length > 0
+                section.apl-gallery
+                    .apl-gallery__intro
+                        p.apl-section-kicker Product lineup
+                        h2.apl-gallery__title Designed to look striking from every angle.
+                        p.apl-gallery__desc Large imagery, generous spacing, and clean typography keep the focus on every product.
+                    .apl-gallery__grid(class=galleryProducts.length <= 3 ? 'apl-gallery__grid--feature' : '')
+                        each product in galleryProducts
+                            article.apl-gallery-card
+                                .apl-gallery-card__image
+                                    img(src=product.imageSrc, alt=product.title)
+                                .apl-gallery-card__copy
+                                    p.apl-gallery-card__category= product.category || "Collection"
+                                    h3.apl-gallery-card__title= product.title || "Product"
+                                    p.apl-gallery-card__price= product.hasDiscount ? product.formattedFinalPrice : product.formattedRawPrice
+
+            if detailProducts.length > 0
+                each product, index in detailProducts
+                    section(class=`apl-story ${index % 2 === 1 ? 'apl-story--soft' : ''}`)
+                        .apl-story__inner
+                            .apl-story__copy
+                                p.apl-section-kicker= product.category || "Highlights"
+                                h2.apl-story__title= product.title || "Refined details"
+                                p.apl-story__desc= product.description || "Thoughtful details, clear pricing, and a presentation that keeps the focus on the product."
+                                .apl-story__facts
+                                    span.apl-story__fact Price #{product.hasDiscount ? product.formattedFinalPrice : product.formattedRawPrice}
+                                    if product.hasDiscount
+                                        span.apl-story__fact Save #{product.formattedSavedAmount}
+                                    span.apl-story__fact Rating #{product.rating || 0}
+                            .apl-story__visual
+                                img(src=product.imageSrc, alt=product.title)
+
+            section#catalog.apl-catalog
+                .apl-catalog__intro
+                    p.apl-section-kicker Full catalog
+                    h2.apl-catalog__title Every product has its own spotlight.
+                    p.apl-catalog__desc Browse the full collection with refined cards, clearer pricing, and a lighter visual rhythm.
+
+                .apl-catalog__grid
                     each product in products
-                        -
-                            const imageSrc = product.thumbnail || (product.images && product.images.length > 0 ? product.images[0] : "https://via.placeholder.com/300x300?text=No+Image");
-                        article.product-card
-                            .product-card__image
-                                img(src=imageSrc, alt=product.title)
-
-                                if product.hasDiscount
-                                    span.product-card__badge -#{Math.round(product.discountPercentage)}%
-
-                            .product-card__body
-                                .product-card__top
-                                    span.product-card__category= product.category || "Chưa phân loại"
-                                    span.product-card__rating ★ #{product.rating || 0}
-
-                                h2.product-card__title= product.title || "Sản phẩm đang cập nhật"
-
-                                p.product-card__text= product.description || "Thông tin sản phẩm đang được cập nhật."
-
-                                .product-card__bottom
-                                    .product-card__price
+                        article.apl-product
+                            .apl-product__image
+                                img(src=product.imageSrc, alt=product.title)
+                            .apl-product__body
+                                .apl-product__top
+                                    span.apl-product__category= product.category || "Uncategorized"
+                                    span.apl-product__rating ★ #{product.rating || 0}
+                                h3.apl-product__title= product.title || "Product"
+                                p.apl-product__text= product.description || "Details for this product are being updated."
+                                .apl-product__bottom
+                                    .apl-product__price
                                         if product.hasDiscount
-                                            .product-card__price-row
-                                                span.price-current= product.formattedFinalPrice
-                                                span.price-original= product.formattedRawPrice
+                                            .apl-product__price-row
+                                                span.apl-product__current= product.formattedFinalPrice
+                                                span.apl-product__original= product.formattedRawPrice
                                             if product.savedAmount > 0
-                                                span.product-card__saving Save #{product.formattedSavedAmount}
+                                                span.apl-product__saving Save #{product.formattedSavedAmount}
                                         else
-                                            .product-card__price-row
-                                                span.price-current= product.formattedRawPrice
-
-                                    .product-card__actions
-                                        a.btn-view(href="/products") See details
-                                        a.btn-buy(href="#") Buy now
-                else
-                    p No products
+                                            .apl-product__price-row
+                                                span.apl-product__current= product.formattedRawPrice
+                                    .apl-product__actions
+                                        a.apl-button.apl-button--ghost(href="/products") Learn more
+                                        a.apl-button(href="#") Buy
+    else
+        .product-empty
+            h2.product-empty__title No products found
+            p.product-empty__desc Product data is currently unavailable. Please add items from the admin side and reload this page.

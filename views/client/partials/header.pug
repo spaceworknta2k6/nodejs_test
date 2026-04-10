@@ -1,14 +1,12 @@
 header.header
     .container
-        .row.align-items-center
-            .col-md-4
-                .inner-logo
-                    a(href="/")
-                        img(src="client/images/nta_shop_logo.svg" alt="NTA Shop")
-            .col-md-8
-                nav.inner-menu
-                    ul.menu-list
-                        li.menu-item
-                            a(href="/") Home
-                        li.menu-item
-                            a(href="/products") Product
+        .header-shell
+            .inner-logo
+                a(href="/")
+                    img(src="/client/images/nta_shop_logo.svg" alt="NTA Shop")
+            nav.inner-menu
+                ul.menu-list
+                    li.menu-item
+                        a(href="/") Home
+                    li.menu-item
+                        a.active(href="/products") Product

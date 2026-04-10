@@ -2,6 +2,6 @@
 
 module.exports.index = (req, res) => {
   res.render("client/pages/home/index", {
-    TitlePage : "Trang chu"
+    TitlePage : "Home"
   });
 }

@@ -14,6 +14,10 @@ const formatCurrency = (value) => {
   }).format(roundedValue)}$`;
 };
 
+const getProductImage = (item) => {
+  return (item.images && item.images.length > 0 ? item.images[0] : item.thumbnail) || "https://via.placeholder.com/1200x900?text=No+Image";
+};
+
 // [GET] /product
 module.exports.index = async (req, res) => {
   const product = await Product.find({
@@ -33,6 +37,7 @@ module.exports.index = async (req, res) => {
 
     return {
       ...item.toObject(),
+      imageSrc: getProductImage(item),
       rawPrice,
       finalPrice,
       savedAmount,
@@ -43,8 +48,34 @@ module.exports.index = async (req, res) => {
     };
   });
 
+  const discountedCount = products.filter((item) => item.hasDiscount).length;
+  const totalInventoryValue = roundCurrency(
+    products.reduce((sum, item) => sum + item.finalPrice, 0)
+  );
+  const categories = products.reduce((acc, item) => {
+    const category = item.category || "Uncategorized";
+    acc[category] = (acc[category] || 0) + 1;
+    return acc;
+  }, {});
+  const leadingCategory = Object.entries(categories).sort((a, b) => b[1] - a[1])[0]?.[0] || "Curated picks";
+  const displayLeadingCategory = /[Ã°áº]/.test(leadingCategory) ? "Uncategorized" : leadingCategory;
+  const featuredProduct = products[0] || null;
+  const spotlightProducts = products.slice(1, 2);
+  const galleryProducts = products.slice(2, 5);
+  const detailProducts = products.slice(5, 7);
+
   res.render("client/pages/products/index", {
-    TitlePage : "Trang san pham",
-    products
+    TitlePage : "Products",
+    products,
+    featuredProduct,
+    spotlightProducts,
+    galleryProducts,
+    detailProducts,
+    productStats: {
+      totalProducts: products.length,
+      discountedCount,
+      totalInventoryValue: formatCurrency(totalInventoryValue),
+      leadingCategory: displayLeadingCategory
+    }
   });
 }
