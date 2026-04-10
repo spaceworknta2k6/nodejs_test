@@ -25,15 +25,11 @@ block main
                     each product in products
                         -
                             const imageSrc = product.thumbnail || (product.images && product.images.length > 0 ? product.images[0] : "https://via.placeholder.com/300x300?text=No+Image");
-                            const hasDiscount = product.discountPercentage && product.discountPercentage > 0;
-                            const rawPrice = typeof product.price === "number" ? product.price : 0;
-                            const finalPrice = hasDiscount ? Math.round(rawPrice * (1 - product.discountPercentage / 100)) : rawPrice;
-                            const savedAmount = rawPrice - finalPrice;
                         article.product-card
                             .product-card__image
                                 img(src=imageSrc, alt=product.title)
 
-                                if hasDiscount
+                                if product.hasDiscount
                                     span.product-card__badge -#{Math.round(product.discountPercentage)}%
 
                             .product-card__body
@@ -47,14 +43,15 @@ block main
 
                                 .product-card__bottom
                                     .product-card__price
-                                        if hasDiscount
+                                        if product.hasDiscount
                                             .product-card__price-row
-                                                span.price-current $#{finalPrice.toLocaleString("en-US")}
-                                                span.price-original $#{rawPrice.toLocaleString("en-US")}
-                                            span.product-card__saving Save $#{savedAmount.toLocaleString("en-US")}
+                                                span.price-current= product.formattedFinalPrice
+                                                span.price-original= product.formattedRawPrice
+                                            if product.savedAmount > 0
+                                                span.product-card__saving Save #{product.formattedSavedAmount}
                                         else
                                             .product-card__price-row
-                                                span.price-current $#{rawPrice.toLocaleString("en-US")}
+                                                span.price-current= product.formattedRawPrice
 
                                     .product-card__actions
                                         a.btn-view(href="/products") See details
