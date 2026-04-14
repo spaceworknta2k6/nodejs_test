@@ -1,6 +1,7 @@
 ﻿extends ../../layouts/default.pug
-
+include ../../mixins/admin/alert.pug
 block main
+  +alert-error(3000)
   section.product-create-page
     .create-decor.create-decor--one
     .create-decor.create-decor--two
