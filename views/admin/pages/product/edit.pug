@@ -1,0 +1,211 @@
+extends ../../layouts/default.pug
+include ../../mixins/admin/alert.pug
+
+block main
+  - const productImages = Array.isArray(product.images) ? product.images : []
+  - const productThumbnail = product.thumbnail || (productImages.length ? productImages[0] : "https://via.placeholder.com/640x420?text=Preview+Image")
+  - const formAction = `${PrefixAdmin}/product/edit/${product._id}?_method=PATCH`
+
+  +alert-error(3000)
+  +alert-success(3000)
+
+  section.product-create-page
+    .create-decor.create-decor--one
+    .create-decor.create-decor--two
+
+    .create-hero
+      .create-hero__content
+        span.create-hero__kicker Quản lý sản phẩm
+        h1.create-hero__title Chỉnh sửa sản phẩm
+        p.section-heading__desc Cập nhật thông tin sản phẩm hiện có và rà soát lại các trường dữ liệu trước khi lưu
+
+    .create-shell
+      .create-panel
+        form.create-product-form(
+          action=formAction
+          id="form-edit-product"
+          method="POST"
+          enctype="multipart/form-data"
+        )
+          .create-section
+            .section-heading
+              span.section-heading__eyebrow Thông tin chính
+              h2.section-heading__title Nội dung sản phẩm
+              p.section-heading__desc Bạn có thể chỉnh sửa tiêu đề, mô tả và cách sắp xếp sản phẩm trong hệ thống
+
+            .create-grid
+              .field-group.field-group--full
+                label.field-label(for="title")
+                  | Tiêu đề sản phẩm
+                  span.required-badge Bắt buộc
+                input#title.form-control-modern(
+                  type="text"
+                  name="title"
+                  required
+                  placeholder="Ví dụ: Tai nghe Bluetooth Pro X9"
+                  value=product.title
+                )
+
+              .field-group.field-group--full
+                label.field-label(for="description") Mô tả
+                textarea#description.form-control-modern.form-control-modern--textarea(
+                  name="description"
+                  rows="5"
+                  placeholder="Nhập mô tả ngắn hoặc chi tiết cho sản phẩm..."
+                )= product.description
+
+              .field-group
+                label.field-label(for="category") Danh mục
+                input#category.form-control-modern(
+                  type="text"
+                  name="category"
+                  placeholder="Ví dụ: Phụ kiện"
+                  value=product.category
+                )
+
+              .field-group
+                label.field-label(for="position") Vị trí
+                input#position.form-control-modern(
+                  type="number"
+                  name="position"
+                  min="0"
+                  placeholder="Ví dụ: 1"
+                  value=product.position
+                )
+
+          .create-section
+            .section-heading
+              span.section-heading__eyebrow Giá và đánh giá
+              h2.section-heading__title Dữ liệu hiển thị
+
+            .create-grid
+              .field-group
+                label.field-label(for="price")
+                  | Giá
+                  span.required-badge Bắt buộc
+                .input-addon
+                  input#price.form-control-modern(
+                    type="number"
+                    name="price"
+                    min="0"
+                    step="0.01"
+                    required
+                    placeholder="0"
+                    value=product.price
+                  )
+                  span.input-addon__text USD
+
+              .field-group
+                label.field-label(for="discountPercentage")
+                  | Giảm giá (%)
+                  span.required-badge Bắt buộc
+                .input-addon
+                  input#discountPercentage.form-control-modern(
+                    type="number"
+                    name="discountPercentage"
+                    min="0"
+                    max="100"
+                    step="0.01"
+                    required
+                    placeholder="0"
+                    value=product.discountPercentage
+                  )
+                  span.input-addon__text %
+
+              .field-group
+                label.field-label(for="rating") Đánh giá
+                input#rating.form-control-modern(
+                  type="number"
+                  name="rating"
+                  min="0"
+                  max="5"
+                  step="0.01"
+                  placeholder="0 - 5"
+                  value=product.rating
+                )
+
+          .create-section
+            .section-heading
+              span.section-heading__eyebrow Trạng thái và hình ảnh
+              h2.section-heading__title Thiết lập bổ sung
+
+            .create-grid
+              .field-group.field-group--full
+                label.field-label
+                  | Trạng thái
+                  span.optional-note Chọn một trạng thái
+                .choice-grid
+                  label.choice-card
+                    input(
+                      type="radio"
+                      name="active"
+                      value="true"
+                      checked=product.active !== false
+                    )
+                    span.choice-card__content
+                      strong Hoạt động
+                      small Sản phẩm được hiển thị bình thường.
+                  label.choice-card
+                    input(
+                      type="radio"
+                      name="active"
+                      value="false"
+                      checked=product.active === false
+                    )
+                    span.choice-card__content
+                      strong Ngưng hoạt động
+                      small Ẩn sản phẩm khỏi danh sách hiển thị
+
+              .field-group.field-group--full
+                label.field-label(for="images") Hình ảnh
+                input#images.form-control-modern.form-control-modern--file(
+                  type="file"
+                  name="images"
+                  accept="image/*"
+                  multiple
+                )
+                p.field-hint Có thể chọn ảnh mới để thay thế hoặc bổ sung cho bộ ảnh hiện tại.
+
+          .form-footer
+            p.form-footer__note Kiểm tra lại nội dung thay đổi trước khi cập nhật vào hệ thống.
+            .form-footer__actions
+              a.create-btn.create-btn--ghost(href=`${PrefixAdmin}/product`) Quay lại
+              button.create-btn.create-btn--primary(type="submit") Cập nhật sản phẩm
+
+      aside.create-sidebar
+        .sidebar-card.sidebar-card--highlight
+          span.sidebar-card__eyebrow Trạng thái hiện tại
+          h3 Thông tin nhanh
+          ul.sidebar-list
+            li= `Danh mục: ${product.category || "Chưa phân loại"}`
+            li= `Vị trí: ${typeof product.position !== "undefined" ? product.position : "Chưa đặt"}`
+            li= `Trạng thái: ${product.active === false ? "Ngưng hoạt động" : "Hoạt động"}`
+
+        .sidebar-card
+          span.sidebar-card__eyebrow Xem trước
+          h3 Hình ảnh hiện tại
+          .preview-card
+            .preview-card__thumb(class=productThumbnail ? "has-image" : "" data-preview-stage)
+              img(
+                src=productThumbnail
+                alt=product.title || "Xem trước sản phẩm"
+                data-main-preview
+              )
+              if !productImages.length && !product.thumbnail
+                p.preview-card__empty(data-empty-preview) Ảnh chưa được chọn
+            .preview-card__body
+              strong Khung xem trước ảnh sản phẩm
+              p(data-preview-count)= productImages.length ? `${productImages.length} ảnh hiện có` : "Chưa có ảnh"
+              .preview-card__gallery(data-preview-list)
+                if productImages.length
+                  each image, index in productImages
+                    button.preview-card__item(
+                      type="button"
+                      class=index === 0 ? "is-active" : ""
+                    )
+                      img(src=image alt=product.title || "Ảnh sản phẩm")
+                      span.preview-card__index= index + 1
+                else
+                  span.preview-card__placeholder Chưa có ảnh để hiển thị
+
+  script(src="/admin/js/create.js")

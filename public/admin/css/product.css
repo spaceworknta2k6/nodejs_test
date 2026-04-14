@@ -1268,9 +1268,13 @@
     border: none;
     border-radius: 16px;
     padding: 13px 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     font-size: 14px;
     font-weight: 700;
     cursor: pointer;
+    text-decoration: none;
     transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
@@ -1486,6 +1490,7 @@
     font-weight: 700;
 }
 
+
 @media (max-width: 1200px) {
     .create-shell {
         grid-template-columns: 1fr;
@@ -1517,6 +1522,7 @@
     .preview-card__gallery {
         grid-template-columns: repeat(5, minmax(52px, 1fr));
     }
+
 }
 
 @media (max-width: 576px) {
@@ -1551,4 +1557,5 @@
     .preview-card__gallery {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
+
 }

@@ -4,7 +4,9 @@ const mainPreview = document.querySelector("[data-main-preview]");
 const previewCount = document.querySelector("[data-preview-count]");
 const previewList = document.querySelector("[data-preview-list]");
 const emptyPreview = document.querySelector("[data-empty-preview]");
-const createForm = document.querySelector("#form-create-product");
+const productForm = document.querySelector(
+  "#form-create-product, #form-edit-product"
+);
 
 if (
   imageInput &&
@@ -12,13 +14,14 @@ if (
   mainPreview &&
   previewCount &&
   previewList &&
-  emptyPreview &&
-  createForm
+  productForm
 ) {
   const MAX_IMAGES = 5;
   const defaultPreviewSrc = mainPreview.getAttribute("src");
-  const defaultCountText = "Chưa chọn ảnh";
+  const defaultCountText =
+    previewCount.textContent.trim() || "Chưa chọn ảnh";
   const defaultListMarkup =
+    previewList.innerHTML.trim() ||
     '<span class="preview-card__placeholder">Chưa có ảnh để hiển thị</span>';
 
   let previewUrls = [];
@@ -34,7 +37,10 @@ if (
     previewCount.textContent = defaultCountText;
     previewList.innerHTML = defaultListMarkup;
     previewStage.classList.remove("has-image");
-    emptyPreview.style.display = "block";
+    if (emptyPreview) {
+      emptyPreview.style.display = "block";
+    }
+    bindExistingPreviewItems();
   };
 
   const setActivePreview = (url, activeItem) => {
@@ -45,6 +51,21 @@ if (
 
     activeItem.classList.add("is-active");
   };
+
+  const bindExistingPreviewItems = () => {
+    const allItems = previewList.querySelectorAll(".preview-card__item");
+
+    allItems.forEach((item) => {
+      const itemImage = item.querySelector("img");
+      if (!itemImage) return;
+
+      item.addEventListener("click", () => {
+        setActivePreview(itemImage.src, item);
+      });
+    });
+  };
+
+  bindExistingPreviewItems();
 
   imageInput.addEventListener("change", (event) => {
     clearPreviewUrls();
@@ -61,7 +82,9 @@ if (
     const limitedFiles = selectedFiles.slice(0, MAX_IMAGES);
 
     previewStage.classList.add("has-image");
-    emptyPreview.style.display = "none";
+    if (emptyPreview) {
+      emptyPreview.style.display = "none";
+    }
     previewList.innerHTML = "";
 
     if (selectedFiles.length > MAX_IMAGES) {
@@ -96,7 +119,7 @@ if (
     });
   });
 
-  createForm.addEventListener("reset", () => {
+  productForm.addEventListener("reset", () => {
     setTimeout(() => {
       resetPreview();
     }, 0);

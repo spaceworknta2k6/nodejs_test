@@ -1,6 +1,6 @@
 mixin actionButtons(item)
     .action-group
-        a.action-btn.action-btn--edit(href="admin/product/edit") Sửa
+        a.action-btn.action-btn--edit(href=`${PrefixAdmin}/product/edit/${item.id}`) Sửa
         button.action-btn.action-btn--delete(type="button" data-id=item._id) Xóa
 
 mixin productTableRow(item, index)

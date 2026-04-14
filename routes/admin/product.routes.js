@@ -21,4 +21,11 @@ router.post(
   validate.createPost,
   ProductController.createPost,
 );
+
+router.get("/edit/:id", ProductController.edit);
+router.patch(
+  "/edit/:id",
+  upload.array("images", 5),
+  ProductController.editPatch,
+);
 module.exports = router;

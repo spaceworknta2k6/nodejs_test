@@ -5,6 +5,7 @@ include ../../mixins/admin/product-table.pug
 include ../../mixins/admin/alert.pug
 block main
     +alert-success("3000")
+    +alert-error(3000)
     -
         const products = Array.isArray(product) ? product : [];
 

@@ -163,7 +163,7 @@ module.exports.create = (req, res) => {
     PageTitle: "Trang tao san pham",
   });
 };
-
+// [post] /admin/product/create
 module.exports.createPost = async (req, res) => {
   if (req.body.position != "") {
     req.body.position = parseInt(req.body.position);
@@ -189,4 +189,55 @@ module.exports.createPost = async (req, res) => {
   const product = new Product(req.body);
   await product.save();
   res.redirect(`${systemConfig.prefixAdmin}/product`);
+};
+
+// [get] /admin/product/edit/:id
+
+module.exports.edit = async (req, res) => {
+  try {
+    let find = {
+      deleted: false,
+      _id: req.params.id,
+    };
+    const product = await Product.findOne(find);
+    res.render("admin/pages/product/edit", {
+      PageTitle: "Trang chinh sua",
+      product: product,
+    });
+  } catch (error) {
+    req.flash("error", "Vui lòng thử lại");
+    res.redirect(`${systemConfig.prefixAdmin}/product`);
+  }
+};
+// [patch] admin/product/edit/:id
+
+module.exports.editPatch = async (req, res) => {
+  const id = req.params.id;
+  try {
+    if (req.body.position != "") {
+      req.body.position = parseInt(req.body.position);
+    }
+
+    if (req.body.rating != "") {
+      req.body.rating = parseFloat(req.body.rating);
+    }
+
+    req.body.price = parseFloat(req.body.price);
+    req.body.discountPercentage = parseFloat(req.body.discountPercentage);
+
+    if (Array.isArray(req.files) && req.files.length > 0) {
+      req.body.images = req.files.map((file) => `/uploads/${file.filename}`);
+      req.body.thumbnail = req.body.images[0];
+    } else {
+      delete req.body.images;
+      delete req.body.thumbnail;
+    }
+
+    await Product.updateOne({ _id: id }, req.body);
+    req.flash("success", "Cập nhật thành công");
+    return res.redirect(`${systemConfig.prefixAdmin}/product`);
+  } catch (error) {
+    req.flash("error", "Vui lòng thử lại");
+    return res.redirect(`${systemConfig.prefixAdmin}/product`);
+  }
 };
