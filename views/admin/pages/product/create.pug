@@ -6,8 +6,8 @@ block main
     .create-decor.create-decor--two
     .create-hero
       .create-hero__content
-        span.create-hero__kicker Product Studio
-        h1.create-hero__title Create new products
+        span.create-hero__kicker Quản lý sản phẩm
+        h1.create-hero__title Tạo sản phẩm mới
     .create-shell
       .create-panel
         form.create-product-form(
@@ -18,57 +18,57 @@ block main
         )
           .create-section
             .section-heading
-              span.section-heading__eyebrow Key information
-              h2.section-heading__title Product content
-              p.section-heading__desc Fill in the basic information first; optional information can be left blank
+              span.section-heading__eyebrow Thông tin chính
+              h2.section-heading__title Nội dung sản phẩm
+              p.section-heading__desc Trước tiên, hãy điền thông tin cơ bản; những thông tin không bắt buộc có thể để trống
 
             .create-grid
               .field-group.field-group--full
                 label.field-label(for="title")
-                  | Product title
-                  span.required-badge Obligatory
+                  | Tiêu đề sản phẩm
+                  span.required-badge Bắt buộc
                 input#title.form-control-modern(
                   type="text"
                   name="title"
                   required
-                  placeholder="For example: Bluetooth headset Pro X9"
+                  placeholder="Ví dụ: Tai nghe Bluetooth Pro X9"
                 )
 
               .field-group.field-group--full
-                label.field-label(for="description") Describe
+                label.field-label(for="description") Mô tả
                 textarea#description.form-control-modern.form-control-modern--textarea(
                   name="description"
                   rows="5"
-                  placeholder="A brief or detailed description of the product..."
+                  placeholder="Nhập mô tả ngắn hoặc chi tiết cho sản phẩm..."
                 )
 
               .field-group
-                label.field-label(for="category") Category
+                label.field-label(for="category") Danh mục
                 input#category.form-control-modern(
                   type="text"
                   name="category"
-                  placeholder="Example: Accessories"
+                  placeholder="Ví dụ: Phụ kiện"
                 )
 
               .field-group
-                label.field-label(for="position") Position
+                label.field-label(for="position") Vị trí
                 input#position.form-control-modern(
                   type="number"
                   name="position"
                   min="0"
-                  placeholder="Example: 1"
+                  placeholder="Ví dụ: 1"
                 )
 
           .create-section
             .section-heading
-              span.section-heading__eyebrow Prices & reviews
-              h2.section-heading__title Data displayed
+              span.section-heading__eyebrow Giá và đánh giá
+              h2.section-heading__title Dữ liệu hiển thị
 
             .create-grid
               .field-group
                 label.field-label(for="price")
-                  | Price
-                  span.required-badge Obligatory
+                  | Giá
+                  span.required-badge Bắt buộc
                 .input-addon
                   input#price.form-control-modern(
                     type="number"
@@ -82,8 +82,8 @@ block main
 
               .field-group
                 label.field-label(for="discountPercentage")
-                  | Discount (%)
-                  span.required-badge Obligatory
+                  | Giảm giá (%)
+                  span.required-badge Bắt buộc
                 .input-addon
                   input#discountPercentage.form-control-modern(
                     type="number"
@@ -97,7 +97,7 @@ block main
                   span.input-addon__text %
 
               .field-group
-                label.field-label(for="rating") Rating
+                label.field-label(for="rating") Đánh giá
                 input#rating.form-control-modern(
                   type="number"
                   name="rating"
@@ -109,59 +109,67 @@ block main
 
           .create-section
             .section-heading
-              span.section-heading__eyebrow Status & photos
-              h2.section-heading__title Additional settings
+              span.section-heading__eyebrow Trạng thái và hình ảnh
+              h2.section-heading__title Thiết lập bổ sung
 
             .create-grid
               .field-group.field-group--full
                 label.field-label
-                  | Active
-                  span.optional-note Choose a state
+                  | Trạng thái
+                  span.optional-note Chọn một trạng thái
                 .choice-grid
                   label.choice-card
                     input(type="radio" name="active" value="true" checked)
                     span.choice-card__content
-                      strong Active
-                      small The product is displayed normally.
+                      strong Hoạt động
+                      small Sản phẩm được hiển thị bình thường.
                   label.choice-card
                     input(type="radio" name="active" value="false")
                     span.choice-card__content
-                      strong Inactive
-                      small Hide products from the display list
+                      strong Ngưng hoạt động
+                      small Ẩn sản phẩm khỏi danh sách hiển thị
 
               .field-group.field-group--full
-                label.field-label(for="images") Images
+                label.field-label(for="images") Hình ảnh
                 input#images.form-control-modern.form-control-modern--file(
                   type="file"
                   name="images"
                   accept="image/*"
                   multiple
                 )
+                p.field-hint Chọn tối đa 5 ảnh. Bấm vào ảnh nhỏ để xem ảnh
           .form-footer
-            p.form-footer__note Designed for product managers who need a clean draft flow before wiring backend logic.
+            p.form-footer__note Điền thông tin sản phẩm gọn gàng trước khi lưu vào hệ thống.
             .form-footer__actions
-              button.create-btn.create-btn--ghost(type="reset") Re-enter
-              button.create-btn.create-btn--primary(type="submit") Save
+              button.create-btn.create-btn--ghost(type="reset") Nhập lại
+              button.create-btn.create-btn--primary(type="submit") Lưu sản phẩm
 
       aside.create-sidebar
         .sidebar-card.sidebar-card--highlight
-          span.sidebar-card__eyebrow Quick input
-          h3 Quick input suggestion
+          span.sidebar-card__eyebrow Gợi ý nhanh
+          h3 Mẹo nhập liệu
           ul.sidebar-list
-            li Titles should be short, clear, and under 70 characters
-            li The discount should be entered as a percentage to match the model
-            li Images are currently being used in a row-by-row format to make array separation easier later
-            li The position can be left blank if manual sorting is not yet required
+            li Tiêu đề nên ngắn gọn, rõ ràng và dưới 70 ký tự
+            li Giảm giá nên nhập theo phần trăm để khớp với dữ liệu hệ thống
+            li Có thể chọn nhiều ảnh để xem trước trực tiếp trước khi lưu
+            li Vị trí có thể để trống nếu chưa cần sắp xếp thủ công
 
         .sidebar-card
-          span.sidebar-card__eyebrow Preview card
-          h3 Preview image
+          span.sidebar-card__eyebrow Xem trước
+          h3 Xem trước hình ảnh
           .preview-card
-            .preview-card__thumb
-              span IMAGE
+            .preview-card__thumb(data-preview-stage)
+              img(
+                src="https://via.placeholder.com/640x420?text=Preview+Image"
+                alt="Xem trước sản phẩm"
+                data-main-preview
+              )
+              p.preview-card__empty(data-empty-preview) Ảnh chưa được chọn
             .preview-card__body
-              strong Tai nghe Bluetooth Pro X9
-              p Âm thanh rõ, pin bền, thiết kế gọn cho nhu cầu di chuyển hằng ngày.
-              .preview-card__meta
-                span Price: $1,990
-                span Discount: 15%
+              strong Khung xem trước ảnh sản phẩm
+              p(data-preview-count) Chưa chọn ảnh
+              .preview-card__gallery(data-preview-list)
+                span.preview-card__placeholder Chưa có ảnh để hiển thị
+
+  //- script(src="/admin/js/product.js")
+  script(src="/admin/js/create.js") 

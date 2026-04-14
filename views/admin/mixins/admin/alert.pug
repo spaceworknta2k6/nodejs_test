@@ -3,3 +3,9 @@ mixin alert-success(time)
         .alert.alert--success.show(data-time=time)
             span.alert__text= messages.success
             button.alert__close(type="button" aria-label="Close notification") ×
+
+mixin alert-error(time)
+    - if(messages.error)
+        .alert.alert--error.show(data-time=time)
+            span.alert__text= messages.error
+            button.alert__close(type="button" aria-label="Close error notification") ×

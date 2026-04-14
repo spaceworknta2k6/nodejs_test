@@ -102,6 +102,7 @@ block main
                                 p.apl-product__text= product.description || "Details for this product are being updated."
                                 .apl-product__bottom
                                     .apl-product__price
+                                        span.apl-product__price-label Price
                                         if product.hasDiscount
                                             .apl-product__price-row
                                                 span.apl-product__current= product.formattedFinalPrice

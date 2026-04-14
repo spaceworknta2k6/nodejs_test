@@ -177,7 +177,7 @@ module.exports.createPost = async (req, res) => {
   }
 
   req.body.price = parseFloat(req.body.price);
-  req.body.discountPercentage = parseInt(req.body.discountPercentage);
+  req.body.discountPercentage = parseFloat(req.body.discountPercentage);
 
   req.body.images = Array.isArray(req.files)
     ? req.files.map((file) => `/uploads/${file.filename}`)

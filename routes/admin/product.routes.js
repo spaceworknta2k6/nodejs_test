@@ -16,7 +16,7 @@ router.patch("/change-multi", ProductController.changeMulti);
 router.get("/create", ProductController.create);
 router.post(
   "/create",
-  upload.array("images", 12),
+  upload.array("images", 5),
   ProductController.createPost,
 );
 module.exports = router;
