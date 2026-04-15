@@ -67,18 +67,51 @@ const getProductStats = async (filter) => {
               _id: null,
               discountedCount: {
                 $sum: {
-                  $cond: [{ $gt: [{ $ifNull: ['$discountPercentage', 0] }, 0] }, 1, 0]
+                  $cond: [
+                    {
+                      $gt: [
+                        {
+                          $convert: {
+                            input: '$discountPercentage',
+                            to: 'double',
+                            onError: 0,
+                            onNull: 0
+                          }
+                        },
+                        0
+                      ]
+                    },
+                    1,
+                    0
+                  ]
                 }
               },
               totalInventoryValue: {
                 $sum: {
                   $multiply: [
-                    { $ifNull: ['$price', 0] },
+                    {
+                      $convert: {
+                        input: '$price',
+                        to: 'double',
+                        onError: 0,
+                        onNull: 0
+                      }
+                    },
                     {
                       $subtract: [
                         1,
                         {
-                          $divide: [{ $ifNull: ['$discountPercentage', 0] }, 100]
+                          $divide: [
+                            {
+                              $convert: {
+                                input: '$discountPercentage',
+                                to: 'double',
+                                onError: 0,
+                                onNull: 0
+                              }
+                            },
+                            100
+                          ]
                         }
                       ]
                     }
@@ -116,66 +149,71 @@ const getProductStats = async (filter) => {
 
 // [GET] /product
 module.exports.index = async (req, res) => {
-  const filter = {
-    active: true,
-    deleted: false
-  };
-  const pageSize = 9;
-  const requestedPage = parseInt(req.query.page, 10);
-  const totalProducts = await Product.countDocuments(filter);
-  const totalPages = Math.max(Math.ceil(totalProducts / pageSize), 1);
-  const currentPage = !Number.isNaN(requestedPage) && requestedPage > 0
-    ? Math.min(requestedPage, totalPages)
-    : 1;
-  const skip = (currentPage - 1) * pageSize;
+  try {
+    const filter = {
+      active: true,
+      deleted: false
+    };
+    const pageSize = 9;
+    const requestedPage = parseInt(req.query.page, 10);
+    const totalProducts = await Product.countDocuments(filter);
+    const totalPages = Math.max(Math.ceil(totalProducts / pageSize), 1);
+    const currentPage = !Number.isNaN(requestedPage) && requestedPage > 0
+      ? Math.min(requestedPage, totalPages)
+      : 1;
+    const skip = (currentPage - 1) * pageSize;
 
-  const [featuredRawProducts, paginatedRawProducts, stats] = await Promise.all([
-    Product.find(filter).sort({ position: 'desc', createdAt: -1 }).limit(7),
-    Product.find(filter).sort({ position: 'desc', createdAt: -1 }).skip(skip).limit(pageSize),
-    getProductStats(filter)
-  ]);
+    const [featuredRawProducts, paginatedRawProducts, stats] = await Promise.all([
+      Product.find(filter).sort({ position: 'desc', createdAt: -1 }).limit(7),
+      Product.find(filter).sort({ position: 'desc', createdAt: -1 }).skip(skip).limit(pageSize),
+      getProductStats(filter)
+    ]);
 
-  const featuredProducts = featuredRawProducts.map(mapProductForView);
-  const products = paginatedRawProducts.map(mapProductForView);
-  const featuredProduct = featuredProducts[0] || null;
-  const spotlightProducts = featuredProducts.slice(1, 2);
-  const galleryProducts = featuredProducts.slice(2, 5);
-  const detailProducts = featuredProducts.slice(5, 7);
-  const paginationStart = Math.max(currentPage - 2, 1);
-  const paginationEnd = Math.min(paginationStart + 4, totalPages);
-  const adjustedStart = Math.max(paginationEnd - 4, 1);
-  const pageNumbers = [];
+    const featuredProducts = featuredRawProducts.map(mapProductForView);
+    const products = paginatedRawProducts.map(mapProductForView);
+    const featuredProduct = featuredProducts[0] || null;
+    const spotlightProducts = featuredProducts.slice(1, 2);
+    const galleryProducts = featuredProducts.slice(2, 5);
+    const detailProducts = featuredProducts.slice(5, 7);
+    const paginationStart = Math.max(currentPage - 2, 1);
+    const paginationEnd = Math.min(paginationStart + 4, totalPages);
+    const adjustedStart = Math.max(paginationEnd - 4, 1);
+    const pageNumbers = [];
 
-  for (let page = adjustedStart; page <= paginationEnd; page += 1) {
-    pageNumbers.push(page);
-  }
-
-  res.render('client/pages/products/index', {
-    TitlePage: 'Products',
-    products,
-    featuredProduct,
-    spotlightProducts,
-    galleryProducts,
-    detailProducts,
-    productStats: {
-      totalProducts,
-      discountedCount: stats.discountedCount,
-      totalInventoryValue: formatCurrency(stats.totalInventoryValue),
-      leadingCategory: stats.leadingCategory
-    },
-    pagination: {
-      currentPage,
-      totalPages,
-      totalProducts,
-      pageNumbers,
-      hasPrev: currentPage > 1,
-      hasNext: currentPage < totalPages,
-      prevPage: currentPage - 1,
-      nextPage: currentPage + 1,
-      startItem: totalProducts === 0 ? 0 : skip + 1,
-      endItem: Math.min(skip + products.length, totalProducts)
+    for (let page = adjustedStart; page <= paginationEnd; page += 1) {
+      pageNumbers.push(page);
     }
-  });
+
+    res.render('client/pages/products/index', {
+      TitlePage: 'Products',
+      products,
+      featuredProduct,
+      spotlightProducts,
+      galleryProducts,
+      detailProducts,
+      productStats: {
+        totalProducts,
+        discountedCount: stats.discountedCount,
+        totalInventoryValue: formatCurrency(stats.totalInventoryValue),
+        leadingCategory: stats.leadingCategory
+      },
+      pagination: {
+        currentPage,
+        totalPages,
+        totalProducts,
+        pageNumbers,
+        hasPrev: currentPage > 1,
+        hasNext: currentPage < totalPages,
+        prevPage: currentPage - 1,
+        nextPage: currentPage + 1,
+        startItem: totalProducts === 0 ? 0 : skip + 1,
+        endItem: Math.min(skip + products.length, totalProducts)
+      }
+    });
+  } catch (error) {
+    console.error('Products page error:', error);
+    return res.status(500).send('Internal Server Error');
+  }
 };
 
 // [GET] /products/:slug
