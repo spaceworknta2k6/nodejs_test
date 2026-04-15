@@ -1,0 +1,75 @@
+﻿extends ../../layouts/default.pug
+
+block main
+    if product
+        .apple-products.product-detail-client
+            section.detail-hero.detail-hero--client
+                .detail-hero__content
+                    p.detail-hero__eyebrow= product.categoryLabel || 'Collection'
+                    h1.detail-hero__title= product.title || 'Product detail'
+                    p.detail-hero__desc= product.description || 'Thoughtful details, cleaner spacing, and a focused layout built for product storytelling.'
+                    .detail-hero__meta
+                        span.detail-price= product.hasDiscount ? product.formattedFinalPrice : product.formattedRawPrice
+                        if product.hasDiscount
+                            span.detail-price-old= product.formattedRawPrice
+                            span.detail-badge Save #{product.formattedSavedAmount}
+                        span.detail-rating ★ #{product.rating || 0}
+                    .detail-info-grid.detail-info-grid--client
+                        .detail-info-card
+                            span.detail-info-card__label Danh mục
+                            strong= product.categoryLabel || 'Uncategorized'
+                        .detail-info-card
+                            span.detail-info-card__label Giá gốc
+                            strong= product.formattedRawPrice
+                        .detail-info-card
+                            span.detail-info-card__label Giá hiện tại
+                            strong= product.hasDiscount ? product.formattedFinalPrice : product.formattedRawPrice
+                        .detail-info-card
+                            span.detail-info-card__label Đánh giá
+                            strong= product.rating || 'Chưa có'
+                    .detail-hero__actions
+                        a.apl-button(href="#") Mua hàng
+                        a.apl-button.apl-button--ghost(href="/products#catalog") Quay lại
+                .detail-hero__visual.detail-hero__visual--client
+                    .detail-gallery-panel__main
+                        img(src=product.gallery[0], alt=product.title)
+                    if product.gallery.length > 1
+                        .detail-gallery-panel__thumbs
+                            each image, index in product.gallery
+                                .detail-gallery-panel__thumb(class=index === 0 ? 'is-active' : '')
+                                    img(src=image, alt=`${product.title} ${index + 1}`)
+
+            if relatedProducts.length
+                section.apl-catalog.apl-catalog--related
+                    .apl-catalog__intro
+                        p.apl-section-kicker Related picks
+                        h2.apl-catalog__title Có thể bạn cũng sẽ quan tâm
+                    .apl-catalog__grid
+                        each item in relatedProducts
+                            article.apl-product
+                                .apl-product__image
+                                    img(src=item.imageSrc, alt=item.title)
+                                .apl-product__body
+                                    .apl-product__top
+                                        span.apl-product__category= item.categoryLabel || 'Collection'
+                                        span.apl-product__rating ★ #{item.rating || 0}
+                                    h3.apl-product__title= item.title || 'Product'
+                                    p.apl-product__text= item.description || 'Details for this product are being updated.'
+                                    .apl-product__bottom
+                                        .apl-product__price
+                                            span.apl-product__price-label Price
+                                            if item.hasDiscount
+                                                .apl-product__price-row
+                                                    span.apl-product__current= item.formattedFinalPrice
+                                                    span.apl-product__original= item.formattedRawPrice
+                                            else
+                                                .apl-product__price-row
+                                                    span.apl-product__current= item.formattedRawPrice
+                                        .apl-product__actions
+                                            a.apl-button.apl-button--ghost(href=item.detailPath) Xem chi tiết
+                                            a.apl-button(href="#") Mua hàng
+    else
+        .product-empty
+            h2.product-empty__title Không tìm thấy sản phẩm
+            p.product-empty__desc Sản phẩm này hiện không khả dụng hoặc đã bị ẩn khỏi danh sách hiển thị.
+

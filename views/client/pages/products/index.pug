@@ -89,6 +89,11 @@ block main
                     h2.apl-catalog__title Every product has its own spotlight.
                     p.apl-catalog__desc Browse the full collection with refined cards, clearer pricing, and a lighter visual rhythm.
 
+                .apl-catalog__meta
+                    p.apl-catalog__count Showing #{pagination.startItem}-#{pagination.endItem} of #{pagination.totalProducts} products
+                    if pagination.totalPages > 1
+                        p.apl-catalog__page Page #{pagination.currentPage} / #{pagination.totalPages}
+
                 .apl-catalog__grid
                     each product in products
                         article.apl-product
@@ -113,9 +118,30 @@ block main
                                             .apl-product__price-row
                                                 span.apl-product__current= product.formattedRawPrice
                                     .apl-product__actions
-                                        a.apl-button.apl-button--ghost(href="/products") Learn more
+                                        a.apl-button.apl-button--ghost(href=product.detailPath) Xem chi tiết
                                         a.apl-button(href="#") Buy
+
+                if pagination.totalPages > 1
+                    nav.apl-pagination(aria-label="Product pagination")
+                        if pagination.hasPrev
+                            a.apl-pagination__nav(href=`/products?page=${pagination.prevPage}#catalog`) Previous
+                        else
+                            span.apl-pagination__nav.is-disabled Previous
+
+                        .apl-pagination__pages
+                            each pageNumber in pagination.pageNumbers
+                                if pageNumber === pagination.currentPage
+                                    span.apl-pagination__page.is-active= pageNumber
+                                else
+                                    a.apl-pagination__page(href=`/products?page=${pageNumber}#catalog`)= pageNumber
+
+                        if pagination.hasNext
+                            a.apl-pagination__nav(href=`/products?page=${pagination.nextPage}#catalog`) Next
+                        else
+                            span.apl-pagination__nav.is-disabled Next
     else
         .product-empty
             h2.product-empty__title No products found
             p.product-empty__desc Product data is currently unavailable. Please add items from the admin side and reload this page.
+
+

@@ -1,0 +1,73 @@
+﻿extends ../../layouts/default.pug
+include ../../mixins/admin/alert.pug
+
+block main
+  - const galleryImages = Array.isArray(gallery) ? gallery : []
+  - const coverImage = product.thumbnail || (galleryImages.length ? galleryImages[0] : 'https://via.placeholder.com/960x720?text=No+Image')
+  - const statusLabel = product.active === false ? 'Tạm ẩn' : 'Đang hoạt động'
+  - const statusClass = product.active === false ? 'chip--danger' : 'chip--success'
+
+  +alert-success(3000)
+  +alert-error(3000)
+
+  section.product-detail-page
+    .detail-hero.detail-hero--admin
+      .detail-hero__content
+        p.detail-hero__eyebrow Quản lý sản phẩm
+        h1.detail-hero__title= product.title || 'Chi tiết sản phẩm'
+        p.detail-hero__desc= product.description || 'Theo dõi nhanh thông tin, hình ảnh và trạng thái hiển thị của sản phẩm trong hệ thống.'
+        .detail-hero__meta
+          span.chip.chip--category= product.category || 'Chưa phân loại'
+          span.chip(class=statusClass)= statusLabel
+          span.detail-hero__code Mã SP: #{product._id}
+      .detail-hero__card
+        .detail-stat
+          span.detail-stat__label Giá niêm yết
+          strong.detail-stat__value= typeof product.price === 'number' ? `${product.price.toLocaleString('en-US')} USD` : 'Đang cập nhật'
+        .detail-stat
+          span.detail-stat__label Giảm giá
+          strong.detail-stat__value= `${product.discountPercentage || 0}%`
+        .detail-stat
+          span.detail-stat__label Đánh giá
+          strong.detail-stat__value= product.rating || 'Chưa có'
+        .detail-stat
+          span.detail-stat__label Vị trí
+          strong.detail-stat__value= typeof product.position !== 'undefined' ? product.position : 'Chưa đặt'
+
+    .detail-shell
+      .detail-gallery-card
+        .detail-gallery-card__main
+          img.detail-gallery-card__image(src=coverImage, alt=product.title || 'Ảnh sản phẩm')
+        if galleryImages.length > 1
+          .detail-gallery-card__thumbs
+            each image, index in galleryImages
+              .detail-gallery-card__thumb(class=index === 0 ? 'is-active' : '')
+                img(src=image, alt=`Ảnh sản phẩm ${index + 1}`)
+
+      .detail-info-card
+        .detail-section
+          .detail-section__head
+            p.detail-section__eyebrow Thông tin hiển thị
+            h2.detail-section__title Tổng quan sản phẩm
+          .detail-info-grid
+            .detail-info-item
+              span.detail-info-item__label Danh mục
+              strong= product.category || 'Chưa phân loại'
+            .detail-info-item
+              span.detail-info-item__label Trạng thái
+              strong= statusLabel
+            .detail-info-item
+              span.detail-info-item__label Số ảnh
+              strong= galleryImages.length || 0
+            .detail-info-item
+              span.detail-info-item__label Thumbnail
+              strong= product.thumbnail ? 'Đã có' : 'Chưa có'
+
+        .detail-section
+          .detail-section__head
+            p.detail-section__eyebrow Mô tả
+          p.detail-long-text= product.description || 'Sản phẩm chưa có mô tả chi tiết.'
+
+        .detail-actions-footer
+          a.detail-cta.detail-cta--primary(href=`${PrefixAdmin}/product/edit/${product._id}`) Chỉnh sửa
+          a.detail-cta.detail-cta--secondary(href=`${PrefixAdmin}/product`) Quay lại

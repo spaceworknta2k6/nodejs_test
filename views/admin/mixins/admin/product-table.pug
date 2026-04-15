@@ -17,11 +17,12 @@ mixin productTableRow(item, index)
         td.select-cell
             input.row-checkbox(type="checkbox" name="selectedProducts[]" value=item._id)
         td
-            .product-media
-                img.product-thumb(src=thumb, alt=item.title || 'product')
-                div
-                    .product-name= item.title || 'Chưa có tên sản phẩm'
-                    .product-desc= shortDesc
+            a.product-link(href=`${PrefixAdmin}/product/detail/${item._id}`)
+                .product-media
+                    img.product-thumb(src=thumb, alt=item.title || 'product')
+                    div
+                        .product-name= item.title || 'Chưa có tên sản phẩm'
+                        .product-desc= shortDesc
         td
             span.chip.chip--category= item.category || 'Chưa phân loại'
         td
@@ -70,11 +71,12 @@ mixin productMobileCard(item, index)
                 span.chip.chip--success Hoạt động
             else
                 span.chip.chip--danger Tạm ẩn
-        .mobile-product-top
-            img.product-thumb(src=thumb, alt=item.title || 'product')
-            .mobile-product-summary
-                .product-name= item.title || 'Chưa có tên sản phẩm'
-                .product-desc= shortDesc
+        a.product-link.product-link--mobile(href=`${PrefixAdmin}/product/detail/${item._id}`)
+            .mobile-product-top
+                img.product-thumb(src=thumb, alt=item.title || 'product')
+                .mobile-product-summary
+                    .product-name= item.title || 'Chưa có tên sản phẩm'
+                    .product-desc= shortDesc
         .mobile-product-body
             .mobile-meta-grid
                 .mobile-meta-card
