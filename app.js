@@ -20,7 +20,9 @@ app.set('view engine', 'pug')
 app.use(express.static(`${__dirname}/public`))
 
 const database = require('./config/database')
-database.connect();
+database.connect().catch((error) => {
+  console.error('Initial database connection failed:', error);
+});
 
 const port = process.env.PORT
 
@@ -32,6 +34,15 @@ const SystemConfig = require('./config/system')
 // local variable
 app.locals.PrefixAdmin = SystemConfig.prefixAdmin
 
+app.use(async (req, res, next) => {
+  try {
+    await database.connect();
+    next();
+  } catch (error) {
+    console.error('Database middleware error:', error);
+    res.status(500).send('Database connection error');
+  }
+});
 
 RouterAdmin(app)
 RouterClient(app)

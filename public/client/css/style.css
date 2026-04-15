@@ -2263,6 +2263,10 @@ html {
   .detail-hero--client {
     padding: 28px;
   }
+
+  .detail-hero__visual--client {
+    order: -1;
+  }
 }
 
 @media (max-width: 767.98px) {
