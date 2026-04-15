@@ -1,25 +1,15 @@
-const imageInput = document.querySelector("#images");
-const previewStage = document.querySelector("[data-preview-stage]");
-const mainPreview = document.querySelector("[data-main-preview]");
-const previewCount = document.querySelector("[data-preview-count]");
-const previewList = document.querySelector("[data-preview-list]");
-const emptyPreview = document.querySelector("[data-empty-preview]");
-const productForm = document.querySelector(
-  "#form-create-product, #form-edit-product"
-);
+﻿const imageInput = document.querySelector('#images');
+const previewStage = document.querySelector('[data-preview-stage]');
+const mainPreview = document.querySelector('[data-main-preview]');
+const previewCount = document.querySelector('[data-preview-count]');
+const previewList = document.querySelector('[data-preview-list]');
+const emptyPreview = document.querySelector('[data-empty-preview]');
+const productForm = document.querySelector('#form-create-product, #form-edit-product');
 
-if (
-  imageInput &&
-  previewStage &&
-  mainPreview &&
-  previewCount &&
-  previewList &&
-  productForm
-) {
+if (imageInput && previewStage && mainPreview && previewCount && previewList && productForm) {
   const MAX_IMAGES = 5;
-  const defaultPreviewSrc = mainPreview.getAttribute("src");
-  const defaultCountText =
-    previewCount.textContent.trim() || "Chưa chọn ảnh";
+  const defaultPreviewSrc = mainPreview.getAttribute('src');
+  const defaultCountText = previewCount.textContent.trim() || 'Chưa chọn ảnh';
   const defaultListMarkup =
     previewList.innerHTML.trim() ||
     '<span class="preview-card__placeholder">Chưa có ảnh để hiển thị</span>';
@@ -31,47 +21,46 @@ if (
     previewUrls = [];
   };
 
+  const bindExistingPreviewItems = () => {
+    const allItems = previewList.querySelectorAll('.preview-card__item');
+
+    allItems.forEach((item) => {
+      const itemImage = item.querySelector('img');
+      if (!itemImage) {
+        return;
+      }
+
+      item.addEventListener('click', () => {
+        mainPreview.src = itemImage.src;
+        previewList
+          .querySelectorAll('.preview-card__item')
+          .forEach((previewItem) => previewItem.classList.remove('is-active'));
+        item.classList.add('is-active');
+      });
+    });
+  };
+
   const resetPreview = () => {
     clearPreviewUrls();
     mainPreview.src = defaultPreviewSrc;
     previewCount.textContent = defaultCountText;
     previewList.innerHTML = defaultListMarkup;
-    previewStage.classList.remove("has-image");
+    previewStage.classList.remove('has-image');
+
     if (emptyPreview) {
-      emptyPreview.style.display = "block";
+      emptyPreview.style.display = 'block';
     }
+
     bindExistingPreviewItems();
-  };
-
-  const setActivePreview = (url, activeItem) => {
-    mainPreview.src = url;
-
-    const allItems = previewList.querySelectorAll(".preview-card__item");
-    allItems.forEach((item) => item.classList.remove("is-active"));
-
-    activeItem.classList.add("is-active");
-  };
-
-  const bindExistingPreviewItems = () => {
-    const allItems = previewList.querySelectorAll(".preview-card__item");
-
-    allItems.forEach((item) => {
-      const itemImage = item.querySelector("img");
-      if (!itemImage) return;
-
-      item.addEventListener("click", () => {
-        setActivePreview(itemImage.src, item);
-      });
-    });
   };
 
   bindExistingPreviewItems();
 
-  imageInput.addEventListener("change", (event) => {
+  imageInput.addEventListener('change', (event) => {
     clearPreviewUrls();
 
     const selectedFiles = Array.from(event.target.files || []).filter((file) =>
-      file.type.startsWith("image/")
+      file.type.startsWith('image/')
     );
 
     if (selectedFiles.length === 0) {
@@ -81,28 +70,28 @@ if (
 
     const limitedFiles = selectedFiles.slice(0, MAX_IMAGES);
 
-    previewStage.classList.add("has-image");
-    if (emptyPreview) {
-      emptyPreview.style.display = "none";
-    }
-    previewList.innerHTML = "";
+    previewStage.classList.add('has-image');
+    previewList.innerHTML = '';
 
-    if (selectedFiles.length > MAX_IMAGES) {
-      previewCount.textContent = `Đã chọn ${selectedFiles.length} ảnh, chỉ hiển thị ${MAX_IMAGES} ảnh đầu tiên`;
-    } else {
-      previewCount.textContent = `Đã chọn ${limitedFiles.length} ảnh`;
+    if (emptyPreview) {
+      emptyPreview.style.display = 'none';
     }
+
+    previewCount.textContent =
+      selectedFiles.length > MAX_IMAGES
+        ? `Đã chọn ${selectedFiles.length} ảnh, chỉ hiển thị ${MAX_IMAGES} ảnh đầu tiên`
+        : `Đã chọn ${limitedFiles.length} ảnh`;
 
     limitedFiles.forEach((file, index) => {
       const imageUrl = URL.createObjectURL(file);
       previewUrls.push(imageUrl);
 
-      const thumbButton = document.createElement("button");
-      thumbButton.type = "button";
-      thumbButton.className = "preview-card__item";
+      const thumbButton = document.createElement('button');
+      thumbButton.type = 'button';
+      thumbButton.className = 'preview-card__item';
 
       if (index === 0) {
-        thumbButton.classList.add("is-active");
+        thumbButton.classList.add('is-active');
         mainPreview.src = imageUrl;
       }
 
@@ -111,17 +100,19 @@ if (
         <img src="${imageUrl}" alt="Ảnh xem trước ${index + 1}">
       `;
 
-      thumbButton.addEventListener("click", () => {
-        setActivePreview(imageUrl, thumbButton);
+      thumbButton.addEventListener('click', () => {
+        previewList
+          .querySelectorAll('.preview-card__item')
+          .forEach((previewItem) => previewItem.classList.remove('is-active'));
+        thumbButton.classList.add('is-active');
+        mainPreview.src = imageUrl;
       });
 
       previewList.appendChild(thumbButton);
     });
   });
 
-  productForm.addEventListener("reset", () => {
-    setTimeout(() => {
-      resetPreview();
-    }, 0);
+  productForm.addEventListener('reset', () => {
+    setTimeout(resetPreview, 0);
   });
 }

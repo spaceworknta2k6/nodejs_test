@@ -1,10 +1,14 @@
-header.header
+﻿header.header
     .container
         .header-shell
             .inner-logo
                 a(href="/")
                     img(src="/client/images/nta_shop_logo.svg" alt="NTA Shop")
-            nav.inner-menu
+            button.menu-toggle(type="button" data-mobile-menu-toggle aria-expanded="false" aria-controls="site-menu" aria-label="Mở menu")
+                span
+                span
+                span
+            nav#site-menu.inner-menu(data-mobile-menu)
                 ul.menu-list
                     li.menu-item
                         a(href="/") Home

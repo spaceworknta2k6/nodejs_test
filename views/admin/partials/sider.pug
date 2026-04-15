@@ -1,4 +1,5 @@
-aside.admin-sidebar
+﻿aside.admin-sidebar
+    button.admin-sidebar__close(type="button" data-admin-sidebar-close aria-label="Đóng menu") ×
     .sidebar-brand
         .brand-logo NTA
         .brand-copy
@@ -7,16 +8,12 @@ aside.admin-sidebar
 
     nav.sidebar-nav
         a.nav-item.active(href=`${PrefixAdmin}/dashboard`)
-            span.nav-icon 📊
             span Tổng quan
         a.nav-item(href=`${PrefixAdmin}/product`)
-            span.nav-icon 📦
             span Sản phẩm
-        a.nav-item(href='#')
-            span.nav-icon 🧾
+        a.nav-item(href="#")
             span Đơn hàng
-        a.nav-item(href='#')
-            span.nav-icon 👥
+        a.nav-item(href="#")
             span Khách hàng
 
     .sidebar-help

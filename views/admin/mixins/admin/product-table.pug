@@ -1,4 +1,4 @@
-mixin actionButtons(item)
+﻿mixin actionButtons(item)
     .action-group
         a.action-btn.action-btn--edit(href=`${PrefixAdmin}/product/edit/${item.id}`) Sửa
         button.action-btn.action-btn--delete(type="button" data-id=item._id) Xóa
@@ -44,7 +44,7 @@ mixin productTableRow(item, index)
                 type="number"
                 min="1"
                 step="1"
-                value=item.position
+                value=positionValue
                 data-id=item._id
                 name="position"
             )
@@ -59,42 +59,58 @@ mixin productMobileCard(item, index)
         const shortDesc = item.description || 'Chưa có mô tả sản phẩm';
         const priceText = typeof item.price === 'number' ? item.price.toLocaleString('en-US') + ' USD' : 'Đang cập nhật';
         const positionValue = item.position || index + 1;
+        const mobilePositionId = `mobile-position-${item._id}`;
 
-    .mobile-product-card
+    article.mobile-product-card(data-product-id=item._id)
+        .mobile-product-card__head
+            label.mobile-check
+                input.row-checkbox(type="checkbox" name="selectedProducts[]" value=item._id)
+                span Chọn sản phẩm
+            if isActive
+                span.chip.chip--success Hoạt động
+            else
+                span.chip.chip--danger Tạm ẩn
         .mobile-product-top
             img.product-thumb(src=thumb, alt=item.title || 'product')
-            div
+            .mobile-product-summary
                 .product-name= item.title || 'Chưa có tên sản phẩm'
                 .product-desc= shortDesc
         .mobile-product-body
-            .mobile-meta
-                span
-                    strong Danh mục:
-                    |  #{item.category || 'Chưa phân loại'}
-                span
-                    strong Giá:
-                    |  #{priceText}
-            .mobile-meta
-                span
-                    strong Rating:
-                    |  #{item.rating || 'Chưa có'}
-                span
-                    if isActive
-                        span.chip.chip--success Hoạt động
-                    else
-                        span.chip.chip--danger Không hoạt động
-            .mobile-meta
-                span
-                    strong Vị trí:
-                input.position-input(
-                    type="number"
-                    min="1"
-                    step="1"
-                    value=positionValue
-                    data-id=item._id
-                    aria-label="Vi tri san pham"
-                )
+            .mobile-meta-grid
+                .mobile-meta-card
+                    strong Danh mục
+                    span= item.category || 'Chưa phân loại'
+                .mobile-meta-card
+                    strong Giá
+                    span= priceText
+                .mobile-meta-card
+                    strong Đánh giá
+                    span= item.rating || 'Chưa có'
+                .mobile-meta-card
+                    strong Mã SP
+                    span= item._id || index + 1
+            .mobile-product-controls
+                .mobile-control
+                    span.mobile-control__label Trạng thái
+                    label.switch
+                        input.status-toggle(
+                            type="checkbox",
+                            checked=isActive,
+                            data-id=item._id
+                        )
+                        span.slider
+                .mobile-control
+                    label.mobile-control__label(for=mobilePositionId) Vị trí hiển thị
+                    input.position-input(
+                        id=mobilePositionId
+                        type="number"
+                        min="1"
+                        step="1"
+                        value=positionValue
+                        data-id=item._id
+                        name="position"
+                    )
             if item.discountPercentage
-                div
+                .mobile-sale
                     span.price-sale Giảm #{item.discountPercentage}%
             +actionButtons(item)

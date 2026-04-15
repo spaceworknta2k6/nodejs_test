@@ -1,186 +1,64 @@
-const StatusFilter = document.querySelector("#statusFilter");
-const formInput = document.querySelector("#keyword");
-const sortFilter = document.querySelector("#sortFilter");
-const applyButton = document.querySelector("#apply");
-const resetButton = document.querySelector("#reset");
-// applyButton
-if (applyButton) {
-  applyButton.addEventListener("click", () => {
-    const keyword = formInput.value.trim();
-    const status = StatusFilter.value;
-    const sort = sortFilter.value;
+﻿const sidebar = document.querySelector('.admin-sidebar');
+const shell = document.querySelector('.admin-shell');
+const openSidebarButton = document.querySelector('[data-admin-sidebar-toggle]');
+const closeSidebarButton = document.querySelector('[data-admin-sidebar-close]');
+const MOBILE_BREAKPOINT = 768;
 
-    const url = new URL(window.location.href);
-
-    if (keyword) {
-      url.searchParams.set("keyword", keyword);
-    } else {
-      url.searchParams.delete("keyword");
-    }
-
-    if (status) {
-      url.searchParams.set("status", status);
-    } else {
-      url.searchParams.delete("status");
-    }
-
-    if (sort) {
-      url.searchParams.set("sort", sort);
-    } else {
-      url.searchParams.delete("sort");
-    }
-
-    url.searchParams.set("page", "1");
-
-    window.location.href = url.href;
-  });
+if (shell && !shell.querySelector('.admin-sidebar-overlay')) {
+  const overlay = document.createElement('button');
+  overlay.type = 'button';
+  overlay.className = 'admin-sidebar-overlay';
+  overlay.setAttribute('aria-label', 'Đóng menu');
+  shell.appendChild(overlay);
 }
 
-// end applyButton
+const sidebarOverlay = document.querySelector('.admin-sidebar-overlay');
 
-// enterInput
-if (formInput) {
-  formInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      applyButton.click();
-    }
-  });
-}
-// end enterInput
-
-// reset Button
-if (resetButton) {
-  resetButton.addEventListener("click", () => {
-    const url = window.location.origin + window.location.pathname;
-    window.location.href = url;
-  });
-}
-// end reset Button
-
-// form change multi
-const boxCheck = document.querySelectorAll(".row-checkbox");
-const selectAllCheckbox = document.querySelector(".select-all");
-const countSelected = document.querySelector(".bulk-action-input");
-
-const updateBulkActionInput = () => {
-  const iscountChecked = document.querySelectorAll(
-    ".row-checkbox:checked",
-  ).length;
-  if (iscountChecked == 0) {
-    countSelected.value = "Chưa có sản phẩm nào được chọn";
-  } else {
-    countSelected.value = `${iscountChecked} sản phẩm được chọn`;
-  }
+const closeSidebar = () => {
+  document.body.classList.remove('admin-sidebar-open');
 };
 
-// select All
-if (selectAllCheckbox) {
-  selectAllCheckbox.addEventListener("change", (e) => {
-    const ischecked = e.target.checked;
-    boxCheck.forEach((item) => {
-      item.checked = ischecked;
-    });
+const openSidebar = () => {
+  document.body.classList.add('admin-sidebar-open');
+};
 
-    updateBulkActionInput();
+if (openSidebarButton) {
+  openSidebarButton.addEventListener('click', () => {
+    if (window.innerWidth <= MOBILE_BREAKPOINT) {
+      openSidebar();
+    }
   });
 }
 
-if (boxCheck.length > 0) {
-  boxCheck.forEach((box) => {
-    box.addEventListener("change", () => {
-      updateBulkActionInput();
-    });
-  });
-}
-// end form change multi
-
-// form delete item
-const buttonModify = document.querySelectorAll(".action-btn--delete");
-
-if (buttonModify.length > 0) {
-  buttonModify.forEach((item) => {
-    item.addEventListener("click", () => {
-      const formDelete = document.querySelector("#form-delete-item");
-      const path = formDelete.getAttribute("data-path");
-      var iscomfirm = confirm("Bạn có chắc muốn xóa sản phẩm này không!!");
-      if (iscomfirm) {
-        const id = item.getAttribute("data-id");
-        const action = `${path}/${id}?_method=DELETE`;
-        formDelete.action = action;
-        formDelete.submit();
-      }
-    });
-  });
+if (closeSidebarButton) {
+  closeSidebarButton.addEventListener('click', closeSidebar);
 }
 
-// end delete item
-
-// form change multi
-const formChangeMulti = document.querySelector("#form-change-multi");
-const inputIds = document.querySelector("#bulk-ids");
-
-if (formChangeMulti) {
-  // console.log(formChangeMulti)
-  formChangeMulti.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const checkedBox = document.querySelectorAll(".row-checkbox:checked");
-    // const ids = Array.from(checkedBox).map((item) => item.value);
-    const checkedType = formChangeMulti.querySelector(
-      "input[name='bulkAction']:checked",
-    );
-
-    let ids = [];
-
-    if (checkedType.value === "delete") {
-      const iscomfirm = confirm("Bạn có chắc muốn xóa sản phẩm không ");
-      if (!iscomfirm) {
-        return;
-      }
-    }
-
-    if (checkedType.value != "change-position") {
-      ids = Array.from(checkedBox).map((item) => item.value);
-    } else {
-      checkedBox.forEach((item) => {
-        const position = item
-          .closest("tr")
-          .querySelector("input[name='position']").value;
-        ids.push(`${item.value}-${position}`);
-      });
-    }
-
-    if (ids.length === 0) {
-      alert("Vui lòng chọn ít nhất 1 sản phẩm");
-      return;
-    }
-
-    if (!checkedType) {
-      alert("Vui lòng chọn thao tác ");
-      return;
-    }
-    
-    inputIds.value = ids.join(",");
-    formChangeMulti.submit();
-  });
-}
-// end form change multi
-
-
-// close messages
-const alertBox = document.querySelector(".alert");
-
-if(alertBox) {
-  const closeBtn = alertBox.querySelector(".alert__close");
-  const time = parseInt(alertBox.getAttribute("data-time"));
-
-  closeBtn.addEventListener("click", () => {
-    alertBox.classList.add("alert--hidden");
-  })
-
-  setTimeout(() => {
-    alertBox.classList.add("alert--hidden");
-  }, time);
-  
+if (sidebarOverlay) {
+  sidebarOverlay.addEventListener('click', closeSidebar);
 }
 
-// end close messages
+window.addEventListener('resize', () => {
+  if (window.innerWidth > MOBILE_BREAKPOINT) {
+    closeSidebar();
+  }
+});
+
+const alertBoxes = document.querySelectorAll('.alert');
+
+alertBoxes.forEach((alertBox) => {
+  const closeBtn = alertBox.querySelector('.alert__close');
+  const time = parseInt(alertBox.getAttribute('data-time'), 10) || 0;
+
+  const hideAlert = () => {
+    alertBox.classList.add('alert--hidden');
+  };
+
+  if (closeBtn) {
+    closeBtn.addEventListener('click', hideAlert);
+  }
+
+  if (time > 0) {
+    setTimeout(hideAlert, time);
+  }
+});
