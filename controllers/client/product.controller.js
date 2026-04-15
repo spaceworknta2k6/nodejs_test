@@ -54,6 +54,66 @@ const mapProductForView = (item) => {
   };
 };
 
+const getProductStats = async (filter) => {
+  const [stats] = await Product.aggregate([
+    {
+      $match: filter
+    },
+    {
+      $facet: {
+        summary: [
+          {
+            $group: {
+              _id: null,
+              discountedCount: {
+                $sum: {
+                  $cond: [{ $gt: [{ $ifNull: ['$discountPercentage', 0] }, 0] }, 1, 0]
+                }
+              },
+              totalInventoryValue: {
+                $sum: {
+                  $multiply: [
+                    { $ifNull: ['$price', 0] },
+                    {
+                      $subtract: [
+                        1,
+                        {
+                          $divide: [{ $ifNull: ['$discountPercentage', 0] }, 100]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ],
+        categories: [
+          {
+            $group: {
+              _id: {
+                $ifNull: ['$category', 'Uncategorized']
+              },
+              count: { $sum: 1 }
+            }
+          },
+          { $sort: { count: -1, _id: 1 } },
+          { $limit: 1 }
+        ]
+      }
+    }
+  ]);
+
+  const summary = stats?.summary?.[0] || {};
+  const leadingCategory = buildCategoryLabel(stats?.categories?.[0]?._id || 'Curated picks');
+
+  return {
+    discountedCount: summary.discountedCount || 0,
+    totalInventoryValue: roundCurrency(summary.totalInventoryValue || 0),
+    leadingCategory
+  };
+};
+
 // [GET] /product
 module.exports.index = async (req, res) => {
   const filter = {
@@ -69,26 +129,14 @@ module.exports.index = async (req, res) => {
     : 1;
   const skip = (currentPage - 1) * pageSize;
 
-  const [featuredRawProducts, paginatedRawProducts, allProductsForStats] = await Promise.all([
+  const [featuredRawProducts, paginatedRawProducts, stats] = await Promise.all([
     Product.find(filter).sort({ position: 'desc', createdAt: -1 }).limit(7),
     Product.find(filter).sort({ position: 'desc', createdAt: -1 }).skip(skip).limit(pageSize),
-    Product.find(filter).sort({ position: 'desc', createdAt: -1 })
+    getProductStats(filter)
   ]);
 
   const featuredProducts = featuredRawProducts.map(mapProductForView);
   const products = paginatedRawProducts.map(mapProductForView);
-  const statsProducts = allProductsForStats.map(mapProductForView);
-
-  const discountedCount = statsProducts.filter((item) => item.hasDiscount).length;
-  const totalInventoryValue = roundCurrency(
-    statsProducts.reduce((sum, item) => sum + item.finalPrice, 0)
-  );
-  const categories = statsProducts.reduce((acc, item) => {
-    const category = item.categoryLabel;
-    acc[category] = (acc[category] || 0) + 1;
-    return acc;
-  }, {});
-  const leadingCategory = Object.entries(categories).sort((a, b) => b[1] - a[1])[0]?.[0] || 'Curated picks';
   const featuredProduct = featuredProducts[0] || null;
   const spotlightProducts = featuredProducts.slice(1, 2);
   const galleryProducts = featuredProducts.slice(2, 5);
@@ -111,9 +159,9 @@ module.exports.index = async (req, res) => {
     detailProducts,
     productStats: {
       totalProducts,
-      discountedCount,
-      totalInventoryValue: formatCurrency(totalInventoryValue),
-      leadingCategory
+      discountedCount: stats.discountedCount,
+      totalInventoryValue: formatCurrency(stats.totalInventoryValue),
+      leadingCategory: stats.leadingCategory
     },
     pagination: {
       currentPage,
