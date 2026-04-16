@@ -2,6 +2,7 @@
 const Product = require("../../models/product.model");
 const sortHelper = require("../../helper/sort");
 const systemConfig = require("../../config/system");
+const uploadToCloudinary = require("../../helper/uploadToCloudinary");
 
 module.exports.products = async (req, res) => {
   const status = req.query.status || "";
@@ -166,15 +167,22 @@ module.exports.createPost = async (req, res) => {
   req.body.price = parseFloat(req.body.price);
   req.body.discountPercentage = parseFloat(req.body.discountPercentage);
 
-  req.body.images = Array.isArray(req.files)
-    ? req.files.map((file) => `/uploads/${file.filename}`)
-    : [];
+  const uploadedImages =
+    Array.isArray(req.files) && req.files.length > 0
+      ? await Promise.all(
+          req.files.map((file) => uploadToCloudinary(file.buffer, "products")),
+        )
+      : [];
+
+  req.body.images = uploadedImages.map((file) => file.secure_url);
+
   if (req.body.images.length > 0) {
     req.body.thumbnail = req.body.images[0];
   }
 
   const product = new Product(req.body);
   await product.save();
+  req.flash("success", "Thêm sản phẩm thành công");
   res.redirect(`${systemConfig.prefixAdmin}/product`);
 };
 
@@ -207,11 +215,12 @@ module.exports.detail = async (req, res) => {
       return res.redirect(`${systemConfig.prefixAdmin}/product`);
     }
 
-    const gallery = Array.isArray(product.images) && product.images.length > 0
-      ? product.images
-      : product.thumbnail
-        ? [product.thumbnail]
-        : [];
+    const gallery =
+      Array.isArray(product.images) && product.images.length > 0
+        ? product.images
+        : product.thumbnail
+          ? [product.thumbnail]
+          : [];
 
     res.render("admin/pages/product/detail", {
       PageTitle: "Chi tiết sản phẩm",
@@ -239,7 +248,11 @@ module.exports.editPatch = async (req, res) => {
     req.body.discountPercentage = parseFloat(req.body.discountPercentage);
 
     if (Array.isArray(req.files) && req.files.length > 0) {
-      req.body.images = req.files.map((file) => `/uploads/${file.filename}`);
+      const uploadedImages = await Promise.all(
+        req.files.map((file) => uploadToCloudinary(file.buffer, "products")),
+      );
+
+      req.body.images = uploadedImages.map((file) => file.secure_url);
       req.body.thumbnail = req.body.images[0];
     } else {
       delete req.body.images;
