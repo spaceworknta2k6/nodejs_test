@@ -124,6 +124,17 @@ block main
                   value=product.rating
                 )
 
+              .field-group
+                label.field-label(for="stock") Tồn kho
+                input#stock.form-control-modern(
+                  type="number"
+                  name="stock"
+                  min="0"
+                  step="1"
+                  placeholder="Ví dụ: 25"
+                  value=typeof product.stock === "number" ? product.stock : 0
+                )
+
           .create-section
             .section-heading
               span.section-heading__eyebrow Trạng thái và hình ảnh
@@ -180,6 +191,7 @@ block main
             li= `Danh mục: ${product.category || "Chưa phân loại"}`
             li= `Vị trí: ${typeof product.position !== "undefined" ? product.position : "Chưa đặt"}`
             li= `Trạng thái: ${product.active === false ? "Ngưng hoạt động" : "Hoạt động"}`
+            li= `Tồn kho: ${typeof product.stock === "number" ? product.stock : 0}`
 
         .sidebar-card
           span.sidebar-card__eyebrow Xem trước

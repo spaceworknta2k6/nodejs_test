@@ -89,59 +89,112 @@ block main
                     h2.apl-catalog__title Every product has its own spotlight.
                     p.apl-catalog__desc Browse the full collection with refined cards, clearer pricing, and a lighter visual rhythm.
 
-                .apl-catalog__meta
-                    p.apl-catalog__count Showing #{pagination.startItem}-#{pagination.endItem} of #{pagination.totalProducts} products
-                    if pagination.totalPages > 1
-                        p.apl-catalog__page Page #{pagination.currentPage} / #{pagination.totalPages}
+                .apl-catalog__layout
+                    aside.apl-filter
+                        .apl-filter__card
+                            p.apl-filter__eyebrow Explore products
+                            h3.apl-filter__title Sort and filter
 
-                .apl-catalog__grid
-                    each product in products
-                        article.apl-product
-                            .apl-product__image
-                                img(src=product.imageSrc, alt=product.title)
-                            .apl-product__body
-                                .apl-product__top
-                                    span.apl-product__category= product.category || "Uncategorized"
-                                    span.apl-product__rating ★ #{product.rating || 0}
-                                h3.apl-product__title= product.title || "Product"
-                                p.apl-product__text= product.description || "Details for this product are being updated."
-                                .apl-product__bottom
-                                    .apl-product__price
-                                        span.apl-product__price-label Price
-                                        if product.hasDiscount
-                                            .apl-product__price-row
-                                                span.apl-product__current= product.formattedFinalPrice
-                                                span.apl-product__original= product.formattedRawPrice
-                                            if product.savedAmount > 0
-                                                span.apl-product__saving Save #{product.formattedSavedAmount}
-                                        else
-                                            .apl-product__price-row
-                                                span.apl-product__current= product.formattedRawPrice
-                                    .apl-product__actions
-                                        a.apl-button.apl-button--ghost(href=product.detailPath) Xem chi tiết
-                                        a.apl-button(href="#") Buy
+                            form.apl-filter__form(action="#catalog", method="get")
+                                .apl-filter__group
+                                    label.apl-filter__label(for="sort-name") Product name
+                                    select#sort-name.apl-filter__select(name="sortName")
+                                        option(value="" selected=selectedFilters.sortName === "") Choose name order
+                                        option(value="az" selected=selectedFilters.sortName === "az") Name A-Z
+                                        option(value="za" selected=selectedFilters.sortName === "za") Name Z-A
 
-                if pagination.totalPages > 1
-                    nav.apl-pagination(aria-label="Product pagination")
-                        if pagination.hasPrev
-                            a.apl-pagination__nav(href=`/products?page=${pagination.prevPage}#catalog`) Previous
-                        else
-                            span.apl-pagination__nav.is-disabled Previous
+                                .apl-filter__group
+                                    label.apl-filter__label(for="sort-category") Category
+                                    select#sort-category.apl-filter__select(name="category")
+                                        option(value="" selected=selectedFilters.category === "") All categories
+                                        each category in categories
+                                            option(value=category selected=selectedFilters.category === category)= category
 
-                        .apl-pagination__pages
-                            each pageNumber in pagination.pageNumbers
-                                if pageNumber === pagination.currentPage
-                                    span.apl-pagination__page.is-active= pageNumber
+                                .apl-filter__group
+                                    label.apl-filter__label(for="sort-price") Sort by price
+                                    select#sort-price.apl-filter__select(name="sortPrice")
+                                        option(value="" selected=selectedFilters.sortPrice === "") Default order
+                                        option(value="asc" selected=selectedFilters.sortPrice === "asc") Price low to high
+                                        option(value="desc" selected=selectedFilters.sortPrice === "desc") Price high to low
+
+                                .apl-filter__group
+                                    label.apl-filter__label(for="price-range") Price range
+                                    select#price-range.apl-filter__select(name="priceRange")
+                                        option(value="" selected=selectedFilters.priceRange === "") All price ranges
+                                        option(value="under-500" selected=selectedFilters.priceRange === "under-500") Under 500$
+                                        option(value="500-1000" selected=selectedFilters.priceRange === "500-1000") From 500$ to 1,000$
+                                        option(value="over-1000" selected=selectedFilters.priceRange === "over-1000") Over 1,000$
+
+                                .apl-filter__group
+                                    label.apl-filter__label(for="stock-status") Stock status
+                                    select#stock-status.apl-filter__select(name="stock")
+                                        option(value="" selected=selectedFilters.stock === "") All stock statuses
+                                        option(value="in-stock" selected=selectedFilters.stock === "in-stock") In stock
+                                        option(value="out-of-stock" selected=selectedFilters.stock === "out-of-stock") Out of stock
+
+                                .apl-filter__actions
+                                    button.apl-filter__button(type="submit") Apply
+                                    a.apl-filter__button.apl-filter__button--ghost(href="/products#catalog") Reset
+
+                    .apl-catalog__content
+                        .apl-catalog__meta
+                            p.apl-catalog__count Showing #{pagination.startItem}-#{pagination.endItem} of #{pagination.totalProducts} products
+                            if pagination.totalPages > 1
+                                p.apl-catalog__page Page #{pagination.currentPage} / #{pagination.totalPages}
+
+                        .apl-catalog__grid
+                            if products.length
+                                each product in products
+                                    article.apl-product
+                                        .apl-product__image
+                                            img(src=product.imageSrc, alt=product.title)
+                                        .apl-product__body
+                                            .apl-product__top
+                                                .apl-product__meta-badges
+                                                    span.apl-product__category= product.category || "Uncategorized"
+                                                    span(class=`apl-stock-badge ${product.inStock ? "is-in-stock" : "is-out-of-stock"}`)= product.stockLabel
+                                                span.apl-product__rating ★ #{product.rating || 0}
+                                            h3.apl-product__title= product.title || "Product"
+                                            p.apl-product__text= product.description || "Details for this product are being updated."
+                                            .apl-product__bottom
+                                                .apl-product__price
+                                                    span.apl-product__price-label Price
+                                                    if product.hasDiscount
+                                                        .apl-product__price-row
+                                                            span.apl-product__current= product.formattedFinalPrice
+                                                            span.apl-product__original= product.formattedRawPrice
+                                                        if product.savedAmount > 0
+                                                            span.apl-product__saving Save #{product.formattedSavedAmount}
+                                                    else
+                                                        .apl-product__price-row
+                                                            span.apl-product__current= product.formattedRawPrice
+                                                .apl-product__actions
+                                                    a.apl-button.apl-button--ghost(href=product.detailPath) View details
+                                                    a.apl-button(href="#") Buy
+                            else
+                                .product-empty.product-empty--inline
+                                    h3.product-empty__title No matching products
+                                    p.product-empty__desc Try changing the filters or resetting the current selection.
+
+                        if pagination.totalPages > 1
+                            nav.apl-pagination(aria-label="Product pagination")
+                                if pagination.hasPrev
+                                    a.apl-pagination__nav(href=`/products?page=${pagination.prevPage}${paginationQuerySuffix}#catalog`) Previous
                                 else
-                                    a.apl-pagination__page(href=`/products?page=${pageNumber}#catalog`)= pageNumber
+                                    span.apl-pagination__nav.is-disabled Previous
 
-                        if pagination.hasNext
-                            a.apl-pagination__nav(href=`/products?page=${pagination.nextPage}#catalog`) Next
-                        else
-                            span.apl-pagination__nav.is-disabled Next
+                                .apl-pagination__pages
+                                    each pageNumber in pagination.pageNumbers
+                                        if pageNumber === pagination.currentPage
+                                            span.apl-pagination__page.is-active= pageNumber
+                                        else
+                                            a.apl-pagination__page(href=`/products?page=${pageNumber}${paginationQuerySuffix}#catalog`)= pageNumber
+
+                                if pagination.hasNext
+                                    a.apl-pagination__nav(href=`/products?page=${pagination.nextPage}${paginationQuerySuffix}#catalog`) Next
+                                else
+                                    span.apl-pagination__nav.is-disabled Next
     else
         .product-empty
             h2.product-empty__title No products found
             p.product-empty__desc Product data is currently unavailable. Please add items from the admin side and reload this page.
-
-

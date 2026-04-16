@@ -6,6 +6,8 @@ block main
   - const coverImage = product.thumbnail || (galleryImages.length ? galleryImages[0] : 'https://via.placeholder.com/960x720?text=No+Image')
   - const statusLabel = product.active === false ? 'Tạm ẩn' : 'Đang hoạt động'
   - const statusClass = product.active === false ? 'chip--danger' : 'chip--success'
+  - const stockCount = Math.max(Number(product.stock) || 0, 0)
+  - const stockLabel = stockCount > 0 ? 'In stock' : 'Out of stock'
 
   +alert-success(3000)
   +alert-error(3000)
@@ -33,6 +35,9 @@ block main
         .detail-stat
           span.detail-stat__label Vị trí
           strong.detail-stat__value= typeof product.position !== 'undefined' ? product.position : 'Chưa đặt'
+        .detail-stat
+          span.detail-stat__label Tồn kho
+          strong.detail-stat__value= `${stockCount}`
 
     .detail-shell
       .detail-gallery-card
@@ -62,6 +67,9 @@ block main
             .detail-info-item
               span.detail-info-item__label Thumbnail
               strong= product.thumbnail ? 'Đã có' : 'Chưa có'
+            .detail-info-item
+              span.detail-info-item__label Stock
+              strong= `${stockCount}`
 
         .detail-section
           .detail-section__head

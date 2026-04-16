@@ -14,19 +14,26 @@ block main
                             span.detail-price-old= product.formattedRawPrice
                             span.detail-badge Save #{product.formattedSavedAmount}
                         span.detail-rating ★ #{product.rating || 0}
+                        span(class=`detail-stock-badge ${product.inStock ? 'is-in-stock' : 'is-out-of-stock'}`)= product.stockLabel
                     .detail-info-grid.detail-info-grid--client
                         .detail-info-card
-                            span.detail-info-card__label Danh mục
+                            span.detail-info-card__label Category
                             strong= product.categoryLabel || 'Uncategorized'
                         .detail-info-card
-                            span.detail-info-card__label Giá gốc
+                            span.detail-info-card__label Original price
                             strong= product.formattedRawPrice
                         .detail-info-card
-                            span.detail-info-card__label Giá hiện tại
+                            span.detail-info-card__label Current price
                             strong= product.hasDiscount ? product.formattedFinalPrice : product.formattedRawPrice
                         .detail-info-card
-                            span.detail-info-card__label Đánh giá
-                            strong= product.rating || 'Chưa có'
+                            span.detail-info-card__label Rating
+                            strong= product.rating || 'Not rated'
+                        .detail-info-card
+                            span.detail-info-card__label Stock status
+                            strong= product.stockLabel
+                        .detail-info-card
+                            span.detail-info-card__label Units available
+                            strong= product.stock
                     .detail-hero__actions
                         a.apl-button(href="#") Mua hàng
                         a.apl-button.apl-button--ghost(href="/products#catalog") Quay lại
@@ -72,4 +79,3 @@ block main
         .product-empty
             h2.product-empty__title Không tìm thấy sản phẩm
             p.product-empty__desc Sản phẩm này hiện không khả dụng hoặc đã bị ẩn khỏi danh sách hiển thị.
-

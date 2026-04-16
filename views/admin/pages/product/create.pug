@@ -108,6 +108,17 @@ block main
                   placeholder="0 - 5"
                 )
 
+              .field-group
+                label.field-label(for="stock") Tồn kho
+                input#stock.form-control-modern(
+                  type="number"
+                  name="stock"
+                  min="0"
+                  step="1"
+                  placeholder="Ví dụ: 25"
+                  value="0"
+                )
+
           .create-section
             .section-heading
               span.section-heading__eyebrow Trạng thái và hình ảnh
