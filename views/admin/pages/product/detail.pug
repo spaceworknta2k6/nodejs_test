@@ -74,7 +74,10 @@ block main
         .detail-section
           .detail-section__head
             p.detail-section__eyebrow Mô tả
-          p.detail-long-text= product.description || 'Sản phẩm chưa có mô tả chi tiết.'
+          if product.description
+            .detail-long-text!= product.description
+          else
+            p.detail-long-text Sản phẩm chưa có mô tả chi tiết.
 
         .detail-actions-footer
           a.detail-cta.detail-cta--primary(href=`${PrefixAdmin}/product/edit/${product._id}`) Chỉnh sửa

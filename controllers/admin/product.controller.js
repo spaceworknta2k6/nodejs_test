@@ -153,38 +153,46 @@ module.exports.create = (req, res) => {
 };
 
 module.exports.createPost = async (req, res) => {
-  if (req.body.position != "") {
-    req.body.position = parseInt(req.body.position, 10);
-  } else {
-    const count = await Product.countDocuments();
-    req.body.position = count + 1;
+  try {
+    if (req.body.position != "") {
+      req.body.position = parseInt(req.body.position, 10);
+    } else {
+      const count = await Product.countDocuments();
+      req.body.position = count + 1;
+    }
+
+    if (req.body.rating != "") {
+      req.body.rating = parseFloat(req.body.rating);
+    }
+
+    req.body.price = parseFloat(req.body.price);
+    req.body.discountPercentage = parseFloat(req.body.discountPercentage);
+    req.body.stock = parseInt(req.body.stock, 10) || 0;
+
+    const uploadedImages =
+      Array.isArray(req.files) && req.files.length > 0
+        ? await Promise.all(
+            req.files.map((file) =>
+              uploadToCloudinary(file.buffer, "products"),
+            ),
+          )
+        : [];
+
+    req.body.images = uploadedImages.map((file) => file.secure_url);
+
+    if (req.body.images.length > 0) {
+      req.body.thumbnail = req.body.images[0];
+    }
+
+    const product = new Product(req.body);
+    await product.save();
+    req.flash("success", "Thêm sản phẩm thành công");
+    return res.redirect(`${systemConfig.prefixAdmin}/product`);
+  } catch (error) {
+    console.error("Create product error:", error);
+    req.flash("error", "Thêm sản phẩm thất bại");
+    return res.redirect(`${systemConfig.prefixAdmin}/product/create`);
   }
-
-  if (req.body.rating != "") {
-    req.body.rating = parseFloat(req.body.rating);
-  }
-
-  req.body.price = parseFloat(req.body.price);
-  req.body.discountPercentage = parseFloat(req.body.discountPercentage);
-  req.body.stock = parseInt(req.body.stock, 10) || 0;
-
-  const uploadedImages =
-    Array.isArray(req.files) && req.files.length > 0
-      ? await Promise.all(
-          req.files.map((file) => uploadToCloudinary(file.buffer, "products")),
-        )
-      : [];
-
-  req.body.images = uploadedImages.map((file) => file.secure_url);
-
-  if (req.body.images.length > 0) {
-    req.body.thumbnail = req.body.images[0];
-  }
-
-  const product = new Product(req.body);
-  await product.save();
-  req.flash("success", "Thêm sản phẩm thành công");
-  res.redirect(`${systemConfig.prefixAdmin}/product`);
 };
 
 module.exports.edit = async (req, res) => {
