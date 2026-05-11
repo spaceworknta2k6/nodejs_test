@@ -1,0 +1,51 @@
+extends ../../layouts/default.pug
+include ../../mixins/admin/alert.pug
+
+block main
+  +alert-success(3000)
+  +alert-error(3000)
+  - const roles = Array.isArray(record) ? record : []
+
+  .product-page.roles-page
+    .page-hero
+      .page-hero__top
+        div
+          h1.page-hero__title Quản lý nhóm quyền
+          p.page-hero__desc Danh sách các nhóm quyền hiện có trong hệ thống quản trị.
+        .hero-actions
+          a.hero-btn.hero-btn--light(href=`${PrefixAdmin}/roles/create`) + Thêm nhóm quyền
+
+    .table-action-section
+      .table-card
+        .table-card__head
+          div
+            h2.table-card__title Danh sách quyền
+            p.table-card__meta= `Hiển thị ${roles.length} nhóm quyền`
+
+        if roles.length
+          .product-table-wrap
+            table.table.product-table
+              thead
+                tr
+                  th STT
+                  th Tên nhóm quyền
+                  th Mô tả
+                  th Hành động
+              tbody
+                each item, index in roles
+                  tr
+                    td= index + 1
+                    td
+                      a.role-link(href=`${PrefixAdmin}/roles/detail/${item._id}`)
+                        strong= item.title || "Chưa đặt tên"
+                    td= item.description || "Chưa có mô tả"
+                    td
+                      .action-group
+                        a.action-btn.action-btn--view(href=`${PrefixAdmin}/roles/detail/${item._id}`) Chi tiết
+                        a.action-btn.action-btn--edit(href=`${PrefixAdmin}/roles/edit/${item._id}`) Sửa
+                        a.action-btn.action-btn--delete(href=`${PrefixAdmin}/roles/delete/${item._id}`) Xóa
+        else
+          .empty-state
+            .empty-state__icon 🔐
+            h3.mb-2 Chưa có nhóm quyền nào
+            p.mb-0 Hãy thêm nhóm quyền mới để bắt đầu phân quyền cho hệ thống.
