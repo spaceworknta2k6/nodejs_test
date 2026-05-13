@@ -53,6 +53,62 @@ block main
                 input(type="checkbox")
               td.permission-check
                 input(type="checkbox")
+
+            tr.permission-group
+              td(colspan="4")
+                b Sản phẩm
+            tr(data-name="products_view")
+              td.permission-name Xem
+              td.permission-check
+                input(type="checkbox")
+              td.permission-check
+                input(type="checkbox")
+            tr(data-name="products_create")
+              td.permission-name Thêm mới
+              td.permission-check
+                input(type="checkbox")
+              td.permission-check
+                input(type="checkbox")
+            tr(data-name="products_edit")
+              td.permission-name Chỉnh sửa
+              td.permission-check
+                input(type="checkbox")
+              td.permission-check
+                input(type="checkbox")
+            tr(data-name="products_delete")
+              td.permission-name Xóa
+              td.permission-check
+                input(type="checkbox")
+              td.permission-check
+                input(type="checkbox")
+
+            tr.permission-group
+              td(colspan="4")
+                b Nhóm quyền
+            tr(data-name="roles_view")
+              td.permission-name Xem
+              td.permission-check
+                input(type="checkbox")
+              td.permission-check
+                input(type="checkbox")
+            tr(data-name="roles_create")
+              td.permission-name Thêm mới
+              td.permission-check
+                input(type="checkbox")
+              td.permission-check
+                input(type="checkbox")
+            tr(data-name="roles_edit")
+              td.permission-name Chỉnh sửa
+              td.permission-check
+                input(type="checkbox")
+              td.permission-check
+                input(type="checkbox")
+            tr(data-name="roles_delete")
+              td.permission-name Xóa
+              td.permission-check
+                input(type="checkbox")
+              td.permission-check
+                input(type="checkbox")
       
       div(style="text-align: right; padding: 16px;")
         button.permission-submit(
