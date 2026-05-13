@@ -1,0 +1,74 @@
+extends ../../layouts/default.pug
+
+block main
+  -
+    // Từ điển dịch tên nhóm
+    const groupMap = {
+      "products-category": "Danh mục sản phẩm",
+      "products": "Sản phẩm",
+      "roles": "Nhóm quyền"
+    };
+
+    // Từ điển dịch loại quyền
+    const actionMap = {
+      "view": { label: "Xem", type: "view" },
+      "create": { label: "Thêm mới", type: "create" },
+      "edit": { label: "Chỉnh sửa", type: "edit" },
+      "delete": { label: "Xóa", type: "delete" }
+    };
+
+    // Phân nhóm quyền tự động
+    const groupedPerms = {};
+    if (record && record.permission) {
+      record.permission.forEach(p => {
+        const parts = p.split('_');
+        
+        // Nếu đúng chuẩn format "nhomquyen_hanhdong" (vd: roles_view)
+        if (parts.length === 2) {
+          const groupKey = parts[0];
+          const actionKey = parts[1];
+          
+          // Lấy tên tiếng Việt, nếu chưa có trong từ điển thì lấy nguyên gốc chữ tiếng Anh
+          const groupName = groupMap[groupKey] || groupKey;
+          const actionData = actionMap[actionKey] || { label: actionKey, type: "default" };
+          
+          if (!groupedPerms[groupName]) groupedPerms[groupName] = [];
+          groupedPerms[groupName].push(actionData);
+        } else {
+          if (!groupedPerms["Khác"]) groupedPerms["Khác"] = [];
+          groupedPerms["Khác"].push({ label: p, type: "default" });
+        }
+      });
+    }
+
+  div(class="container-fluid py-4")
+    a.btn.btn-outline-secondary.mb-4(href=`${PrefixAdmin}/roles`) ← Quay lại danh sách
+
+    if(record)
+      .detail-card
+        .detail-header
+          h1.detail-title #{record.title}
+          if (record.description)
+            p.detail-desc #{record.description}
+          else
+            p.detail-desc.no-desc Chưa có mô tả cho nhóm quyền này.
+
+        .detail-body
+          h4.mb-4.title-permissions Danh sách quyền hạn
+          
+          if (Object.keys(groupedPerms).length > 0)
+            .row
+              each groupName in Object.keys(groupedPerms)
+                .col-12.col-md-6
+                  .perm-group
+                    .perm-group-title #{groupName}
+                    div
+                      each p in groupedPerms[groupName]
+                        span.perm-badge(class=p.type) #{p.label}
+          else
+            .empty-notice
+              p Nhóm quyền này chưa được cấp quyền nào.
+              a.btn.btn-primary.mt-3(href=`${PrefixAdmin}/roles/permission`) Phân quyền ngay
+
+    else
+      .alert.alert-danger(role="alert") Không tìm thấy thông tin nhóm quyền.

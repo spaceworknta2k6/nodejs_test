@@ -1,4 +1,4 @@
-﻿.roles-page {
+.roles-page {
   --roles-surface: var(--surface);
   --roles-surface-muted: #f8faff;
   --roles-border: rgba(79, 70, 229, 0.12);
@@ -536,3 +536,62 @@
     min-width: 560px;
   }
 }
+
+/* Role Detail Page */
+.detail-card {
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+  background: #fff;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+.detail-header {
+  background: linear-gradient(135deg, #0d6efd 0%, #4f46e5 100%);
+  padding: 32px;
+  color: white;
+}
+.detail-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+}
+.detail-desc {
+  opacity: 0.9;
+  font-size: 15px;
+  margin: 0;
+}
+.detail-body {
+  padding: 32px;
+}
+.perm-group {
+  margin-bottom: 24px;
+  background: #f9fafb;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #f3f4f6;
+}
+.perm-group-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #e5e7eb;
+}
+.perm-badge {
+  display: inline-flex;
+  align-items: center;
+  background: #eff6ff;
+  color: #1d4ed8;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 10px 10px 0;
+  border: 1px solid #bfdbfe;
+}
+.perm-badge.view { background: #f0fdf4; color: #15803d; border-color: #bbf7d0; }
+.perm-badge.create { background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; }
+.perm-badge.edit { background: #fef3c7; color: #b45309; border-color: #fde68a; }
+.perm-badge.delete { background: #fef2f2; color: #b91c1c; border-color: #fecaca; }

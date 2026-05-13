@@ -17,7 +17,7 @@ if (tablePermissions) {
       if (name === "id") {
         // Lấy danh sách tiêu đề từ thead (bỏ qua cột đầu tiên "Tính năng")
         const roleTitles = Array.from(tablePermissions.querySelectorAll("thead th")).slice(1).map(th => th.textContent.trim());
-        
+
         // Hàng ID khởi tạo dữ liệu
         inputs.forEach((input, index) => {
           const id = input.value;
@@ -43,7 +43,7 @@ if (tablePermissions) {
       console.log(permissions); // In ra để bạn kiểm tra mảng giống hệt ảnh mẫu
       const formChangePermissions = document.querySelector("#form-change-permissions");
       const inputPermissions = formChangePermissions.querySelector("input[name='permissions']");
-      
+
       inputPermissions.value = JSON.stringify(permissions);
       formChangePermissions.submit();
     }
@@ -73,4 +73,23 @@ if (dataRecords) {
       });
     });
   }
+}
+
+// delete role
+const buttonDelete = document.querySelectorAll("[button-delete]");
+const formDelete = document.querySelector("#form-delete-item");
+if (buttonDelete.length > 0) {
+  const path = formDelete.getAttribute("data-path");
+  buttonDelete.forEach(button => {
+    button.addEventListener("click", () => {
+      const isconfirm = confirm("Bạn có chắc chắn muốn xóa?");
+      if (isconfirm) {
+        const id = button.getAttribute("data-id");
+        const action = `${path}/${id}?_method=PATCH`;
+        formDelete.action = action;
+        formDelete.submit();
+      }
+    })
+  })
+
 }

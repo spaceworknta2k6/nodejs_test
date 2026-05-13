@@ -43,9 +43,17 @@ block main
                       .action-group
                         a.action-btn.action-btn--view(href=`${PrefixAdmin}/roles/detail/${item._id}`) Chi tiết
                         a.action-btn.action-btn--edit(href=`${PrefixAdmin}/roles/edit/${item._id}`) Sửa
-                        a.action-btn.action-btn--delete(href=`${PrefixAdmin}/roles/delete/${item._id}`) Xóa
+                        button.action-btn.action-btn--delete(button-delete data-id=item._id) Xóa
         else
           .empty-state
             .empty-state__icon 🔐
             h3.mb-2 Chưa có nhóm quyền nào
             p.mb-0 Hãy thêm nhóm quyền mới để bắt đầu phân quyền cho hệ thống.
+
+  form#form-delete-item(
+    method="POST"
+    action=""
+    data-path=`${PrefixAdmin}/roles/delete`
+  )
+
+  script(src="/admin/js/role.js")

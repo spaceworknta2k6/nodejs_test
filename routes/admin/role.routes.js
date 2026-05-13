@@ -14,4 +14,7 @@ router.patch('/edit/:id', Controller.editPatch)
 router.get('/permission', Controller.permission)
 router.patch('/permission', Controller.permissionPatch)
 
+router.get('/detail/:id', Controller.detail)
+
+router.patch('/delete/:id', Controller.delete)
 module.exports = router

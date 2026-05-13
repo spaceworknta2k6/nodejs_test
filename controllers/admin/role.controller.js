@@ -64,7 +64,7 @@ module.exports.editPatch = async (req, res) => {
     await Role.updateOne({ _id: id }, req.body);
     req.flash("success", "Cap nhat thanh cong");
     res.redirect(`${systemConfig.prefixAdmin}/roles`);
-  } catch(error) {
+  } catch (error) {
     req.flash("error", "Cap nhat that bai");
     res.redirect(`${systemConfig.prefixAdmin}/roles`);
   }
@@ -79,9 +79,9 @@ module.exports.permission = async (req, res) => {
 
   const record = await Role.find(find);
   res.render("admin/pages/roles/permission", {
-      PageTitle: "Trang phan quyen",
-      record: record,
-    });
+    PageTitle: "Trang phan quyen",
+    record: record,
+  });
 };
 
 // [PATCH] admin/roles/permission
@@ -101,3 +101,36 @@ module.exports.permissionPatch = async (req, res) => {
     res.redirect(`${systemConfig.prefixAdmin}/roles/permission`);
   }
 };
+
+// [GET] admin/roles/detail
+module.exports.detail = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const find = {
+      _id: id,
+      deleted: false
+    };
+
+    const record = await Role.findOne(find);
+
+    res.render("admin/pages/roles/detail", {
+      PageTitle: "Trang chi tiết nhóm quyền",
+      record: record,
+    });
+  } catch (error) {
+    res.redirect(`${systemConfig.prefixAdmin}/roles`);
+  }
+};
+
+// [GET] admin/roles/delete
+module.exports.delete = async (req, res) => {
+  try {
+    const id = req.params.id;
+    await Role.updateOne({ _id: id }, { deleted: true });
+    req.flash("success", "Bạn đã xóa thành công");
+    res.redirect(`${systemConfig.prefixAdmin}/roles`);
+  } catch (error) {
+    req.flash("error", "Xóa thất bại");
+    res.redirect(`${systemConfig.prefixAdmin}/roles`);
+  }
+}
