@@ -1,0 +1,70 @@
+extends ../../layouts/default.pug
+include ../../mixins/admin/alert.pug
+
+block main
+  +alert-success(3000)
+  +alert-error(3000)
+  .permission-page
+    .permission-card
+      .permission-card__head
+        h1.permission-title Phân quyền
+        a.btn.btn-outline-success(href=`${PrefixAdmin}/roles/create`) + Thêm nhóm quyền
+
+      if(record)
+        div(data-records=record style="display: none;")
+
+      .permission-table-wrap
+        table.permission-table(table-permissions)
+          thead
+            tr
+              th Tính năng 
+              each item in record 
+                th.text-center #{item.title}
+          tbody 
+            tr(data-name="id" style="display: none;")
+              td 
+              each role in record
+                td.permission-check
+                  input(type="text" value=role._id)
+            tr.permission-group
+              td(colspan="4")
+                b Danh mục sản phẩm
+            tr(data-name="products-category_view")
+              td.permission-name Xem
+              td.permission-check
+                input(type="checkbox")
+              td.permission-check
+                input(type="checkbox")
+            tr(data-name="products-category_create")
+              td.permission-name Thêm mới
+              td.permission-check
+                input(type="checkbox")
+              td.permission-check
+                input(type="checkbox")
+            tr(data-name="products-category_edit")
+              td.permission-name Chỉnh sửa
+              td.permission-check
+                input(type="checkbox")
+              td.permission-check
+                input(type="checkbox")
+            tr(data-name="products-category_delete")
+              td.permission-name Xóa
+              td.permission-check
+                input(type="checkbox")
+              td.permission-check
+                input(type="checkbox")
+      
+      div(style="text-align: right; padding: 16px;")
+        button.permission-submit(
+          type="submit"
+          button-submit
+        ) Cập nhật
+
+
+ 
+  //- Form ẩn dùng để gửi dữ liệu lên server
+  form#form-change-permissions(method="POST" action=`${PrefixAdmin}/roles/permission?_method=PATCH` style="display: none;")
+    .form-group
+      input(type="text" class="form-control" name="permissions")
+
+  script(src=`${PrefixAdmin}/js/role.js`)

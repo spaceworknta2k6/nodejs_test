@@ -1,4 +1,4 @@
-.roles-page {
+﻿.roles-page {
   --roles-surface: var(--surface);
   --roles-surface-muted: #f8faff;
   --roles-border: rgba(79, 70, 229, 0.12);
@@ -402,5 +402,137 @@
   .roles-page .create-panel,
   .roles-page .create-section {
     border-radius: 18px;
+  }
+}
+
+
+.permission-page {
+  padding: 24px;
+  background: #ffffff;
+}
+
+.permission-card {
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.06);
+}
+
+.permission-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #ffffff;
+}
+
+.permission-title {
+  margin: 0;
+  color: #111827;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.permission-submit {
+  min-height: 36px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 6px;
+  background: #0d6efd;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.permission-submit:hover {
+  background: #0b5ed7;
+}
+
+.permission-form {
+  margin: 0;
+}
+
+.permission-table-wrap {
+  overflow-x: auto;
+}
+
+.permission-table {
+  width: 100%;
+  min-width: 640px;
+  margin: 0;
+  border-collapse: collapse;
+}
+
+.permission-table th,
+.permission-table td {
+  padding: 9px 14px;
+  border-bottom: 1px solid #e5e7eb;
+  color: #374151;
+  font-size: 14px;
+  vertical-align: middle;
+}
+
+.permission-table th {
+  background: #ffffff;
+  color: #111827;
+  font-weight: 800;
+  text-align: center;
+}
+
+.permission-table th:first-child,
+.permission-name,
+.permission-group td {
+  text-align: left;
+}
+
+.permission-group td {
+  background: #f9fafb;
+  color: #111827;
+  font-weight: 800;
+}
+
+.permission-name {
+  width: 260px;
+  font-weight: 500;
+}
+
+.permission-check {
+  text-align: center;
+}
+
+.permission-check input {
+  width: 15px;
+  height: 15px;
+  margin: 0;
+  accent-color: #0d6efd;
+  cursor: pointer;
+}
+
+.permission-empty {
+  padding: 28px;
+  text-align: center;
+  color: #6b7280;
+}
+
+@media (max-width: 767.98px) {
+  .permission-page {
+    padding: 16px;
+  }
+
+  .permission-card__head {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .permission-submit {
+    width: 100%;
+  }
+
+  .permission-table {
+    min-width: 560px;
   }
 }

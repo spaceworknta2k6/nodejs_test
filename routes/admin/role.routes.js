@@ -11,4 +11,7 @@ router.post('/create', Controller.createPost)
 router.get('/edit/:id', Controller.edit)
 router.patch('/edit/:id', Controller.editPatch)
 
+router.get('/permission', Controller.permission)
+router.patch('/permission', Controller.permissionPatch)
+
 module.exports = router

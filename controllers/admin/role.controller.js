@@ -31,16 +31,22 @@ module.exports.createPost = async (req, res) => {
   res.redirect(`${systemConfig.prefixAdmin}/roles`);
 };
 
+// [GET] admin/roles/edit
 module.exports.edit = async (req, res) => {
   try {
     const id = req.params.id;
 
     const find = {
       _id: id,
-      deleted: false,
+      deleted: { $ne: true },
     };
 
     const record = await Role.findOne(find);
+
+    if (!record) {
+      req.flash("error", "Khong tim thay nhom quyen");
+      return res.redirect(`${systemConfig.prefixAdmin}/roles`);
+    }
 
     res.render("admin/pages/roles/edit", {
       PageTitle: "Trang chinh sua",
@@ -51,6 +57,7 @@ module.exports.edit = async (req, res) => {
   }
 };
 
+// [PATCH] admin/roles/edit
 module.exports.editPatch = async (req, res) => {
   try {
     const id = req.params.id;
@@ -60,5 +67,37 @@ module.exports.editPatch = async (req, res) => {
   } catch(error) {
     req.flash("error", "Cap nhat that bai");
     res.redirect(`${systemConfig.prefixAdmin}/roles`);
+  }
+};
+
+// [GET] admin/roles/permission
+
+module.exports.permission = async (req, res) => {
+  let find = {
+    deleted: false
+  }
+
+  const record = await Role.find(find);
+  res.render("admin/pages/roles/permission", {
+      PageTitle: "Trang phan quyen",
+      record: record,
+    });
+};
+
+// [PATCH] admin/roles/permission
+module.exports.permissionPatch = async (req, res) => {
+  try {
+    const permissions = JSON.parse(req.body.permissions);
+
+    for (const item of permissions) {
+      // Lưu ý: Trường trong model là "permission"
+      await Role.updateOne({ _id: item.id }, { permission: item.permissions });
+    }
+
+    req.flash("success", "Cập nhật phân quyền thành công");
+    res.redirect(`${systemConfig.prefixAdmin}/roles/permission`);
+  } catch (error) {
+    req.flash("error", "Cập nhật phân quyền thất bại");
+    res.redirect(`${systemConfig.prefixAdmin}/roles/permission`);
   }
 };
