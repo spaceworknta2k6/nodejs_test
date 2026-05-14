@@ -1,0 +1,74 @@
+extends ../../layouts/default.pug
+include ../../mixins/admin/alert.pug
+
+block main
+  +alert-success(3000)
+  +alert-error(3000)
+
+  .product-page.accounts-page
+    .page-hero
+      .page-hero__top
+        div
+          h1.page-hero__title Quản lý tài khoản
+          p.page-hero__desc Danh sách các tài khoản quản trị hiện có trong hệ thống.
+        .hero-actions
+          a.hero-btn.hero-btn--light(href=`${PrefixAdmin}/accounts/create`) + Thêm mới
+
+    .table-action-section
+      .table-card
+        .table-card__head
+          div
+            h2.table-card__title Danh sách tài khoản
+            p.table-card__meta Hiển thị #{records.length} tài khoản
+        
+        if records.length > 0
+          .product-table-wrap
+            table.table.product-table
+              thead
+                tr
+                  th STT
+                  th Avatar
+                  th Họ tên
+                  th Phân quyền
+                  th Email
+                  th Trạng thái
+                  th Hành động
+              tbody
+                each item, index in records
+                  tr
+                    td #{index + 1}
+                    td
+                      img(
+                        src=item.avatar ? item.avatar : "https://via.placeholder.com/150"
+                        alt=item.fullName
+                        width="40px"
+                        height="40px"
+                        style="border-radius: 50%; object-fit: cover;"
+                      )
+                    td 
+                      strong #{item.fullName}
+                    td
+                      span.chip.chip--category #{item.role_id ? item.role_id.title : "Chưa phân quyền"}
+                    td #{item.email}
+                    td
+                      if item.status === "active"
+                        span.chip.chip--success Hoạt động
+                      else
+                        span.chip.chip--danger Dừng hoạt động
+                    td
+                      .action-group
+                        a.action-btn.action-btn--edit(href=`${PrefixAdmin}/accounts/edit/${item.id}`) Sửa
+                        button.action-btn.action-btn--delete(type="button" data-id=item.id) Xóa
+        else
+          .empty-state
+            .empty-state__icon 👥
+            h3.mb-2 Chưa có dữ liệu tài khoản
+            p.mb-0 Hãy thêm tài khoản mới để bắt đầu quản lý.
+  form(
+    action=""
+    method="POST"
+    id="form-delete-item"
+    data-path=`${PrefixAdmin}/accounts/delete`
+  )
+
+  script(src="/admin/js/account-create.js") 

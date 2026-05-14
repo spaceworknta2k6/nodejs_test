@@ -1,0 +1,137 @@
+extends ../../layouts/default.pug
+include ../../mixins/admin/alert.pug
+
+block main
+  +alert-error(3000)
+  +alert-success(3000)
+  section.product-create-page.accounts-page
+    .create-hero
+      .create-hero__content
+        span.create-hero__kicker Quản lý tài khoản
+        h1.create-hero__title Tạo tài khoản mới
+        p.section-heading__desc Điền đầy đủ thông tin bên dưới để tạo tài khoản quản trị mới.
+
+    .create-shell
+      .create-panel
+        form.create-product-form(
+          action=`${PrefixAdmin}/accounts/create`
+          id="form-create-account"
+          method="POST"
+          enctype="multipart/form-data"
+        )
+          .create-section
+            .section-heading
+              span.section-heading__eyebrow Thông tin cá nhân
+              h2.section-heading__title Dữ liệu cơ bản
+              p.section-heading__desc Nhập thông tin liên hệ và đăng nhập.
+
+            .create-grid
+              .field-group.field-group--full
+                label.field-label(for="fullName")
+                  | Họ tên
+                  span.required-badge Bắt buộc
+                input#fullName.form-control-modern(
+                  type="text"
+                  name="fullName"
+                  required
+                  placeholder="Ví dụ: Nguyễn Văn A"
+                )
+
+              .field-group.field-group--full
+                label.field-label(for="email")
+                  | Email
+                  span.required-badge Bắt buộc
+                input#email.form-control-modern(
+                  type="email"
+                  name="email"
+                  required
+                  placeholder="Ví dụ: nguyenvana@example.com"
+                )
+
+              .field-group.field-group--full
+                label.field-label(for="password")
+                  | Mật khẩu
+                  span.required-badge Bắt buộc
+                input#password.form-control-modern(
+                  type="password"
+                  name="password"
+                  required
+                  placeholder="Nhập mật khẩu"
+                )
+
+              .field-group.field-group--full
+                label.field-label(for="phone")
+                  | Số điện thoại
+                input#phone.form-control-modern(
+                  type="text"
+                  name="phone"
+                  placeholder="Ví dụ: 0987654321"
+                )
+
+          .create-section
+            .section-heading
+              span.section-heading__eyebrow Phân quyền và trạng thái
+              h2.section-heading__title Thiết lập tài khoản
+              
+            .create-grid
+              .field-group.field-group--full
+                label.field-label(for="avatar") Avatar
+                input#avatar.form-control-modern.form-control-modern--file(
+                  type="file"
+                  name="avatar"
+                  accept="image/*"
+                )
+
+              .field-group.field-group--full
+                label.field-label(for="role_id") Phân quyền
+                select#role_id.form-control-modern(name="role_id")
+                  option(disabled selected) -- Chọn phân quyền --
+                  each item in roles 
+                    option(value=item.id selected) #{item.title}
+
+              .field-group.field-group--full
+                label.field-label
+                  | Trạng thái
+                .choice-grid
+                  label.choice-card
+                    input(type="radio" name="status" value="active" checked)
+                    span.choice-card__content
+                      strong Hoạt động
+                      small Tài khoản có thể đăng nhập bình thường.
+                  label.choice-card
+                    input(type="radio" name="status" value="inactive")
+                    span.choice-card__content
+                      strong Không hoạt động
+                      small Tài khoản sẽ bị khóa, không thể đăng nhập.
+
+          .form-footer
+            p.form-footer__note Vui lòng kiểm tra lại thông tin trước khi tạo tài khoản.
+            .form-footer__actions
+              button.create-btn.create-btn--ghost(type="reset") Nhập lại
+              button.create-btn.create-btn--primary(type="submit") Tạo mới
+
+      aside.create-sidebar
+        .sidebar-card.sidebar-card--highlight
+          span.sidebar-card__eyebrow Gợi ý
+          h3 Mẹo nhập liệu
+          ul.sidebar-list
+            li Họ tên nên ghi đầy đủ và rõ ràng
+            li Email sẽ được sử dụng làm tên đăng nhập
+            li Chọn đúng phân quyền để đảm bảo an toàn cho hệ thống
+
+        .sidebar-card
+          span.sidebar-card__eyebrow Xem trước
+          h3 Xem trước Avatar
+          .preview-card
+            .preview-card__thumb(data-preview-stage)
+              img(
+                src="https://via.placeholder.com/640x420?text=Avatar"
+                alt="Xem trước avatar"
+                data-main-preview
+              )
+              p.preview-card__empty(data-empty-preview) Ảnh chưa được chọn
+            .preview-card__body
+              strong Khung xem trước avatar
+              p(data-preview-count) Chưa chọn ảnh
+
+  script(src="/admin/js/account-create.js")
