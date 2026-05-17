@@ -1,0 +1,78 @@
+extends ../../layouts/login.pug
+include ../../mixins/admin/alert.pug
+
+block main
+  // Render alert notifications if present
+  +alert-error(5000)
+  +alert-success(5000)
+
+  .auth-container
+    .auth-card
+      // Brand Logo & Header
+      .auth-brand
+        .brand-logo-wrapper
+          svg(xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round")
+            path(d="M12 2L2 7l10 5 10-5-10-5z")
+            path(d="M2 17l10 5 10-5")
+            path(d="M2 12l10 5 10-5")
+        h1 Đăng Nhập
+      
+      // Form Login
+      form(action=`${PrefixAdmin}/auth/login` method="POST")
+        // Email Input
+        .form-group
+          label(for="email" class="form-label") Địa chỉ Email
+          .input-group-custom
+            .input-icon
+              i(class="bi bi-envelope")
+            input(
+              type="email"
+              name="email"
+              id="email"
+              class="form-control-custom"
+              placeholder="nhapemail@vi-du.com"
+              required
+              autofocus
+            )
+        
+        // Password Input
+        .form-group
+          label(for="password" class="form-label") Mật khẩu
+          .input-group-custom
+            .input-icon
+              i(class="bi bi-shield-lock")
+            input(
+              type="password"
+              name="password"
+              id="password"
+              class="form-control-custom"
+              placeholder="••••••••"
+              required
+            )
+            button(
+              type="button"
+              id="togglePassword"
+              class="btn-toggle-password"
+              aria-label="Hiện/Ẩn mật khẩu"
+            )
+              i(class="bi bi-eye")
+        
+        // Additional Options (Remember Me)
+        .auth-options
+          .form-check
+            input(
+              type="checkbox"
+              name="remember"
+              id="remember"
+              class="form-check-input"
+            )
+            label(for="remember" class="form-check-label") Ghi nhớ đăng nhập
+        
+        // Submit Button
+        button(type="submit" class="btn-auth-submit")
+          span Đăng Nhập Hệ Thống
+          i(class="bi bi-arrow-right-short" style="font-size: 1.3rem;")
+          
+      // Footer Branding
+      .auth-footer
+        p &copy; 2026 Admin Panel. Thiết kế bởi Nta.

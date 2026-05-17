@@ -765,5 +765,53 @@ body.admin-sidebar-open {
 
   .preview-card__gallery {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* ── Nút Đăng Xuất ── */
+.btn-logout {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 10px;
+  background: #fef2f2;
+  color: #dc2626;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none !important;
+  border: 1px solid #fecaca;
+  white-space: nowrap;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease,
+    box-shadow 0.2s ease;
+  flex-shrink: 0;
+}
+
+.btn-logout i {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.btn-logout:hover {
+  background: #dc2626;
+  color: #ffffff;
+  border-color: #dc2626;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+  text-decoration: none !important;
+}
+
+.btn-logout:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+@media (max-width: 576px) {
+  .btn-logout span {
+    display: none;
+  }
+
+  .btn-logout {
+    padding: 7px 10px;
   }
 }
+

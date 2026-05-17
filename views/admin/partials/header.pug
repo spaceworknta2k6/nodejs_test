@@ -1,4 +1,4 @@
-﻿header.admin-header
+header.admin-header
     button.admin-menu-toggle(type="button" data-admin-sidebar-toggle aria-label="Mở menu")
         span
         span
@@ -9,3 +9,6 @@
     .header-actions
         input.form-control.form-control-sm(type="search" placeholder="Tìm kiếm nhanh...")
         .avatar Qu
+        a.btn-logout.text-decoration-none(href=`${PrefixAdmin}/auth/logout` title="Đăng xuất")
+            i.bi.bi-box-arrow-right
+            span Đăng xuất

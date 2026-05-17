@@ -1,6 +1,8 @@
 ﻿extends ../../layouts/default.pug
+include ../../mixins/admin/alert.pug
 
 block main
+    +alert-success(3000)
     section.stats-grid
         article.stat-card
             p.stat-title Doanh thu hôm nay
