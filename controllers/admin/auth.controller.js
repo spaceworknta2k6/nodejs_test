@@ -5,13 +5,11 @@ const md5 = require("md5");
 module.exports.login = async (req, res) => {
     const token = req.cookies.token;
     if (token) {
-        // Xác thực token với DB, tránh redirect loop khi token cũ/không hợp lệ
         const user = await Account.findOne({ token, deleted: false });
         if (user) {
             res.redirect(`${SystemConfig.prefixAdmin}/dashboard`);
             return;
         }
-        // Token không hợp lệ → xóa cookie cũ
         res.clearCookie("token");
     }
     res.render("admin/pages/auth/login", {
