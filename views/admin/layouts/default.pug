@@ -10,11 +10,13 @@ html(lang="vi")
         title #{PageTitle}
     body 
         .admin-shell
-            include ../partials/sider.pug
-            .admin-main
-                include ../partials/header.pug
-                main.admin-content
-                    block main
-        include ../partials/footer.pug
-
-        script(src="/admin/js/script.js") 
+            if(role.permission.length > 0)
+                include ../partials/sider.pug
+                .admin-main
+                    include ../partials/header.pug
+                    main.admin-content
+                        block main
+                include ../partials/footer.pug
+                script(src="/admin/js/script.js")
+            else
+                h1 Not Permission

@@ -80,5 +80,6 @@ block main
             p.detail-long-text Sản phẩm chưa có mô tả chi tiết.
 
         .detail-actions-footer
-          a.detail-cta.detail-cta--primary(href=`${PrefixAdmin}/product/edit/${product._id}`) Chỉnh sửa
+          if(role.permission.includes("products_edit"))
+            a.detail-cta.detail-cta--primary(href=`${PrefixAdmin}/product/edit/${product._id}`) Chỉnh sửa
           a.detail-cta.detail-cta--secondary(href=`${PrefixAdmin}/product`) Quay lại

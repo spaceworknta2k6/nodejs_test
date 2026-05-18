@@ -2,49 +2,50 @@ extends ../../layouts/default.pug
 include ../../mixins/admin/alert.pug
 
 block main
-  +alert-success(3000)
-  +alert-error(3000)
+  if(role.permission.includes("accounts_edit"))
+    +alert-success(3000)
+    +alert-error(3000)
 
-  section.product-create-page.roles-page
-    .create-hero
-      .create-hero__content
-        span.create-hero__kicker Quản lý nhóm quyền
-        h1.create-hero__title Tạo nhóm quyền mới
-        p.section-heading__desc Nhập tiêu đề và mô tả để tạo mới một nhóm quyền trong hệ thống.
+    section.product-create-page.roles-page
+      .create-hero
+        .create-hero__content
+          span.create-hero__kicker Quản lý nhóm quyền
+          h1.create-hero__title Tạo nhóm quyền mới
+          p.section-heading__desc Nhập tiêu đề và mô tả để tạo mới một nhóm quyền trong hệ thống.
 
-    .create-shell
-      .create-panel
-        form.create-product-form(
-          action=`${PrefixAdmin}/roles/create`
-          method="POST"
-        )
-          .create-section
-            .section-heading
-              span.section-heading__eyebrow Thông tin nhóm quyền
-              h2.section-heading__title Nội dung cơ bản
-              p.section-heading__desc Thiết lập tên nhóm quyền và mô tả ngắn để dễ quản lý sau này.
+      .create-shell
+        .create-panel
+          form.create-product-form(
+            action=`${PrefixAdmin}/roles/create`
+            method="POST"
+          )
+            .create-section
+              .section-heading
+                span.section-heading__eyebrow Thông tin nhóm quyền
+                h2.section-heading__title Nội dung cơ bản
+                p.section-heading__desc Thiết lập tên nhóm quyền và mô tả ngắn để dễ quản lý sau này.
 
-            .create-grid
-              .field-group.field-group--full
-                label.field-label(for="title")
-                  | Tiêu đề
-                  span.required-badge Bắt buộc
-                input#title.form-control-modern(
-                  type="text"
-                  name="title"
-                  required
-                  placeholder="Ví dụ: Quản lý sản phẩm"
-                )
+              .create-grid
+                .field-group.field-group--full
+                  label.field-label(for="title")
+                    | Tiêu đề
+                    span.required-badge Bắt buộc
+                  input#title.form-control-modern(
+                    type="text"
+                    name="title"
+                    required
+                    placeholder="Ví dụ: Quản lý sản phẩm"
+                  )
 
-              .field-group.field-group--full
-                label.field-label(for="description") Mô tả
-                textarea#description.form-control-modern.form-control-modern--textarea(
-                  name="description"
-                  rows="6"
-                  placeholder="Mô tả nhóm quyền"
-                )
+                .field-group.field-group--full
+                  label.field-label(for="description") Mô tả
+                  textarea#description.form-control-modern.form-control-modern--textarea(
+                    name="description"
+                    rows="6"
+                    placeholder="Mô tả nhóm quyền"
+                  )
 
-          .form-footer
-            p.form-footer__note Kiểm tra lại thông tin trước khi thêm nhóm quyền mới.
-            .form-footer__actions
-              button.create-btn.create-btn--primary(type="submit") Thêm mới
+            .form-footer
+              p.form-footer__note Kiểm tra lại thông tin trước khi thêm nhóm quyền mới.
+              .form-footer__actions
+                button.create-btn.create-btn--primary(type="submit") Thêm mới

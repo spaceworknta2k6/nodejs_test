@@ -1,0 +1,16 @@
+extends ../../layouts/default.pug
+
+block main
+    .forbidden-page
+        .forbidden-glow
+        .forbidden-card
+            .forbidden-icon-wrap
+                span.forbidden-icon 🔒
+            h1.forbidden-code 403
+            h2.forbidden-title Không có quyền truy cập
+            p.forbidden-desc Tài khoản của bạn chưa được cấp quyền để xem trang này. Vui lòng liên hệ quản trị viên.
+            .forbidden-actions
+                a.forbidden-btn.forbidden-btn--primary(href=`${PrefixAdmin}/dashboard`)
+                    span ← Về trang chủ
+                a.forbidden-btn.forbidden-btn--ghost(href="javascript:history.back()")
+                    span Quay lại

@@ -12,4 +12,12 @@ module.exports = (app) => {
     app.use(PathAdmin + "/roles", AuthMiddleware.requireAuth, RoleRouter)
     app.use(PathAdmin + "/accounts", AuthMiddleware.requireAuth, AccountRouter)
     app.use(PathAdmin + "/auth", AuthRouter)
+
+    // Trang lỗi phân quyền
+    app.get(PathAdmin + "/403", AuthMiddleware.requireAuth, (req, res) => {
+        res.render("admin/pages/errors/403", {
+            PageTitle: "Không có quyền truy cập"
+        });
+    });
 }
+

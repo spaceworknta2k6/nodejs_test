@@ -1,7 +1,9 @@
-﻿mixin actionButtons(item)
+mixin actionButtons(item)
     .action-group
-        a.action-btn.action-btn--edit(href=`${PrefixAdmin}/product/edit/${item.id}`) Sửa
-        button.action-btn.action-btn--delete(type="button" data-id=item._id) Xóa
+        if(role.permission.includes("products_edit"))
+            a.action-btn.action-btn--edit(href=`${PrefixAdmin}/product/edit/${item.id}`) Sửa
+        if(role.permission.includes("products_delete"))
+            button.action-btn.action-btn--delete(type="button" data-id=item._id) Xóa
 
 mixin productTableRow(item, index)
     -
@@ -12,10 +14,13 @@ mixin productTableRow(item, index)
         const priceText = typeof item.price === 'number' ? item.price.toLocaleString('en-US') + ' USD' : 'Đang cập nhật';
         const ratingText = item.rating ? item.rating + ' / 5' : 'Chưa có';
         const positionValue = item.position || index + 1;
+        const canEdit = role.permission.includes("products_edit");
+        const canDelete = role.permission.includes("products_delete");
 
     tr
-        td.select-cell
-            input.row-checkbox(type="checkbox" name="selectedProducts[]" value=item._id)
+        if(canEdit)
+            td.select-cell
+                input.row-checkbox(type="checkbox" name="selectedProducts[]" value=item._id)
         td
             a.product-link(href=`${PrefixAdmin}/product/detail/${item._id}`)
                 .product-media
@@ -33,24 +38,34 @@ mixin productTableRow(item, index)
             .rating-box= ratingText
             .rating-sub Mã SP: #{item._id || index + 1}
         td
-            label.switch
-                input.status-toggle(
-                    type="checkbox",
-                    checked=isActive,
+            if(canEdit)
+                label.switch
+                    input.status-toggle(
+                        type="checkbox",
+                        checked=isActive,
+                        data-id=item._id
+                    )
+                    span.slider
+            else
+                if isActive
+                    span.status-readonly.status-readonly--active Hoạt động
+                else
+                    span.status-readonly.status-readonly--inactive Tạm ẩn
+        td
+            if(canEdit)
+                input.position-input(
+                    type="number"
+                    min="1"
+                    step="1"
+                    value=positionValue
                     data-id=item._id
+                    name="position"
                 )
-                span.slider
-        td
-            input.position-input(
-                type="number"
-                min="1"
-                step="1"
-                value=positionValue
-                data-id=item._id
-                name="position"
-            )
-        td
-            +actionButtons(item)
+            else
+                span.position-readonly= positionValue
+        if(canEdit || canDelete)
+            td
+                +actionButtons(item)
 
 mixin productMobileCard(item, index)
     -
@@ -61,16 +76,18 @@ mixin productMobileCard(item, index)
         const priceText = typeof item.price === 'number' ? item.price.toLocaleString('en-US') + ' USD' : 'Đang cập nhật';
         const positionValue = item.position || index + 1;
         const mobilePositionId = `mobile-position-${item._id}`;
+        const canEdit = role.permission.includes("products_edit");
 
     article.mobile-product-card(data-product-id=item._id)
-        .mobile-product-card__head
-            label.mobile-check
-                input.row-checkbox(type="checkbox" name="selectedProducts[]" value=item._id)
-                span Chọn sản phẩm
-            if isActive
-                span.chip.chip--success Hoạt động
-            else
-                span.chip.chip--danger Tạm ẩn
+        if(canEdit)
+            .mobile-product-card__head
+                label.mobile-check
+                    input.row-checkbox(type="checkbox" name="selectedProducts[]" value=item._id)
+                    span Chọn sản phẩm
+                if isActive
+                    span.chip.chip--success Hoạt động
+                else
+                    span.chip.chip--danger Tạm ẩn
         a.product-link.product-link--mobile(href=`${PrefixAdmin}/product/detail/${item._id}`)
             .mobile-product-top
                 img.product-thumb(src=thumb, alt=item.title || 'product')
@@ -91,27 +108,39 @@ mixin productMobileCard(item, index)
                 .mobile-meta-card
                     strong Mã SP
                     span= item._id || index + 1
-            .mobile-product-controls
-                .mobile-control
-                    span.mobile-control__label Trạng thái
-                    label.switch
-                        input.status-toggle(
-                            type="checkbox",
-                            checked=isActive,
+            if(canEdit)
+                .mobile-product-controls
+                    .mobile-control
+                        span.mobile-control__label Trạng thái
+                        label.switch
+                            input.status-toggle(
+                                type="checkbox",
+                                checked=isActive,
+                                data-id=item._id
+                            )
+                            span.slider
+                    .mobile-control
+                        label.mobile-control__label(for=mobilePositionId) Vị trí hiển thị
+                        input.position-input(
+                            id=mobilePositionId
+                            type="number"
+                            min="1"
+                            step="1"
+                            value=positionValue
                             data-id=item._id
+                            name="position"
                         )
-                        span.slider
-                .mobile-control
-                    label.mobile-control__label(for=mobilePositionId) Vị trí hiển thị
-                    input.position-input(
-                        id=mobilePositionId
-                        type="number"
-                        min="1"
-                        step="1"
-                        value=positionValue
-                        data-id=item._id
-                        name="position"
-                    )
+            else
+                .mobile-product-controls
+                    .mobile-control
+                        span.mobile-control__label Trạng thái
+                        if isActive
+                            span.status-readonly.status-readonly--active Hoạt động
+                        else
+                            span.status-readonly.status-readonly--inactive Tạm ẩn
+                    .mobile-control
+                        span.mobile-control__label Vị trí
+                        span.position-readonly= positionValue
             if item.discountPercentage
                 .mobile-sale
                     span.price-sale Giảm #{item.discountPercentage}%

@@ -1,32 +1,33 @@
-﻿const express = require("express");
+const express = require("express");
 const router = express.Router();
 const multer = require("multer");
 const storage = require("../../helper/storageMulter")
 const upload = multer({ storage: storage() });
 const ProductController = require("../../controllers/admin/product.controller");
 const validate = require("../../validates/admin/product.validate");
+const { checkPermission } = require("../../middlewares/admin/permission.middleware");
 
-router.get("/", ProductController.products);
+// Xem danh sách
+router.get("/", checkPermission("products_view"), ProductController.products);
 
-router.patch("/changeStatus/:id/:status", ProductController.changeStatus);
+// Xem chi tiết
+router.get("/detail/:id", checkPermission("products_view"), ProductController.detail);
 
-router.delete("/delete/:id", ProductController.deleteItem);
+// Thêm mới
+router.get("/create", checkPermission("products_create"), ProductController.create);
+router.post("/create", checkPermission("products_create"), upload.array("images", 5), validate.createPost, ProductController.createPost);
 
-router.patch("/change-multi", ProductController.changeMulti);
-router.get("/detail/:id", ProductController.detail);
+// Chỉnh sửa
+router.get("/edit/:id", checkPermission("products_edit"), ProductController.edit);
+router.patch("/edit/:id", checkPermission("products_edit"), upload.array("images", 5), ProductController.editPatch);
 
-router.get("/create", ProductController.create);
-router.post(
-  "/create",
-  upload.array("images", 5),
-  validate.createPost,
-  ProductController.createPost,
-);
+// Đổi trạng thái đơn
+router.patch("/changeStatus/:id/:status", checkPermission("products_edit"), ProductController.changeStatus);
 
-router.patch(
-  "/edit/:id",
-  upload.array("images", 5),
-  ProductController.editPatch,
-);
-router.get("/edit/:id", ProductController.edit);
+// Thao tác hàng loạt
+router.patch("/change-multi", checkPermission("products_edit"), ProductController.changeMulti);
+
+// Xóa
+router.delete("/delete/:id", checkPermission("products_delete"), ProductController.deleteItem);
+
 module.exports = router;

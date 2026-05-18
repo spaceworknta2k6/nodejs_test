@@ -1,189 +1,190 @@
 ﻿extends ../../layouts/default.pug
 include ../../mixins/admin/alert.pug
 block main
-  +alert-error(3000)
-  section.product-create-page
-    .create-decor.create-decor--one
-    .create-decor.create-decor--two
-    .create-hero
-      .create-hero__content
-        span.create-hero__kicker Quản lý sản phẩm
-        h1.create-hero__title Tạo sản phẩm mới
-    .create-shell
-      .create-panel
-        form.create-product-form(
-          action=`${PrefixAdmin}/product/create`
-          id="form-create-product"
-          method="POST"
-          enctype="multipart/form-data"
-        )
-          .create-section
-            .section-heading
-              span.section-heading__eyebrow Thông tin chính
-              h2.section-heading__title Nội dung sản phẩm
-              p.section-heading__desc Trước tiên, hãy điền thông tin cơ bản; những thông tin không bắt buộc có thể để trống
+  if(role.permission.includes("products_edit"))
+    +alert-error(3000)
+    section.product-create-page
+      .create-decor.create-decor--one
+      .create-decor.create-decor--two
+      .create-hero
+        .create-hero__content
+          span.create-hero__kicker Quản lý sản phẩm
+          h1.create-hero__title Tạo sản phẩm mới
+      .create-shell
+        .create-panel
+          form.create-product-form(
+            action=`${PrefixAdmin}/product/create`
+            id="form-create-product"
+            method="POST"
+            enctype="multipart/form-data"
+          )
+            .create-section
+              .section-heading
+                span.section-heading__eyebrow Thông tin chính
+                h2.section-heading__title Nội dung sản phẩm
+                p.section-heading__desc Trước tiên, hãy điền thông tin cơ bản; những thông tin không bắt buộc có thể để trống
 
-            .create-grid
-              .field-group.field-group--full
-                label.field-label(for="title")
-                  | Tiêu đề sản phẩm
-                  span.required-badge Bắt buộc
-                input#title.form-control-modern(
-                  type="text"
-                  name="title"
-                  required
-                  placeholder="Ví dụ: Tai nghe Bluetooth Pro X9"
-                )
-
-              .field-group.field-group--full
-                label.field-label(for="description") Mô tả
-                textarea#description.form-control-modern.form-control-modern--textarea(
-                  name="description"
-                  rows="5"
-                  placeholder="Nhập mô tả ngắn hoặc chi tiết cho sản phẩm..."
-                )
-
-              .field-group
-                label.field-label(for="category") Danh mục
-                input#category.form-control-modern(
-                  type="text"
-                  name="category"
-                  placeholder="Ví dụ: Phụ kiện"
-                )
-
-              .field-group
-                label.field-label(for="position") Vị trí
-                input#position.form-control-modern(
-                  type="number"
-                  name="position"
-                  min="0"
-                  placeholder="Ví dụ: 1"
-                )
-
-          .create-section
-            .section-heading
-              span.section-heading__eyebrow Giá và đánh giá
-              h2.section-heading__title Dữ liệu hiển thị
-
-            .create-grid
-              .field-group
-                label.field-label(for="price")
-                  | Giá
-                  span.required-badge Bắt buộc
-                .input-addon
-                  input#price.form-control-modern(
-                    type="number"
-                    name="price"
-                    min="0"
-                    step="0.01"
+              .create-grid
+                .field-group.field-group--full
+                  label.field-label(for="title")
+                    | Tiêu đề sản phẩm
+                    span.required-badge Bắt buộc
+                  input#title.form-control-modern(
+                    type="text"
+                    name="title"
                     required
-                    placeholder="0"
+                    placeholder="Ví dụ: Tai nghe Bluetooth Pro X9"
                   )
-                  span.input-addon__text USD
 
-              .field-group
-                label.field-label(for="discountPercentage")
-                  | Giảm giá (%)
-                  span.required-badge Bắt buộc
-                .input-addon
-                  input#discountPercentage.form-control-modern(
+                .field-group.field-group--full
+                  label.field-label(for="description") Mô tả
+                  textarea#description.form-control-modern.form-control-modern--textarea(
+                    name="description"
+                    rows="5"
+                    placeholder="Nhập mô tả ngắn hoặc chi tiết cho sản phẩm..."
+                  )
+
+                .field-group
+                  label.field-label(for="category") Danh mục
+                  input#category.form-control-modern(
+                    type="text"
+                    name="category"
+                    placeholder="Ví dụ: Phụ kiện"
+                  )
+
+                .field-group
+                  label.field-label(for="position") Vị trí
+                  input#position.form-control-modern(
                     type="number"
-                    name="discountPercentage"
+                    name="position"
                     min="0"
-                    max="100"
-                    step="0.01"
-                    required
-                    placeholder="0"
+                    placeholder="Ví dụ: 1"
                   )
-                  span.input-addon__text %
 
-              .field-group
-                label.field-label(for="rating") Đánh giá
-                input#rating.form-control-modern(
-                  type="number"
-                  name="rating"
-                  min="0"
-                  max="5"
-                  step="0.1"
-                  placeholder="0 - 5"
+            .create-section
+              .section-heading
+                span.section-heading__eyebrow Giá và đánh giá
+                h2.section-heading__title Dữ liệu hiển thị
+
+              .create-grid
+                .field-group
+                  label.field-label(for="price")
+                    | Giá
+                    span.required-badge Bắt buộc
+                  .input-addon
+                    input#price.form-control-modern(
+                      type="number"
+                      name="price"
+                      min="0"
+                      step="0.01"
+                      required
+                      placeholder="0"
+                    )
+                    span.input-addon__text USD
+
+                .field-group
+                  label.field-label(for="discountPercentage")
+                    | Giảm giá (%)
+                    span.required-badge Bắt buộc
+                  .input-addon
+                    input#discountPercentage.form-control-modern(
+                      type="number"
+                      name="discountPercentage"
+                      min="0"
+                      max="100"
+                      step="0.01"
+                      required
+                      placeholder="0"
+                    )
+                    span.input-addon__text %
+
+                .field-group
+                  label.field-label(for="rating") Đánh giá
+                  input#rating.form-control-modern(
+                    type="number"
+                    name="rating"
+                    min="0"
+                    max="5"
+                    step="0.1"
+                    placeholder="0 - 5"
+                  )
+
+                .field-group
+                  label.field-label(for="stock") Tồn kho
+                  input#stock.form-control-modern(
+                    type="number"
+                    name="stock"
+                    min="0"
+                    step="1"
+                    placeholder="Ví dụ: 25"
+                    value="0"
+                  )
+
+            .create-section
+              .section-heading
+                span.section-heading__eyebrow Trạng thái và hình ảnh
+                h2.section-heading__title Thiết lập bổ sung
+
+              .create-grid
+                .field-group.field-group--full
+                  label.field-label
+                    | Trạng thái
+                    span.optional-note Chọn một trạng thái
+                  .choice-grid
+                    label.choice-card
+                      input(type="radio" name="active" value="true" checked)
+                      span.choice-card__content
+                        strong Hoạt động
+                        small Sản phẩm được hiển thị bình thường.
+                    label.choice-card
+                      input(type="radio" name="active" value="false")
+                      span.choice-card__content
+                        strong Ngưng hoạt động
+                        small Ẩn sản phẩm khỏi danh sách hiển thị
+
+                .field-group.field-group--full
+                  label.field-label(for="images") Hình ảnh
+                  input#images.form-control-modern.form-control-modern--file(
+                    type="file"
+                    name="images"
+                    accept="image/*"
+                    multiple
+                  )
+                  p.field-hint Chọn tối đa 5 ảnh. Bấm vào ảnh nhỏ để xem ảnh
+            .form-footer
+              p.form-footer__note Điền thông tin sản phẩm gọn gàng trước khi lưu vào hệ thống.
+              .form-footer__actions
+                button.create-btn.create-btn--ghost(type="reset") Nhập lại
+                button.create-btn.create-btn--primary(type="submit") Lưu sản phẩm
+
+        aside.create-sidebar
+          .sidebar-card.sidebar-card--highlight
+            span.sidebar-card__eyebrow Gợi ý nhanh
+            h3 Mẹo nhập liệu
+            ul.sidebar-list
+              li Tiêu đề nên ngắn gọn, rõ ràng và dưới 70 ký tự
+              li Giảm giá nên nhập theo phần trăm để khớp với dữ liệu hệ thống
+              li Có thể chọn nhiều ảnh để xem trước trực tiếp trước khi lưu
+              li Vị trí có thể để trống nếu chưa cần sắp xếp thủ công
+
+          .sidebar-card
+            span.sidebar-card__eyebrow Xem trước
+            h3 Xem trước hình ảnh
+            .preview-card
+              .preview-card__thumb(data-preview-stage)
+                img(
+                  src="https://via.placeholder.com/640x420?text=Preview+Image"
+                  alt="Xem trước sản phẩm"
+                  data-main-preview
                 )
+                p.preview-card__empty(data-empty-preview) Ảnh chưa được chọn
+              .preview-card__body
+                strong Khung xem trước ảnh sản phẩm
+                p(data-preview-count) Chưa chọn ảnh
+                .preview-card__gallery(data-preview-list)
+                  span.preview-card__placeholder Chưa có ảnh để hiển thị
 
-              .field-group
-                label.field-label(for="stock") Tồn kho
-                input#stock.form-control-modern(
-                  type="number"
-                  name="stock"
-                  min="0"
-                  step="1"
-                  placeholder="Ví dụ: 25"
-                  value="0"
-                )
-
-          .create-section
-            .section-heading
-              span.section-heading__eyebrow Trạng thái và hình ảnh
-              h2.section-heading__title Thiết lập bổ sung
-
-            .create-grid
-              .field-group.field-group--full
-                label.field-label
-                  | Trạng thái
-                  span.optional-note Chọn một trạng thái
-                .choice-grid
-                  label.choice-card
-                    input(type="radio" name="active" value="true" checked)
-                    span.choice-card__content
-                      strong Hoạt động
-                      small Sản phẩm được hiển thị bình thường.
-                  label.choice-card
-                    input(type="radio" name="active" value="false")
-                    span.choice-card__content
-                      strong Ngưng hoạt động
-                      small Ẩn sản phẩm khỏi danh sách hiển thị
-
-              .field-group.field-group--full
-                label.field-label(for="images") Hình ảnh
-                input#images.form-control-modern.form-control-modern--file(
-                  type="file"
-                  name="images"
-                  accept="image/*"
-                  multiple
-                )
-                p.field-hint Chọn tối đa 5 ảnh. Bấm vào ảnh nhỏ để xem ảnh
-          .form-footer
-            p.form-footer__note Điền thông tin sản phẩm gọn gàng trước khi lưu vào hệ thống.
-            .form-footer__actions
-              button.create-btn.create-btn--ghost(type="reset") Nhập lại
-              button.create-btn.create-btn--primary(type="submit") Lưu sản phẩm
-
-      aside.create-sidebar
-        .sidebar-card.sidebar-card--highlight
-          span.sidebar-card__eyebrow Gợi ý nhanh
-          h3 Mẹo nhập liệu
-          ul.sidebar-list
-            li Tiêu đề nên ngắn gọn, rõ ràng và dưới 70 ký tự
-            li Giảm giá nên nhập theo phần trăm để khớp với dữ liệu hệ thống
-            li Có thể chọn nhiều ảnh để xem trước trực tiếp trước khi lưu
-            li Vị trí có thể để trống nếu chưa cần sắp xếp thủ công
-
-        .sidebar-card
-          span.sidebar-card__eyebrow Xem trước
-          h3 Xem trước hình ảnh
-          .preview-card
-            .preview-card__thumb(data-preview-stage)
-              img(
-                src="https://via.placeholder.com/640x420?text=Preview+Image"
-                alt="Xem trước sản phẩm"
-                data-main-preview
-              )
-              p.preview-card__empty(data-empty-preview) Ảnh chưa được chọn
-            .preview-card__body
-              strong Khung xem trước ảnh sản phẩm
-              p(data-preview-count) Chưa chọn ảnh
-              .preview-card__gallery(data-preview-list)
-                span.preview-card__placeholder Chưa có ảnh để hiển thị
-
-  //- script(src="/admin/js/product.js")
-  script(src="/admin/js/create.js")
-  script(src="/tinymce/tinymce.min.js")
-  script(src="/admin/js/tinymce-config.js")
+    //- script(src="/admin/js/product.js")
+    script(src="/admin/js/create.js")
+    script(src="/tinymce/tinymce.min.js")
+    script(src="/admin/js/tinymce-config.js")

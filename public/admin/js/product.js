@@ -1,4 +1,4 @@
-﻿const statusFilter = document.querySelector('#statusFilter');
+const statusFilter = document.querySelector('#statusFilter');
 const formInput = document.querySelector('#keyword');
 const sortFilter = document.querySelector('#sortFilter');
 const applyButton = document.querySelector('#apply');
@@ -29,40 +29,45 @@ const updateBulkActionInput = () => {
       : `${checkedCount} sản phẩm được chọn`;
 };
 
+// Hàm xây URL tìm kiếm và navigate
+const applySearch = () => {
+  const url = new URL(window.location.href);
+  const keyword = formInput ? formInput.value.trim() : '';
+  const status = statusFilter ? statusFilter.value : '';
+  const sort = sortFilter ? sortFilter.value : '';
+
+  if (keyword) {
+    url.searchParams.set('keyword', keyword);
+  } else {
+    url.searchParams.delete('keyword');
+  }
+
+  if (status) {
+    url.searchParams.set('status', status);
+  } else {
+    url.searchParams.delete('status');
+  }
+
+  if (sort) {
+    url.searchParams.set('sort', sort);
+  } else {
+    url.searchParams.delete('sort');
+  }
+
+  url.searchParams.set('page', '1');
+  window.location.href = url.href;
+};
+
 if (applyButton) {
-  applyButton.addEventListener('click', () => {
-    const url = new URL(window.location.href);
-    const keyword = formInput ? formInput.value.trim() : '';
-    const status = statusFilter ? statusFilter.value : '';
-    const sort = sortFilter ? sortFilter.value : '';
-
-    if (keyword) {
-      url.searchParams.set('keyword', keyword);
-    } else {
-      url.searchParams.delete('keyword');
-    }
-
-    if (status) {
-      url.searchParams.set('status', status);
-    } else {
-      url.searchParams.delete('status');
-    }
-
-    if (sort) {
-      url.searchParams.set('sort', sort);
-    } else {
-      url.searchParams.delete('sort');
-    }
-
-    url.searchParams.set('page', '1');
-    window.location.href = url.href;
-  });
+  applyButton.addEventListener('click', applySearch);
 }
 
-if (formInput && applyButton) {
+// Enter trong ô tìm kiếm luôn hoạt động dù nút Apply có hay không
+if (formInput) {
   formInput.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
-      applyButton.click();
+      event.preventDefault();
+      applySearch();
     }
   });
 }

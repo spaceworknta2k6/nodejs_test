@@ -8,8 +8,8 @@ block main
     .permission-card
       .permission-card__head
         h1.permission-title Phân quyền
-        a.btn.btn-outline-success(href=`${PrefixAdmin}/roles/create`) + Thêm nhóm quyền
-
+        if(role.permission.includes("roles_create"))
+          a.btn.btn-outline-success(href=`${PrefixAdmin}/roles/create`) + Thêm nhóm quyền
       if(record)
         div(data-records=record style="display: none;")
 
@@ -31,31 +31,6 @@ block main
             tr.permission-group
               td(colspan="100")
                 b Danh mục sản phẩm
-            tr(data-name="products-category_view")
-              td.permission-name Xem
-              each role in record
-                td.permission-check
-                  input(type="checkbox")
-            tr(data-name="products-category_create")
-              td.permission-name Thêm mới
-              each role in record
-                td.permission-check
-                  input(type="checkbox")
-            tr(data-name="products-category_edit")
-              td.permission-name Chỉnh sửa
-              each role in record
-                td.permission-check
-                  input(type="checkbox")
-            tr(data-name="products-category_delete")
-              td.permission-name Xóa
-              each role in record
-                td.permission-check
-                  input(type="checkbox")
-
-            //- Sản phẩm
-            tr.permission-group
-              td(colspan="100")
-                b Sản phẩm
             tr(data-name="products_view")
               td.permission-name Xem
               each role in record
@@ -102,31 +77,55 @@ block main
                 td.permission-check
                   input(type="checkbox")
             
-            //- Bài viết 
+            //- Phan quyen
             tr.permission-group
               td(colspan="100")
-                b Bài viết
-            tr(data-name="posts_view")
+                b Phân quyền
+            tr(data-name="permissions_view")
               td.permission-name Xem
               each role in record
                 td.permission-check
                   input(type="checkbox")
-            tr(data-name="posts_create")
+            tr(data-name="permissions_create")
               td.permission-name Thêm mới
               each role in record
                 td.permission-check
                   input(type="checkbox")
-            tr(data-name="posts_edit")
+            tr(data-name="permissions_edit")
               td.permission-name Chỉnh sửa
               each role in record
                 td.permission-check
                   input(type="checkbox")
-            tr(data-name="posts_delete")
+            tr(data-name="permissions_delete")
               td.permission-name Xóa
               each role in record
                 td.permission-check
                   input(type="checkbox")
             
+            //- Tài khoản
+            tr.permission-group
+              td(colspan="100")
+                b Tài khoản
+            tr(data-name="accounts_view")
+              td.permission-name Xem
+              each role in record
+                td.permission-check
+                  input(type="checkbox")
+            tr(data-name="accounts_create")
+              td.permission-name Thêm mới
+              each role in record
+                td.permission-check
+                  input(type="checkbox")
+            tr(data-name="accounts_edit")
+              td.permission-name Chỉnh sửa
+              each role in record
+                td.permission-check
+                  input(type="checkbox")
+            tr(data-name="accounts_delete")
+              td.permission-name Xóa
+              each role in record
+                td.permission-check
+                  input(type="checkbox")
       
       div(style="text-align: right; padding: 16px;")
         button.permission-submit(

@@ -42,8 +42,10 @@ block main
                     td
                       .action-group
                         a.action-btn.action-btn--view(href=`${PrefixAdmin}/roles/detail/${item._id}`) Chi tiết
-                        a.action-btn.action-btn--edit(href=`${PrefixAdmin}/roles/edit/${item._id}`) Sửa
-                        button.action-btn.action-btn--delete(button-delete data-id=item._id) Xóa
+                        if(role.permission.includes("roles_edit"))
+                          a.action-btn.action-btn--edit(href=`${PrefixAdmin}/roles/edit/${item._id}`) Sửa
+                        if(role.permission.includes("roles_delete"))
+                          button.action-btn.action-btn--delete(button-delete data-id=item._id) Xóa
         else
           .empty-state
             .empty-state__icon 🔐
