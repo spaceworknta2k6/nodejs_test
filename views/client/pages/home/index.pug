@@ -1,3 +1,47 @@
 extends ../../layouts/default.pug
-block main 
-    h1 Home
+block main
+    if heroProduct
+        .apple-products.home-featured
+            section.apl-hero
+                .apl-hero__copy
+                    p.apl-hero__eyebrow= heroProduct.category || "NTA Shop"
+                    h1.apl-hero__title= heroProduct.title || "Sản phẩm nổi bật"
+                    p.apl-hero__desc= heroProduct.description || "Khám phá sản phẩm đang được ưu tiên hiển thị trên trang chủ."
+                    .apl-hero__meta
+                        span.apl-hero__price= heroProduct.hasDiscount ? heroProduct.formattedFinalPrice : heroProduct.formattedRawPrice
+                        if heroProduct.hasDiscount
+                            span.apl-hero__price-old= heroProduct.formattedRawPrice
+                        span.apl-hero__rating Rating #{heroProduct.rating || 0}
+                .apl-hero__visual
+                    img(src=heroProduct.imageSrc, alt=heroProduct.title)
+                .apl-hero__actions.home-hero-actions
+                    a.apl-link(href=heroProduct.detailPath) Xem chi tiết
+                    a.apl-link.apl-link--muted(href="/products") Xem tất cả sản phẩm
+                    form.cart-add-form(action=`/cart/add/${heroProduct._id}` method="POST")
+                        input(type="hidden" name="quantity" value="1")
+                        button.apl-button(type="submit") Thêm vào giỏ hàng
+
+            if featuredProducts.length > 0
+                section.apl-gallery
+                    .apl-gallery__intro
+                        p.apl-section-kicker Featured products
+                        h2.apl-gallery__title Các sản phẩm nổi bật khác
+                        p.apl-gallery__desc Những sản phẩm được bật nổi bật trong trang quản trị sẽ tự động xuất hiện tại đây.
+                    .apl-gallery__grid(class=featuredProducts.length <= 3 ? 'apl-gallery__grid--feature' : '')
+                        each product in featuredProducts
+                            article.apl-gallery-card
+                                .apl-gallery-card__image
+                                    img(src=product.imageSrc, alt=product.title)
+                                .apl-gallery-card__copy
+                                    p.apl-gallery-card__category= product.category || "Collection"
+                                    h3.apl-gallery-card__title= product.title || "Product"
+                                    p.apl-gallery-card__price= product.hasDiscount ? product.formattedFinalPrice : product.formattedRawPrice
+                                    .home-card-actions
+                                        a.apl-link(href=product.detailPath) Xem chi tiết
+                                        form.cart-add-form(action=`/cart/add/${product._id}` method="POST")
+                                            input(type="hidden" name="quantity" value="1")
+                                            button.apl-button(type="submit") Thêm vào giỏ
+    else
+        .product-empty
+            h2.product-empty__title Chưa có sản phẩm nổi bật
+            p.product-empty__desc Vào trang quản trị, chỉnh sửa sản phẩm và bật “Sản phẩm nổi bật” để hiển thị ở trang chủ.

@@ -14,3 +14,16 @@
                         a(href="/") Home
                     li.menu-item
                         a.active(href="/products") Product
+                    li.menu-item
+                        a.cart-link(href="/cart")
+                            | Giỏ hàng
+                            if cartQuantity && cartQuantity > 0
+                                span.cart-count= cartQuantity
+                form.header-search(action="/products#catalog" method="get" role="search")
+                    input.header-search__input(
+                        type="search"
+                        name="keyword"
+                        placeholder="Tìm sản phẩm..."
+                        aria-label="Tìm sản phẩm"
+                    )
+                    button.header-search__button(type="submit") Tìm

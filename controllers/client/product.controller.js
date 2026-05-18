@@ -161,6 +161,7 @@ const getProductStats = async (filter) => {
 module.exports.index = async (req, res) => {
   try {
     const sortName = req.query.sortName || "";
+    const keyword = (req.query.keyword || "").trim();
     const category = req.query.category || "";
     const sortPrice = req.query.sortPrice || "";
     const priceRange = req.query.priceRange || "";
@@ -170,6 +171,15 @@ module.exports.index = async (req, res) => {
       active: true,
       deleted: false,
     };
+
+    if (keyword) {
+      const keywordRegex = new RegExp(keyword, "i");
+      filter.$or = [
+        { title: keywordRegex },
+        { category: keywordRegex },
+        { description: keywordRegex },
+      ];
+    }
 
     if (category) {
       filter.category = category;
@@ -215,6 +225,9 @@ module.exports.index = async (req, res) => {
     );
 
     const queryParams = new URLSearchParams();
+    if (keyword) {
+      queryParams.set("keyword", keyword);
+    }
     if (sortName) {
       queryParams.set("sortName", sortName);
     }
@@ -277,6 +290,7 @@ module.exports.index = async (req, res) => {
       galleryProducts,
       detailProducts,
       selectedFilters: {
+        keyword,
         sortName,
         category,
         sortPrice,

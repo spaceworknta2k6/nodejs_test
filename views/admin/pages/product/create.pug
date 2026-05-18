@@ -143,6 +143,22 @@ block main
                         small Ẩn sản phẩm khỏi danh sách hiển thị
 
                 .field-group.field-group--full
+                  label.field-label
+                    | Sản phẩm nổi bật
+                    span.optional-note Chọn cách hiển thị ở trang chủ
+                  .choice-grid
+                    label.choice-card
+                      input(type="radio" name="featured" value="true")
+                      span.choice-card__content
+                        strong Có
+                        small Hiển thị sản phẩm này trong khu vực nổi bật ở trang chủ.
+                    label.choice-card
+                      input(type="radio" name="featured" value="false" checked)
+                      span.choice-card__content
+                        strong Không
+                        small Chỉ hiển thị sản phẩm trong danh sách/catalog thông thường.
+
+                .field-group.field-group--full
                   label.field-label(for="images") Hình ảnh
                   input#images.form-control-modern.form-control-modern--file(
                     type="file"

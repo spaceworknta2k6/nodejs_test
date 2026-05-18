@@ -97,6 +97,15 @@ block main
 
                             form.apl-filter__form(action="#catalog", method="get")
                                 .apl-filter__group
+                                    label.apl-filter__label(for="keyword") Search products
+                                    input#keyword.apl-filter__input(
+                                        type="search"
+                                        name="keyword"
+                                        value=selectedFilters.keyword
+                                        placeholder="Search by name, category..."
+                                    )
+
+                                .apl-filter__group
                                     label.apl-filter__label(for="sort-name") Product name
                                     select#sort-name.apl-filter__select(name="sortName")
                                         option(value="" selected=selectedFilters.sortName === "") Choose name order
@@ -170,7 +179,9 @@ block main
                                                             span.apl-product__current= product.formattedRawPrice
                                                 .apl-product__actions
                                                     a.apl-button.apl-button--ghost(href=product.detailPath) View details
-                                                    a.apl-button(href="#") Buy
+                                                    form.cart-add-form(action=`/cart/add/${product._id}` method="POST")
+                                                        input(type="hidden" name="quantity" value="1")
+                                                        button.apl-button(type="submit" disabled=!product.inStock) Buy
                             else
                                 .product-empty.product-empty--inline
                                     h3.product-empty__title No matching products

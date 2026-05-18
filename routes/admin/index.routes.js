@@ -5,6 +5,7 @@ const RoleRouter = require("./role.routes")
 const AccountRouter = require("./account.routes")
 const AuthRouter = require("./auth.routes")
 const AuthMiddleware = require("../../middlewares/admin/auth.middleware")
+const myaccountRouter = require("./my-account.routes")
 module.exports = (app) => {
     const PathAdmin = SystemConfig.prefixAdmin
     app.use(PathAdmin + "/dashboard", AuthMiddleware.requireAuth, DashboardRoute)
@@ -12,7 +13,7 @@ module.exports = (app) => {
     app.use(PathAdmin + "/roles", AuthMiddleware.requireAuth, RoleRouter)
     app.use(PathAdmin + "/accounts", AuthMiddleware.requireAuth, AccountRouter)
     app.use(PathAdmin + "/auth", AuthRouter)
-
+    app.use(PathAdmin + "/my-account", AuthMiddleware.requireAuth, myaccountRouter)
     // Trang lỗi phân quyền
     app.get(PathAdmin + "/403", AuthMiddleware.requireAuth, (req, res) => {
         res.render("admin/pages/errors/403", {

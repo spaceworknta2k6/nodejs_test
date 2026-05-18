@@ -35,7 +35,9 @@ block main
                             span.detail-info-card__label Units available
                             strong= product.stock
                     .detail-hero__actions
-                        a.apl-button(href="#") Mua hàng
+                        form.cart-add-form(action=`/cart/add/${product._id}` method="POST")
+                            input(type="hidden" name="quantity" value="1")
+                            button.apl-button(type="submit" disabled=!product.inStock) Thêm vào giỏ hàng
                         a.apl-button.apl-button--ghost(href="/products#catalog") Quay lại
                 .detail-hero__visual.detail-hero__visual--client
                     .detail-gallery-panel__main
@@ -74,7 +76,9 @@ block main
                                                     span.apl-product__current= item.formattedRawPrice
                                         .apl-product__actions
                                             a.apl-button.apl-button--ghost(href=item.detailPath) Xem chi tiết
-                                            a.apl-button(href="#") Mua hàng
+                                            form.cart-add-form(action=`/cart/add/${item._id}` method="POST")
+                                                input(type="hidden" name="quantity" value="1")
+                                                button.apl-button(type="submit" disabled=!item.inStock) Mua hàng
     else
         .product-empty
             h2.product-empty__title Không tìm thấy sản phẩm

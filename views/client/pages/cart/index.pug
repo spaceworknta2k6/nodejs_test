@@ -1,0 +1,60 @@
+extends ../../layouts/default.pug
+
+block main
+  section.cart-page
+    .cart-shell
+      .cart-head
+        p.cart-eyebrow NTA Shop
+        h1.cart-title Giỏ hàng
+        p.cart-desc Kiểm tra sản phẩm và số lượng trước khi tiếp tục mua sắm.
+
+      if cart.items.length
+        .cart-layout
+          .cart-list
+            each item in cart.items
+              article.cart-item
+                a.cart-item__image(href=item.detailPath)
+                  img(src=item.imageSrc, alt=item.title)
+                .cart-item__body
+                  .cart-item__top
+                    div
+                      h2.cart-item__title
+                        a(href=item.detailPath)= item.title
+                      p.cart-item__price= item.formattedUnitPrice
+                    form.cart-remove-form(action=`/cart/remove/${item.product_id}` method="POST")
+                      button.cart-remove-btn(type="submit") Xóa
+
+                  .cart-item__controls
+                    form.cart-quantity-form(action=`/cart/update/${item.product_id}` method="POST")
+                      label.cart-quantity-label(for=`quantity-${item.product_id}`) Số lượng
+                      input.cart-quantity-input(
+                        id=`quantity-${item.product_id}`
+                        type="number"
+                        name="quantity"
+                        min="1"
+                        max=item.stock
+                        value=item.quantity
+                      )
+                      button.cart-update-btn(type="submit") Cập nhật
+                    span.cart-item__stock Còn #{item.stock} sản phẩm
+                    strong.cart-item__total= item.formattedTotalPrice
+
+          aside.cart-summary
+            .cart-summary__card
+              h2.cart-summary__title Tóm tắt đơn hàng
+              .cart-summary__row
+                span Tổng số lượng
+                strong #{cart.summary.totalQuantity}
+              .cart-summary__row
+                span Tổng tiền
+                strong= cart.summary.formattedTotalPrice
+              .cart-summary__actions
+                a.cart-checkout-btn(href="#") Thanh toán
+                a.cart-continue-btn(href="/products") Tiếp tục mua sắm
+              form(action="/cart/clear" method="POST")
+                button.cart-clear-btn(type="submit") Xóa toàn bộ giỏ hàng
+      else
+        .cart-empty
+          h2.cart-empty__title Giỏ hàng đang trống
+          p.cart-empty__desc Hãy chọn sản phẩm yêu thích và thêm vào giỏ hàng.
+          a.cart-continue-btn(href="/products") Xem sản phẩm

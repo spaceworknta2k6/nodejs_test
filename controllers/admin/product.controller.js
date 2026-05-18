@@ -1,8 +1,9 @@
-﻿// [GET] /admin/product
+// [GET] /admin/product
 const Product = require("../../models/product.model");
 const sortHelper = require("../../helper/sort");
 const systemConfig = require("../../config/system");
 const uploadToCloudinary = require("../../helper/uploadToCloudinary");
+const Account = require("../../models/account.model");
 
 module.exports.products = async (req, res) => {
   const status = req.query.status || "";
@@ -73,13 +74,31 @@ module.exports.products = async (req, res) => {
   objectPagination.skip =
     (objectPagination.currentPage - 1) * objectPagination.limitItem;
 
-  const product = await Product.find(find)
+  const products = await Product.find(find)
     .sort(sort)
     .limit(objectPagination.limitItem)
-    .skip(objectPagination.skip);
+    .skip(objectPagination.skip)
+    .lean();
+
+  // Lấy danh sách account_id duy nhất rồi query 1 lần (tránh N+1)
+  const accountIds = [...new Set(
+    products
+      .map(p => p.createdBy?.account_id)
+      .filter(Boolean)
+  )];
+
+  const accounts = await Account.find({ _id: { $in: accountIds } }).lean();
+  const accountMap = Object.fromEntries(accounts.map(a => [String(a._id), a]));
+
+  for (const product of products) {
+    const accountId = product.createdBy?.account_id;
+    const user = accountId ? accountMap[String(accountId)] : null;
+    product.accountFullName = user ? user.fullName : null;
+  }
+
   res.render("admin/pages/product/index", {
     PageTitle: "Trang sản phẩm",
-    product: product,
+    product: products,
     status: status,
     keyword: keyword,
     sort: sortQuery,
@@ -89,6 +108,7 @@ module.exports.products = async (req, res) => {
     pagination: objectPagination,
   });
 };
+
 
 module.exports.changeStatus = async (req, res) => {
   const status = req.params.status;
@@ -104,7 +124,12 @@ module.exports.deleteItem = async (req, res) => {
   const id = req.params.id;
   await Product.updateOne(
     { _id: id },
-    { deleted: true, deletedAt: new Date() },
+    {
+      deleted: true, deletedBy: {
+        account_id: res.locals.user.id,
+        deletedAt: new Date()
+      }
+    },
   );
   const referer = req.get("referer");
   req.flash("success", "Product deleted successfully");
@@ -129,8 +154,14 @@ module.exports.changeMulti = async (req, res) => {
     case "delete":
       await Product.updateMany(
         { _id: { $in: ids } },
-        { deleted: true, deleteAt: new Date() },
+        {
+          deleted: true, deletedBy: {
+            account_id: res.locals.user.id,
+            deletedAt: new Date()
+          }
+        },
       );
+      break;
     case "change-position":
       for (const item of ids) {
         let [id, position] = item.split("-");
@@ -168,14 +199,16 @@ module.exports.createPost = async (req, res) => {
     req.body.price = parseFloat(req.body.price);
     req.body.discountPercentage = parseFloat(req.body.discountPercentage);
     req.body.stock = parseInt(req.body.stock, 10) || 0;
+    req.body.active = req.body.active === "true";
+    req.body.featured = req.body.featured === "true";
 
     const uploadedImages =
       Array.isArray(req.files) && req.files.length > 0
         ? await Promise.all(
-            req.files.map((file) =>
-              uploadToCloudinary(file.buffer, "products"),
-            ),
-          )
+          req.files.map((file) =>
+            uploadToCloudinary(file.buffer, "products"),
+          ),
+        )
         : [];
 
     req.body.images = uploadedImages.map((file) => file.secure_url);
@@ -183,6 +216,11 @@ module.exports.createPost = async (req, res) => {
     if (req.body.images.length > 0) {
       req.body.thumbnail = req.body.images[0];
     }
+
+    // Gán người tạo từ tài khoản đang đăng nhập
+    req.body.createdBy = {
+      account_id: res.locals.user._id,
+    };
 
     const product = new Product(req.body);
     await product.save();
@@ -256,6 +294,8 @@ module.exports.editPatch = async (req, res) => {
     req.body.price = parseFloat(req.body.price);
     req.body.discountPercentage = parseFloat(req.body.discountPercentage);
     req.body.stock = parseInt(req.body.stock, 10) || 0;
+    req.body.active = req.body.active === "true";
+    req.body.featured = req.body.featured === "true";
 
     if (Array.isArray(req.files) && req.files.length > 0) {
       const uploadedImages = await Promise.all(

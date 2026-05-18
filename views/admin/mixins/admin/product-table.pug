@@ -1,3 +1,4 @@
+include ../../mixins/admin/formatDatetime.pug
 mixin actionButtons(item)
     .action-group
         if(role.permission.includes("products_edit"))
@@ -63,6 +64,16 @@ mixin productTableRow(item, index)
                 )
             else
                 span.position-readonly= positionValue
+        td
+            if item.accountFullName
+                .creator-cell
+                    .creator-avatar= item.accountFullName.charAt(0).toUpperCase()
+                    div
+                        span.creator-name= item.accountFullName
+                        if item.createdBy && item.createdBy.createAt
+                            span.creator-date= moment(item.createdBy.createAt).format("DD/MM/YYYY")
+            else
+                span.creator-none Chưa có
         if(canEdit || canDelete)
             td
                 +actionButtons(item)

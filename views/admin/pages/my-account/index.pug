@@ -1,0 +1,69 @@
+extends ../../layouts/default.pug
+include ../../mixins/admin/alert.pug
+
+block main
+  +alert-error(3000)
+  +alert-success(3000)
+  -
+    const profile = account || user || {};
+    const profileName = profile.fullName || profile.email || "Admin";
+    const profileInitials = profileName
+      .trim()
+      .split(/\s+/)
+      .slice(0, 2)
+      .map((word) => word.charAt(0))
+      .join("")
+      .toUpperCase();
+    const roleTitle = profile.role && profile.role.title ? profile.role.title : (role && role.title ? role.title : "Chưa phân quyền");
+    const statusLabel = profile.status === "active" ? "Hoạt động" : "Dừng hoạt động";
+
+  section.my-account-page
+    .profile-hero
+      .profile-hero__media
+        if profile.avatar
+          img.profile-avatar(src=profile.avatar alt=profileName)
+        else
+          .profile-avatar.profile-avatar--text= profileInitials || "AD"
+      .profile-hero__content
+        span.profile-kicker Hồ sơ quản trị viên
+        h1.profile-title= profileName
+        .profile-status-row
+          span(class=`status-readonly status-readonly--${profile.status === "active" ? "active" : "inactive"}`)= statusLabel
+          span.profile-role= roleTitle
+
+    .profile-grid
+      .profile-panel
+        .profile-panel__head
+          h2 Thông tin cá nhân
+          p Dữ liệu được lấy trực tiếp từ tài khoản trong database.
+
+        .profile-info-list
+          .profile-info-item
+            span Họ tên
+            strong= profile.fullName || "Chưa cập nhật"
+          .profile-info-item
+            span Email
+            strong= profile.email || "Chưa cập nhật"
+          .profile-info-item
+            span Phân quyền
+            strong= roleTitle
+          .profile-info-item
+            span Trạng thái
+            strong= statusLabel
+
+      .profile-panel
+        .profile-panel__head
+          h2 Thông tin hệ thống
+          p Các mốc thời gian của bản ghi tài khoản.
+
+        .profile-info-list
+          .profile-info-item
+            span Ngày tạo
+            strong= profile.createdAt ? moment(profile.createdAt).format("DD/MM/YYYY HH:mm") : "Chưa có dữ liệu"
+          .profile-info-item
+            span Cập nhật lần cuối
+            strong= profile.updatedAt ? moment(profile.updatedAt).format("DD/MM/YYYY HH:mm") : "Chưa có dữ liệu"
+
+    if profile._id
+      .profile-actions
+        a.profile-edit-btn(href=`${PrefixAdmin}/my-account/edit/${profile._id}`) Chỉnh sửa thông tin

@@ -5,7 +5,7 @@ const methodOverride = require("method-override");
 const flash = require("express-flash");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
-
+const moment = require("moment");
 require("dotenv").config();
 
 app.use(methodOverride("_method"));
@@ -20,7 +20,7 @@ app.use(
     secret: sessionSecret,
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 60000 },
+    cookie: { maxAge: 1000 * 60 * 60 * 24 * 7 },
   }),
 );
 app.use(flash());
@@ -43,7 +43,16 @@ const SystemConfig = require("./config/system");
 
 // local variable
 app.locals.PrefixAdmin = SystemConfig.prefixAdmin;
+app.locals.moment = moment;
 
+app.use((req, res, next) => {
+  const cart = Array.isArray(req.session.cart) ? req.session.cart : [];
+  res.locals.cartQuantity = cart.reduce(
+    (total, item) => total + (parseInt(item.quantity, 10) || 0),
+    0,
+  );
+  next();
+});
 // tinymce
 app.use(
   "/tinymce",

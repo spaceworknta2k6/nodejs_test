@@ -765,6 +765,7 @@ body.admin-sidebar-open {
 
   .preview-card__gallery {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 /* ── Nút Đăng Xuất ── */

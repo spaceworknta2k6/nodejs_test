@@ -1,0 +1,100 @@
+extends ../../layouts/default.pug
+include ../../mixins/admin/alert.pug
+
+block main
+  -
+    const profile = account || user || {};
+    const profileName = profile.fullName || profile.email || "Admin";
+
+  +alert-error(3000)
+  +alert-success(3000)
+
+  section.my-account-page.my-account-edit-page
+    .profile-edit-hero
+      .profile-edit-hero__content
+        span.profile-kicker Hồ sơ cá nhân
+        h1.profile-title Chỉnh sửa thông tin
+        p.profile-desc Cập nhật họ tên, email đăng nhập, mật khẩu và ảnh đại diện của tài khoản đang sử dụng.
+
+    .profile-edit-shell
+      .profile-edit-panel
+        form.profile-edit-form(
+          action=`${PrefixAdmin}/my-account/edit/${profile._id}?_method=PATCH`
+          id="form-edit-account"
+          method="POST"
+          enctype="multipart/form-data"
+        )
+          .profile-form-section
+            .profile-panel__head
+              h2 Thông tin đăng nhập
+              p Những thay đổi ở đây sẽ áp dụng cho chính tài khoản của bạn.
+
+            .profile-form-grid
+              .profile-field.profile-field--full
+                label.profile-label(for="fullName")
+                  | Họ tên
+                  span.profile-required Bắt buộc
+                input#fullName.profile-input(
+                  type="text"
+                  name="fullName"
+                  value=profile.fullName
+                  required
+                  placeholder="Ví dụ: Nguyễn Tuấn Anh"
+                )
+
+              .profile-field.profile-field--full
+                label.profile-label(for="email")
+                  | Email
+                  span.profile-required Bắt buộc
+                input#email.profile-input(
+                  type="email"
+                  name="email"
+                  value=profile.email
+                  required
+                  placeholder="Ví dụ: tuananh@gmail.com"
+                )
+
+              .profile-field.profile-field--full
+                label.profile-label(for="password")
+                  | Mật khẩu mới
+                  span.profile-optional Tùy chọn
+                input#password.profile-input(
+                  type="password"
+                  name="password"
+                  placeholder="Để trống nếu không muốn đổi mật khẩu"
+                )
+
+              .profile-field.profile-field--full
+                label.profile-label(for="avatar") Avatar
+                input#avatar.profile-input.profile-input--file(
+                  type="file"
+                  name="avatar"
+                  accept="image/*"
+                )
+
+          .profile-edit-footer
+            a.profile-cancel-btn(href=`${PrefixAdmin}/my-account`) Hủy bỏ
+            button.profile-submit-btn(type="submit") Cập nhật
+
+      aside.profile-preview-panel
+        .profile-panel__head
+          h2 Xem trước avatar
+          p Ảnh mới sẽ hiển thị tại đây trước khi lưu.
+
+        .profile-preview-card
+          .profile-preview-card__thumb(data-preview-stage class=(profile.avatar ? "has-image" : ""))
+            img(
+              src=(profile.avatar ? profile.avatar : "https://via.placeholder.com/640x420?text=Avatar")
+              alt=`Avatar của ${profileName}`
+              data-main-preview
+            )
+            if !profile.avatar
+              p.profile-preview-card__empty(data-empty-preview) Chưa có avatar
+          .profile-preview-card__body
+            strong= profileName
+            if profile.avatar
+              p(data-preview-count) Đang dùng ảnh hiện tại
+            else
+              p(data-preview-count) Chưa chọn ảnh
+
+    script(src="/admin/js/account-create.js")

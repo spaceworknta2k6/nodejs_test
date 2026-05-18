@@ -92,16 +92,17 @@ block main
                                         thead
                                             tr
                                                 if(role.permission.includes("products_edit"))
-                                                    th
+                                                    th.col-select
                                                         input.select-all(type="checkbox")
-                                                th Sản phẩm
-                                                th Danh mục
-                                                th Giá
-                                                th Đánh giá
-                                                th Trạng thái
-                                                th Vị trí
+                                                th.col-product Sản phẩm
+                                                th.col-category Danh mục
+                                                th.col-price Giá
+                                                th.col-rating Đánh giá
+                                                th.col-status Trạng thái
+                                                th.col-position Vị trí
+                                                th.col-creator Người tạo
                                                 if(role.permission.includes("products_edit") || role.permission.includes("products_delete"))
-                                                    th Hành động
+                                                    th.col-action Hành động
                                         tbody
                                             each item, index in products
                                                 +productTableRow(item, index)
