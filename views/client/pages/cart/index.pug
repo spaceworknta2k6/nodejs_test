@@ -49,7 +49,7 @@ block main
                 span Tổng tiền
                 strong= cart.summary.formattedTotalPrice
               .cart-summary__actions
-                a.cart-checkout-btn(href="#") Thanh toán
+                a.cart-checkout-btn(href="/checkout") Thanh toán
                 a.cart-continue-btn(href="/products") Tiếp tục mua sắm
               form(action="/cart/clear" method="POST")
                 button.cart-clear-btn(type="submit") Xóa toàn bộ giỏ hàng

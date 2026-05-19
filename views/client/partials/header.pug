@@ -15,10 +15,15 @@
                     li.menu-item
                         a.active(href="/products") Product
                     li.menu-item
-                        a.cart-link(href="/cart")
+                        a.cart-link(href="/cart" data-cart-link)
                             | Giỏ hàng
                             if cartQuantity && cartQuantity > 0
-                                span.cart-count= cartQuantity
+                                span.cart-count(data-cart-count)= cartQuantity
+                    if !currentUser
+                        li.menu-item
+                            a(href="/user/login") Đăng nhập
+                        li.menu-item
+                            a(href="/user/register") Đăng ký
                 form.header-search(action="/products#catalog" method="get" role="search")
                     input.header-search__input(
                         type="search"
@@ -27,3 +32,13 @@
                         aria-label="Tìm sản phẩm"
                     )
                     button.header-search__button(type="submit") Tìm
+            if currentUser
+                a.account-pill(href="/user/profile" aria-label="Xem thông tin tài khoản")
+                    span.account-pill__avatar
+                        if currentUser.avatar
+                            img(src=currentUser.avatar alt=currentUser.fullName)
+                        else
+                            | #{(currentUser.fullName || currentUser.email || "U").charAt(0).toUpperCase()}
+                    span.account-pill__text
+                        span.account-pill__label Tài khoản
+                        span.account-pill__name= currentUser.fullName

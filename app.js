@@ -33,6 +33,7 @@ const database = require("./config/database");
 database.connect().catch((error) => {
   console.error("Initial database connection failed:", error);
 });
+const User = require("./models/user.model");
 
 const port = process.env.PORT;
 
@@ -52,6 +53,34 @@ app.use((req, res, next) => {
     0,
   );
   next();
+});
+
+app.use(async (req, res, next) => {
+  const token = req.cookies.userToken;
+  res.locals.currentUser = null;
+
+  if (!token) {
+    return next();
+  }
+
+  try {
+    const user = await User.findOne({
+      token,
+      deleted: false,
+      status: "active",
+    }).select("-password");
+
+    if (!user) {
+      res.clearCookie("userToken");
+      return next();
+    }
+
+    res.locals.currentUser = user;
+    next();
+  } catch (error) {
+    console.error("Client user middleware error:", error);
+    next();
+  }
 });
 // tinymce
 app.use(

@@ -1,0 +1,40 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+
+block main
+    +alert-error(4000)
+    +alert-success(3000)
+
+    main.client-auth
+        .client-auth__shell
+            section.client-auth__panel
+                .client-auth__intro
+                    h1.client-auth__title Đăng nhập
+
+                form.client-auth__form(action="/user/login" method="POST")
+                    .client-auth__group
+                        label.client-auth__label(for="email") Email
+                        input#email.client-auth__input(
+                            type="email"
+                            name="email"
+                            placeholder="ban@example.com"
+                            autocomplete="email"
+                            required
+                            autofocus
+                        )
+
+                    .client-auth__group
+                        label.client-auth__label(for="password") Mật khẩu
+                        input#password.client-auth__input(
+                            type="password"
+                            name="password"
+                            placeholder="Nhập mật khẩu"
+                            autocomplete="current-password"
+                            required
+                        )
+
+                    button.client-auth__button(type="submit") Đăng nhập
+
+                p.client-auth__switch
+                    | Chưa có tài khoản?
+                    a(href="/user/register") Đăng ký ngay

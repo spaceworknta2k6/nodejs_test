@@ -1,0 +1,11 @@
+mixin alert-success(time)
+    if messages.success
+        .client-alert.client-alert--success.show(data-time=time)
+            span.client-alert__text= messages.success
+            button.client-alert__close(type="button" aria-label="Đóng thông báo") ×
+
+mixin alert-error(time)
+    if messages.error
+        .client-alert.client-alert--error.show(data-time=time)
+            span.client-alert__text= messages.error
+            button.client-alert__close(type="button" aria-label="Đóng thông báo lỗi") ×

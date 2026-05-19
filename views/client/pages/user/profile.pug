@@ -1,0 +1,44 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+
+block main
+    +alert-error(4000)
+    +alert-success(3000)
+
+    main.account-profile
+        .account-profile__shell
+            section.account-profile__hero
+                .account-profile__avatar
+                    if currentUser.avatar
+                        img(src=currentUser.avatar alt=currentUser.fullName)
+                    else
+                        | #{(currentUser.fullName || currentUser.email || "U").charAt(0).toUpperCase()}
+                .account-profile__heading
+                    p.account-profile__eyebrow Tài khoản cá nhân
+                    h1.account-profile__title= currentUser.fullName
+                    p.account-profile__email= currentUser.email
+
+            section.account-profile__card
+                h2.account-profile__section-title Thông tin tài khoản
+                dl.account-profile__list
+                    .account-profile__row
+                        dt Họ tên
+                        dd= currentUser.fullName || "Chưa cập nhật"
+                    .account-profile__row
+                        dt Email
+                        dd= currentUser.email || "Chưa cập nhật"
+                    .account-profile__row
+                        dt Số điện thoại
+                        dd= currentUser.phone || "Chưa cập nhật"
+                    .account-profile__row
+                        dt Trạng thái
+                        dd
+                            span.account-profile__status= currentUser.status === "active" ? "Đang hoạt động" : currentUser.status
+                    .account-profile__row
+                        dt Ngày tạo
+                        dd= currentUser.createdAt ? moment(currentUser.createdAt).format("DD/MM/YYYY HH:mm") : "Chưa cập nhật"
+
+                .account-profile__actions
+                    a.account-profile__button(href="/user/profile/edit") Chỉnh sửa thông tin
+                    a.account-profile__button(href="/user/profile/password") Thay đổi mật khẩu
+                    a.account-profile__button.account-profile__button--ghost(href="/user/logout") Đăng xuất

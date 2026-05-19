@@ -1,0 +1,74 @@
+extends ../../layouts/default.pug
+
+block main
+  section.checkout-page
+    .checkout-shell
+      .checkout-head
+        p.checkout-eyebrow NTA Shop
+        h1.checkout-title Thanh toán
+        p.checkout-desc Vui lòng điền đầy đủ thông tin giao hàng bên dưới để hoàn tất đơn hàng.
+
+      .checkout-layout
+        .checkout-form-container
+          .checkout-card
+            h2.checkout-card__title Thông tin giao hàng
+            form(action="/checkout/order" method="POST" class="checkout-form")
+              .form-group.mb-3
+                label(for="fullName" class="form-label") Họ và tên người nhận *
+                input(
+                  type="text"
+                  name="fullName"
+                  id="fullName"
+                  class="form-control form-control-lg"
+                  placeholder="Nhập họ và tên đầy đủ"
+                  required
+                )
+              .form-group.mb-3
+                label(for="phone" class="form-label") Số điện thoại liên hệ *
+                input(
+                  type="tel"
+                  name="phone"
+                  id="phone"
+                  class="form-control form-control-lg"
+                  placeholder="Nhập số điện thoại di động"
+                  required
+                )
+              .form-group.mb-3
+                label(for="address" class="form-label") Địa chỉ giao hàng *
+                textarea(
+                  name="address"
+                  id="address"
+                  class="form-control form-control-lg"
+                  rows="4"
+                  placeholder="Nhập địa chỉ chi tiết (số nhà, tên đường, phường/xã, quận/huyện, tỉnh/thành phố)"
+                  required
+                )
+              
+              button(type="submit" class="btn-order-submit mt-4") Xác nhận đặt hàng
+
+        aside.checkout-summary
+          .checkout-summary__card
+            h2.checkout-summary__title Chi tiết đơn hàng
+            
+            .checkout-items-list
+              each item in cart.items
+                article.checkout-item
+                  a.checkout-item__image(href=item.detailPath)
+                    img(src=item.imageSrc, alt=item.title)
+                  .checkout-item__body
+                    h3.checkout-item__title
+                      a(href=item.detailPath)= item.title
+                    .checkout-item__meta
+                      span.checkout-item__quantity Số lượng: #{item.quantity}
+                      strong.checkout-item__total= item.formattedTotalPrice
+            
+            .checkout-summary__totals
+              .checkout-summary__row
+                span Tổng số lượng
+                strong #{cart.summary.totalQuantity}
+              .checkout-summary__row.checkout-summary__row--grand
+                span Tổng thanh toán
+                strong= cart.summary.formattedTotalPrice
+            
+            .checkout-actions-bottom
+              a.checkout-back-link(href="/cart") Quay lại giỏ hàng

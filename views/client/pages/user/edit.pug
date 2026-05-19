@@ -1,0 +1,52 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+
+block main
+    +alert-error(4000)
+    +alert-success(3000)
+
+    main.account-profile
+        .account-profile__shell
+            section.account-profile__hero
+                .account-profile__avatar
+                    if profileUser.avatar
+                        img(src=profileUser.avatar alt=profileUser.fullName)
+                    else
+                        | #{(profileUser.fullName || profileUser.email || "U").charAt(0).toUpperCase()}
+                .account-profile__heading
+                    p.account-profile__eyebrow Chỉnh sửa tài khoản
+                    h1.account-profile__title= profileUser.fullName
+                    p.account-profile__email= profileUser.email
+
+            section.account-profile__card
+                h2.account-profile__section-title Cập nhật thông tin
+                form.account-profile__form(action="/user/profile/edit" method="POST" enctype="multipart/form-data")
+                    .client-auth__group
+                        label.client-auth__label(for="fullName") Họ tên
+                        input#fullName.client-auth__input(
+                            type="text"
+                            name="fullName"
+                            value=profileUser.fullName
+                            required
+                        )
+
+                    .client-auth__group
+                        label.client-auth__label(for="phone") Số điện thoại
+                        input#phone.client-auth__input(
+                            type="tel"
+                            name="phone"
+                            value=profileUser.phone
+                            placeholder="09xxxxxxxx"
+                        )
+
+                    .client-auth__group
+                        label.client-auth__label(for="avatar") Avatar
+                        input#avatar.client-auth__input.account-profile__file(
+                            type="file"
+                            name="avatar"
+                            accept="image/*"
+                        )
+
+                    .account-profile__actions
+                        button.account-profile__button(type="submit") Lưu thay đổi
+                        a.account-profile__button.account-profile__button--ghost(href="/user/profile") Hủy

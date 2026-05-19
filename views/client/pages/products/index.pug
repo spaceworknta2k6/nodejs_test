@@ -1,4 +1,4 @@
-﻿extends ../../layouts/default.pug
+extends ../../layouts/default.pug
 
 block main
     if featuredProduct
@@ -181,7 +181,7 @@ block main
                                                     a.apl-button.apl-button--ghost(href=product.detailPath) View details
                                                     form.cart-add-form(action=`/cart/add/${product._id}` method="POST")
                                                         input(type="hidden" name="quantity" value="1")
-                                                        button.apl-button(type="submit" disabled=!product.inStock) Buy
+                                                        button.apl-button(type="submit" disabled=!product.inStock) Thêm vào giỏ hàng
                             else
                                 .product-empty.product-empty--inline
                                     h3.product-empty__title No matching products

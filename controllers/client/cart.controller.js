@@ -38,6 +38,21 @@ const getCart = (req) => {
   return req.session.cart;
 };
 
+const wantsJson = (req) => {
+  return (
+    req.xhr ||
+    req.get("x-requested-with") === "XMLHttpRequest" ||
+    (req.get("accept") || "").includes("application/json")
+  );
+};
+
+const getCartQuantity = (cart) => {
+  return cart.reduce(
+    (total, item) => total + (parseInt(item.quantity, 10) || 0),
+    0,
+  );
+};
+
 const getCartDetail = async (req) => {
   const cart = getCart(req);
   const productIds = cart.map((item) => item.product_id);
@@ -108,7 +123,7 @@ module.exports.index = async (req, res) => {
 
 module.exports.addPost = async (req, res) => {
   const productId = req.params.productId;
-  const quantity = Math.max(parseInt(req.body.quantity, 10) || 1, 1);
+  const quantity = Math.max(parseInt((req.body || {}).quantity, 10) || 1, 1);
   const product = await Product.findOne({
     _id: productId,
     active: true,
@@ -116,12 +131,26 @@ module.exports.addPost = async (req, res) => {
   });
 
   if (!product) {
+    if (wantsJson(req)) {
+      return res.status(404).json({
+        success: false,
+        message: "Sản phẩm không tồn tại hoặc đã bị ẩn.",
+      });
+    }
+
     return res.redirect("/products");
   }
 
   const stock = Math.max(Number(product.stock) || 0, 0);
 
   if (stock <= 0) {
+    if (wantsJson(req)) {
+      return res.status(400).json({
+        success: false,
+        message: "Sản phẩm hiện đã hết hàng.",
+      });
+    }
+
     return res.redirect(req.get("referer") || "/products");
   }
 
@@ -138,6 +167,16 @@ module.exports.addPost = async (req, res) => {
   }
 
   req.session.cart = cart;
+
+  if (wantsJson(req)) {
+    return res.json({
+      success: true,
+      message: "Đã thêm sản phẩm vào giỏ hàng.",
+      cartQuantity: getCartQuantity(cart),
+      productTitle: product.title,
+    });
+  }
+
   res.redirect(req.get("referer") || "/cart");
 };
 

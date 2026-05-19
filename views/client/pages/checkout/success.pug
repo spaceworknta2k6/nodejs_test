@@ -1,0 +1,61 @@
+extends ../../layouts/default.pug
+
+block main
+  section.success-page
+    .success-shell
+      .success-card
+        .success-icon-wrapper
+          .success-icon-pulse
+          .success-icon
+            svg(viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="success-svg")
+              polyline(points="20 6 9 17 4 12")
+        
+        h1.success-title Đặt hàng thành công!
+        p.success-subtitle Cảm ơn bạn đã tin tưởng nta shop. Đơn hàng của bạn đã được ghi nhận và đang được xử lý nhanh chóng.
+
+        .success-info-grid
+          .success-info-section
+            h2.success-info-section__title Thông tin giao hàng
+            .success-info-card
+              .info-row
+                span.info-label Khách hàng:
+                strong.info-value= order.userInfo.fullName
+              .info-row
+                span.info-label Số điện thoại:
+                strong.info-value= order.userInfo.phone
+              .info-row
+                span.info-label Địa chỉ nhận:
+                strong.info-value= order.userInfo.address
+              .info-row
+                span.info-label Mã đơn hàng:
+                strong.info-value.order-code= order.code
+              .info-row
+                span.info-label Ngày đặt hàng:
+                strong.info-value= moment(order.createdAt).format("DD/MM/YYYY HH:mm")
+
+          .success-info-section
+            h2.success-info-section__title Chi tiết sản phẩm
+            .success-receipt-card
+              .receipt-items
+                each item in products
+                  article.receipt-item
+                    a.receipt-item__image(href=item.detailPath)
+                      img(src=item.imageSrc, alt=item.title)
+                    .receipt-item__body
+                      h3.receipt-item__title
+                        a(href=item.detailPath)= item.title
+                      .receipt-item__meta
+                        span.receipt-item__quantity Số lượng: #{item.quantity}
+                        strong.receipt-item__total= item.formattedTotalPrice
+              
+              .receipt-summary
+                .receipt-summary-row
+                  span Tổng số lượng
+                  strong #{summary.totalQuantity} sản phẩm
+                .receipt-summary-row.receipt-summary-row--total
+                  span Tổng cộng thanh toán
+                  strong= summary.formattedTotalPrice
+
+        .success-actions
+          a.btn-continue-shopping(href="/products") Tiếp tục mua sắm
+          a.btn-back-home(href="/") Quay về trang chủ

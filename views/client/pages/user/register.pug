@@ -1,0 +1,77 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+
+block main
+    +alert-error(4000)
+    +alert-success(3000)
+
+    main.client-auth
+        .client-auth__shell
+            section.client-auth__panel
+                .client-auth__intro
+                    h1.client-auth__title Đăng ký
+
+                form.client-auth__form(action="/user/register" method="POST")
+                    .client-auth__group
+                        label.client-auth__label(for="fullName") Họ tên
+                        input#fullName.client-auth__input(
+                            type="text"
+                            name="fullName"
+                            placeholder="Nguyễn Văn A"
+                            autocomplete="name"
+                            required
+                            autofocus
+                        )
+
+                    .client-auth__group
+                        label.client-auth__label(for="email") Email
+                        input#email.client-auth__input(
+                            type="email"
+                            name="email"
+                            placeholder="ban@example.com"
+                            autocomplete="email"
+                            required
+                        )
+
+                    .client-auth__group
+                        label.client-auth__label(for="phone") Số điện thoại
+                        input#phone.client-auth__input(
+                            type="tel"
+                            name="phone"
+                            placeholder="09xxxxxxxx"
+                            autocomplete="tel"
+                        )
+
+                    .client-auth__group
+                        label.client-auth__label(for="avatar") Avatar URL
+                        input#avatar.client-auth__input(
+                            type="url"
+                            name="avatar"
+                            placeholder="https://example.com/avatar.jpg"
+                        )
+
+                    .client-auth__group
+                        label.client-auth__label(for="password") Mật khẩu
+                        input#password.client-auth__input(
+                            type="password"
+                            name="password"
+                            placeholder="Tối thiểu 6 ký tự"
+                            autocomplete="new-password"
+                            required
+                        )
+
+                    .client-auth__group
+                        label.client-auth__label(for="confirmPassword") Xác nhận mật khẩu
+                        input#confirmPassword.client-auth__input(
+                            type="password"
+                            name="confirmPassword"
+                            placeholder="Nhập lại mật khẩu"
+                            autocomplete="new-password"
+                            required
+                        )
+
+                    button.client-auth__button(type="submit") Tạo tài khoản
+
+                p.client-auth__switch
+                    | Đã có tài khoản?
+                    a(href="/user/login") Đăng nhập
