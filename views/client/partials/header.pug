@@ -2,7 +2,7 @@
     .container
         .header-shell
             .inner-logo
-                a(href="/")
+                a(href=currentUser ? "/" : "/user/login")
                     img(src="/client/images/nta_shop_logo.svg" alt="NTA Shop")
             button.menu-toggle(type="button" data-mobile-menu-toggle aria-expanded="false" aria-controls="site-menu" aria-label="Mở menu")
                 span
@@ -10,28 +10,30 @@
                 span
             nav#site-menu.inner-menu(data-mobile-menu)
                 ul.menu-list
-                    li.menu-item
-                        a(href="/") Home
-                    li.menu-item
-                        a.active(href="/products") Product
-                    li.menu-item
-                        a.cart-link(href="/cart" data-cart-link)
-                            | Giỏ hàng
-                            if cartQuantity && cartQuantity > 0
-                                span.cart-count(data-cart-count)= cartQuantity
-                    if !currentUser
+                    if currentUser
+                        li.menu-item
+                            a(href="/") Home
+                        li.menu-item
+                            a.active(href="/products") Product
+                        li.menu-item
+                            a.cart-link(href="/cart" data-cart-link)
+                                | Giỏ hàng
+                                if cartQuantity && cartQuantity > 0
+                                    span.cart-count(data-cart-count)= cartQuantity
+                    else
                         li.menu-item
                             a(href="/user/login") Đăng nhập
                         li.menu-item
                             a(href="/user/register") Đăng ký
-                form.header-search(action="/products#catalog" method="get" role="search")
-                    input.header-search__input(
-                        type="search"
-                        name="keyword"
-                        placeholder="Tìm sản phẩm..."
-                        aria-label="Tìm sản phẩm"
-                    )
-                    button.header-search__button(type="submit") Tìm
+                if currentUser
+                    form.header-search(action="/products#catalog" method="get" role="search")
+                        input.header-search__input(
+                            type="search"
+                            name="keyword"
+                            placeholder="Tìm sản phẩm..."
+                            aria-label="Tìm sản phẩm"
+                        )
+                        button.header-search__button(type="submit") Tìm
             if currentUser
                 a.account-pill(href="/user/profile" aria-label="Xem thông tin tài khoản")
                     span.account-pill__avatar

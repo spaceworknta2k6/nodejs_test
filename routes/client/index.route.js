@@ -7,7 +7,7 @@ const authMiddleware = require("../../middlewares/client/auth.middleware")
 
 module.exports = (app) => {
     app.use("/user", UserRoute)
-    app.use(authMiddleware.requireAuth)
+    app.use(["/", "/home", "/products", "/cart", "/checkout"], authMiddleware.requireAuth)
 
     app.use("/", HomeRoute)
     app.use("/cart", CartRoute)
