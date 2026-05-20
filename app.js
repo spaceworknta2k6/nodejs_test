@@ -6,6 +6,10 @@ const flash = require("express-flash");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const moment = require("moment");
+// socket io
+const http = require("http");
+const { Server } = require("socket.io");
+// end soket io
 require("dotenv").config();
 
 app.use(methodOverride("_method"));
@@ -25,6 +29,12 @@ app.use(
 );
 app.use(flash());
 // end flash
+
+// socket io
+const httpServer = http.createServer(app);
+const io = new Server(httpServer);
+global._io = io;
+// end socket io
 app.set("views", `${__dirname}/views`);
 app.set("view engine", "pug");
 app.use(express.static(`${__dirname}/public`));
@@ -33,7 +43,6 @@ const database = require("./config/database");
 database.connect().catch((error) => {
   console.error("Initial database connection failed:", error);
 });
-const User = require("./models/user.model");
 
 const port = process.env.PORT;
 
@@ -55,33 +64,9 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(async (req, res, next) => {
-  const token = req.cookies.userToken;
-  res.locals.currentUser = null;
+const userMiddleware = require("./middlewares/client/user.middleware");
 
-  if (!token) {
-    return next();
-  }
-
-  try {
-    const user = await User.findOne({
-      token,
-      deleted: false,
-      status: "active",
-    }).select("-password");
-
-    if (!user) {
-      res.clearCookie("userToken");
-      return next();
-    }
-
-    res.locals.currentUser = user;
-    next();
-  } catch (error) {
-    console.error("Client user middleware error:", error);
-    next();
-  }
-});
+app.use(userMiddleware.infoUser);
 // tinymce
 app.use(
   "/tinymce",
@@ -102,6 +87,6 @@ app.use(async (req, res, next) => {
 RouterAdmin(app);
 RouterClient(app);
 
-app.listen(port, () => {
+httpServer.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });

@@ -74,7 +74,7 @@ module.exports.registerPost = async (req, res) => {
     fullName: String(req.body.fullName || "").trim(),
     email,
     phone: String(req.body.phone || "").trim(),
-    avatar: String(req.body.avatar || "").trim(),
+
     password: md5(req.body.password),
     token: generate.generateRandomString(32),
     status: "active",

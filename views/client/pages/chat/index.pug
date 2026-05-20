@@ -1,0 +1,66 @@
+extends ../../layouts/default.pug
+block main
+    link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css")
+    .container.my-4
+        .chat-container(data-user-id=currentUser.id)
+            // Sidebar
+            .chat-sidebar
+                .chat-header-sidebar
+                    h4.chat-title Chat
+                    .chat-search
+                        input(type="text" placeholder="Tìm kiếm tin nhắn...")
+                
+                .chat-list
+                    .chat-list-item.active
+                        img.chat-avatar(src="https://ui-avatars.com/api/?name=Nhóm+Chung&background=0D8ABC&color=fff", alt="")
+                        .chat-info
+                            .chat-name-time
+                                span.chat-name Phòng Chat Chung
+                                span.chat-time 10:30
+                            span.chat-preview Chào mọi người ngày mới vui vẻ!
+                    
+                    .chat-list-item
+                        img.chat-avatar(src="https://ui-avatars.com/api/?name=Hỗ+Trợ&background=F39C12&color=fff", alt="")
+                        .chat-info
+                            .chat-name-time
+                                span.chat-name Hỗ trợ khách hàng
+                                span.chat-time Hôm qua
+                            span.chat-preview Chào bạn, mình cần hỗ trợ về đơn hàng.
+
+            // Main Chat Area
+            .chat-main
+                .chat-header-main
+                    .chat-header-user
+                        img.chat-avatar(src="https://ui-avatars.com/api/?name=Nhóm+Chung&background=0D8ABC&color=fff", alt="")
+                        .chat-header-info
+                            h5.chat-header-name Phòng Chat Chung
+                            span.chat-header-status Đang hoạt động
+                    .chat-header-actions
+                        button.chat-btn-action: i.bi.bi-telephone
+                        button.chat-btn-action: i.bi.bi-camera-video
+                        button.chat-btn-action: i.bi.bi-info-circle
+                
+                .chat-messages
+                    if chats && chats.length > 0
+                        each chat in chats
+                            if chat.user_id == currentUser.id
+                                .message.message-outgoing
+                                    - var myName = currentUser.fullName ? currentUser.fullName : "Me"
+                                    img.chat-avatar.message-avatar(src=`https://ui-avatars.com/api/?name=${myName}&background=random&color=fff`, alt=myName title=myName)
+                                    .message-content
+                                        .inner-name= myName
+                                        .message-bubble= chat.content
+                            else
+                                .message.message-incoming
+                                    - var name = chat.infoUser ? chat.infoUser.fullName : "U"
+                                    img.chat-avatar.message-avatar(src=`https://ui-avatars.com/api/?name=${name}&background=random&color=fff`, alt=name title=name)
+                                    .message-content
+                                        .inner-name= name
+                                        .message-bubble= chat.content
+                            
+                .chat-input-area
+                    button.chat-btn-attach: i.bi.bi-paperclip
+                    input.chat-input(type="text" placeholder="Nhập tin nhắn...")
+                    button.chat-btn-send: i.bi.bi-send-fill
+
+    link(rel="stylesheet", href="/client/css/chat.css")
