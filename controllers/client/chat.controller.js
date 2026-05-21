@@ -10,6 +10,7 @@ module.exports.index = async (req, res) => {
         const chat = new Chat({
           user_id: data.user_id,
           content: data.content,
+          type: data.type || "text",
         });
         await chat.save();
 
@@ -19,6 +20,17 @@ module.exports.index = async (req, res) => {
           userId: data.user_id,
           fullName: infoUser.fullName,
           content: data.content,
+          type: data.type || "text",
+        });
+      });
+
+      // Typing indicator
+      socket.on("client_typing", async (data) => {
+        const infoUser = await User.findOne({ _id: data.user_id }).select("fullName");
+        socket.broadcast.emit("server_typing", {
+          userId: data.user_id,
+          fullName: infoUser ? infoUser.fullName : "Ai đó",
+          typing: data.typing,
         });
       });
     });

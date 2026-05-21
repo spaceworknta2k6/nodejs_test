@@ -49,18 +49,47 @@ block main
                                     img.chat-avatar.message-avatar(src=`https://ui-avatars.com/api/?name=${myName}&background=random&color=fff`, alt=myName title=myName)
                                     .message-content
                                         .inner-name= myName
-                                        .message-bubble= chat.content
+                                        if chat.type === 'sticker'
+                                            .message-bubble.sticker-bubble= chat.content
+                                        else
+                                            .message-bubble= chat.content
                             else
                                 .message.message-incoming
                                     - var name = chat.infoUser ? chat.infoUser.fullName : "U"
                                     img.chat-avatar.message-avatar(src=`https://ui-avatars.com/api/?name=${name}&background=random&color=fff`, alt=name title=name)
                                     .message-content
                                         .inner-name= name
-                                        .message-bubble= chat.content
+                                        if chat.type === 'sticker'
+                                            .message-bubble.sticker-bubble= chat.content
+                                        else
+                                            .message-bubble= chat.content
                             
+                            
+                .typing-indicator#typingIndicator
+                    .typing-avatar
+                    .typing-text
+                        span.typing-name
+                        .typing-dots
+                            span.typing-dot
+                            span.typing-dot
+                            span.typing-dot
                 .chat-input-area
                     button.chat-btn-attach: i.bi.bi-paperclip
                     input.chat-input(type="text" placeholder="Nhập tin nhắn...")
+                    .sticker-wrapper
+                        button.chat-btn-sticker#btnSticker: i.bi.bi-emoji-smile
+                        .sticker-picker#stickerPicker
+                            .sticker-picker-header
+                                .sticker-tabs
+                                    button.sticker-tab.active(data-category="smileys") 😀
+                                    button.sticker-tab(data-category="gestures") 👋
+                                    button.sticker-tab(data-category="animals") 🐶
+                                    button.sticker-tab(data-category="food") 🍕
+                                    button.sticker-tab(data-category="activities") ⚽
+                                    button.sticker-tab(data-category="travel") 🚗
+                                    button.sticker-tab(data-category="objects") 💡
+                                    button.sticker-tab(data-category="hearts") ❤️
+                            .sticker-grid#stickerGrid
                     button.chat-btn-send: i.bi.bi-send-fill
 
     link(rel="stylesheet", href="/client/css/chat.css")
