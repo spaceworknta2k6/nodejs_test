@@ -1,5 +1,6 @@
 const Chat = require("../../models/chat.model");
 const User = require("../../models/user.model");
+const uploadToCloudinary = require("../../helper/uploadToCloudinary");
 let chatSocketSetup = false;
 
 //[GET] /chat
@@ -10,7 +11,8 @@ module.exports.index = async (req, res) => {
         const chat = new Chat({
           user_id: data.user_id,
           content: data.content,
-          type: data.type || "text",
+          images: data.images || [],
+          type: data.images && data.images.length > 0 ? "images" : (data.type || "text"),
         });
         await chat.save();
 
@@ -20,7 +22,8 @@ module.exports.index = async (req, res) => {
           userId: data.user_id,
           fullName: infoUser.fullName,
           content: data.content,
-          type: data.type || "text",
+          images: data.images || [],
+          type: data.images && data.images.length > 0 ? "images" : (data.type || "text"),
         });
       });
 
@@ -53,3 +56,24 @@ module.exports.index = async (req, res) => {
     chats: chats,
   });
 };
+
+// [POST] /chat/upload
+module.exports.upload = async (req, res) => {
+  try {
+    if (!req.files || req.files.length === 0) {
+      return res.json({ images: [] });
+    }
+
+    const uploadPromises = req.files.map((file) =>
+      uploadToCloudinary(file.buffer, "chats")
+    );
+    const results = await Promise.all(uploadPromises);
+    const imageUrls = results.map((result) => result.secure_url);
+
+    res.json({ images: imageUrls });
+  } catch (error) {
+    console.error("Upload error:", error);
+    res.status(500).json({ error: "Upload failed" });
+  }
+};
+

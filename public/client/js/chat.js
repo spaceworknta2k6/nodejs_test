@@ -9,6 +9,61 @@ if (inputChat && btnSend) {
     .querySelector(".chat-container")
     .getAttribute("data-user-id");
 
+  let selectedFiles = [];
+  const btnAttach = document.querySelector("#btnAttach");
+  const fileInput = document.querySelector("#chat-file-input");
+  const previewContainer = document.querySelector("#chatPreviewImages");
+
+  // Handle attachment selection
+  if (btnAttach && fileInput && previewContainer) {
+    btnAttach.addEventListener("click", () => {
+      fileInput.click();
+    });
+
+    fileInput.addEventListener("change", (e) => {
+      const files = Array.from(e.target.files);
+      
+      files.forEach((file) => {
+        if (!file.type.startsWith("image/")) return;
+        
+        const isDuplicate = selectedFiles.some(
+          (f) => f.name === file.name && f.size === file.size
+        );
+        if (isDuplicate) return;
+
+        selectedFiles.push(file);
+
+        const previewUrl = URL.createObjectURL(file);
+
+        const previewItem = document.createElement("div");
+        previewItem.className = "preview-image-item";
+        previewItem.innerHTML = `
+          <img src="${previewUrl}" alt="${file.name}">
+          <button type="button" class="btn-delete-preview">&times;</button>
+        `;
+
+        const btnDelete = previewItem.querySelector(".btn-delete-preview");
+        btnDelete.addEventListener("click", () => {
+          selectedFiles = selectedFiles.filter((f) => f !== file);
+          URL.revokeObjectURL(previewUrl);
+          previewItem.remove();
+          
+          if (selectedFiles.length === 0) {
+            previewContainer.classList.remove("active");
+          }
+        });
+
+        previewContainer.appendChild(previewItem);
+      });
+
+      if (selectedFiles.length > 0) {
+        previewContainer.classList.add("active");
+      }
+      
+      fileInput.value = "";
+    });
+  }
+
   inputChat.addEventListener("input", () => {
     socket.emit("client_typing", { user_id: userId, typing: true });
 
@@ -21,18 +76,51 @@ if (inputChat && btnSend) {
     }, 2000);
   });
 
-  btnSend.addEventListener("click", () => {
+  btnSend.addEventListener("click", async () => {
     const message = inputChat.value;
-    if (message.trim()) {
+    if (!message.trim() && selectedFiles.length === 0) return;
+
+    btnSend.disabled = true;
+    let imageUrls = [];
+
+    try {
+      if (selectedFiles.length > 0) {
+        const formData = new FormData();
+        selectedFiles.forEach((file) => {
+          formData.append("images", file);
+        });
+
+        const response = await fetch("/chat/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          imageUrls = result.images || [];
+        } else {
+          console.error("Gửi ảnh thất bại!");
+        }
+      }
+
       socket.emit("client_send_message", {
         content: message,
+        images: imageUrls,
         user_id: userId,
       });
+
       inputChat.value = "";
+      selectedFiles = [];
+      previewContainer.innerHTML = "";
+      previewContainer.classList.remove("active");
 
       // Stop typing immediately when message sent
       if (typingTimeout) clearTimeout(typingTimeout);
       socket.emit("client_typing", { user_id: userId, typing: false });
+    } catch (err) {
+      console.error("Lỗi gửi tin nhắn:", err);
+    } finally {
+      btnSend.disabled = false;
     }
   });
 
@@ -72,7 +160,9 @@ if (btnSticker && stickerPicker && stickerGrid) {
       btn.className = "sticker-item";
       btn.textContent = sticker;
       btn.addEventListener("click", () => {
-        sendSticker(sticker);
+        // Chèn emoji vào ô input thay vì gửi ngay
+        inputChat.value += sticker;
+        inputChat.focus();
       });
       stickerGrid.appendChild(btn);
     });
@@ -105,23 +195,6 @@ if (btnSticker && stickerPicker && stickerGrid) {
       btnSticker.classList.remove("active");
     }
   });
-
-  // Send sticker
-  function sendSticker(sticker) {
-    const userId = document
-      .querySelector(".chat-container")
-      .getAttribute("data-user-id");
-
-    socket.emit("client_send_message", {
-      content: sticker,
-      user_id: userId,
-      type: "sticker",
-    });
-
-    // Close picker after sending
-    stickerPicker.classList.remove("active");
-    btnSticker.classList.remove("active");
-  }
 }
 // ==================== END STICKER PICKER ====================
 
@@ -139,13 +212,29 @@ socket.on("server_send_message", (data) => {
   const isSticker = data.type === "sticker";
   const bubbleClass = isSticker ? "message-bubble sticker-bubble" : "message-bubble";
 
-  div.innerHTML = `
-    <img class="chat-avatar message-avatar" src="https://ui-avatars.com/api/?name=${data.fullName}&background=random&color=fff" alt="${data.fullName}" title="${data.fullName}">
+  let htmlContent = `
+    <img class="chat-avatar message-avatar" src="https://ui-avatars.com/api/?name=${encodeURIComponent(data.fullName)}&background=random&color=fff" alt="${data.fullName}" title="${data.fullName}">
     <div class="message-content">
         <div class="inner-name">${data.fullName}</div>
-        <div class="${bubbleClass}">${data.content}</div>
+  `;
+
+  if (data.content) {
+    htmlContent += `<div class="${bubbleClass}">${data.content}</div>`;
+  }
+
+  if (data.images && data.images.length > 0) {
+    htmlContent += `<div class="message-images">`;
+    data.images.forEach((img) => {
+      htmlContent += `<img class="message-img" src="${img}" alt="">`;
+    });
+    htmlContent += `</div>`;
+  }
+
+  htmlContent += `
     </div>
   `;
+
+  div.innerHTML = htmlContent;
 
   chatMessages.appendChild(div);
   
@@ -195,3 +284,57 @@ if (chatMessagesDOM) {
     });
   }, 100);
 }
+
+// ==================== IMAGE LIGHTBOX ZOOM ====================
+const lightbox = document.querySelector("#chat-image-lightbox");
+const lightboxImg = document.querySelector("#lightbox-img");
+const lightboxClose = document.querySelector(".lightbox-close");
+
+if (lightbox && lightboxImg) {
+  // Lắng nghe click trên toàn bộ chat messages (Ủy quyền sự kiện - Event Delegation)
+  if (chatMessagesDOM) {
+    chatMessagesDOM.addEventListener("click", (e) => {
+      if (e.target.classList.contains("message-img")) {
+        const src = e.target.src;
+        lightboxImg.src = src;
+        lightbox.classList.add("active");
+      }
+    });
+  }
+
+  // Lắng nghe click trên toàn bộ ảnh xem trước preview (Ủy quyền sự kiện)
+  const previewContainerDOM = document.querySelector("#chatPreviewImages");
+  if (previewContainerDOM) {
+    previewContainerDOM.addEventListener("click", (e) => {
+      if (e.target.tagName === "IMG") {
+        const src = e.target.src;
+        lightboxImg.src = src;
+        lightbox.classList.add("active");
+      }
+    });
+  }
+
+  // Đóng lightbox khi click nút close hoặc click bất kỳ vị trí nào trên lightbox
+  if (lightboxClose) {
+    lightboxClose.addEventListener("click", (e) => {
+      e.stopPropagation();
+      lightbox.classList.remove("active");
+      lightboxImg.src = "";
+    });
+  }
+
+  lightbox.addEventListener("click", () => {
+    lightbox.classList.remove("active");
+    lightboxImg.src = "";
+  });
+
+  // Đóng lightbox khi ấn phím ESC
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && lightbox.classList.contains("active")) {
+      lightbox.classList.remove("active");
+      lightboxImg.src = "";
+    }
+  });
+}
+// ==================== END IMAGE LIGHTBOX ZOOM ====================
+

@@ -622,3 +622,192 @@
 .message-outgoing .message-bubble.sticker-bubble {
     background: transparent !important;
 }
+
+/* Chat Image Preview */
+.chat-preview-images {
+    display: none;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 24px;
+    background: rgba(255, 255, 255, 0.9);
+    border-top: 1px solid rgba(0,0,0,0.03);
+    overflow-x: auto;
+    max-height: 110px;
+    animation: previewSlideUp 0.3s ease forwards;
+}
+
+.chat-preview-images.active {
+    display: flex;
+}
+
+@keyframes previewSlideUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.preview-image-item {
+    position: relative;
+    width: 64px;
+    height: 64px;
+    border-radius: 12px;
+    overflow: visible;
+    flex-shrink: 0;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    border: 2px solid #fff;
+}
+
+.preview-image-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.preview-image-item img:hover {
+    transform: scale(1.05);
+    filter: brightness(1.08);
+}
+
+.btn-delete-preview {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    width: 20px;
+    height: 20px;
+    background: rgba(15, 23, 42, 0.85);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    padding: 0;
+}
+
+.btn-delete-preview:hover {
+    background: #ef4444;
+    transform: scale(1.15);
+    border-color: #fff;
+}
+
+/* Chat Message Images */
+.message-images {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+    max-width: 100%;
+}
+
+.message-outgoing .message-images {
+    justify-content: flex-end;
+}
+
+.message-img {
+    max-width: 150px;
+    max-height: 150px;
+    border-radius: 14px;
+    object-fit: cover;
+    border: 2px solid #ffffff;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer; /* Đổi thành hình bàn tay */
+}
+
+.message-img:hover {
+    transform: scale(1.05) translateY(-2px); /* Nổi lên nhẹ */
+    box-shadow: 0 10px 20px rgba(13, 110, 253, 0.18), 0 4px 8px rgba(0,0,0,0.06); /* Bóng đổ 3D sâu sắc */
+    border-color: #0d6efd; /* Viền xanh phát sáng dịu */
+    filter: brightness(1.05); /* Sáng nhẹ bắt mắt */
+}
+
+.message-outgoing .message-img {
+    border-bottom-right-radius: 4px;
+}
+
+.message-incoming .message-img {
+    border-bottom-left-radius: 4px;
+}
+
+/* Lightbox for zooming images */
+.chat-lightbox {
+    display: none;
+    position: fixed;
+    z-index: 99999;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background-color: rgba(15, 23, 42, 0.95); /* Sleek dark slate background with opacity */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    justify-content: center;
+    align-items: center;
+    animation: fadeInLightbox 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.chat-lightbox.active {
+    display: flex;
+}
+
+@keyframes fadeInLightbox {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.lightbox-content {
+    margin: auto;
+    display: block;
+    max-width: 90vw;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: 12px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    transform: scale(0.95);
+    cursor: zoom-out; /* Click vào ảnh phóng to để thu nhỏ */
+    animation: zoomInImage 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes zoomInImage {
+    from { transform: scale(0.9) opacity: 0; }
+    to { transform: scale(1) opacity: 1; }
+}
+
+.lightbox-close {
+    position: absolute;
+    top: 24px;
+    right: 32px;
+    color: #f1f5f9;
+    font-size: 40px;
+    font-weight: 300;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    line-height: 1;
+    z-index: 100000;
+}
+
+.lightbox-close:hover {
+    color: #ffffff;
+    background: #ef4444;
+    border-color: #ef4444;
+    transform: rotate(90deg) scale(1.05);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35);
+}
+
+
