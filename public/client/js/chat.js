@@ -2,6 +2,23 @@
 const inputChat = document.querySelector(".chat-input");
 const btnSend = document.querySelector(".chat-btn-send");
 
+// Auto resize textarea function
+const autoResizeTextarea = () => {
+  if (!inputChat) return;
+  inputChat.style.height = "auto";
+  const scrollHeight = inputChat.scrollHeight;
+  if (scrollHeight <= 50) {
+    inputChat.style.height = "50px";
+    inputChat.style.overflowY = "hidden";
+  } else if (scrollHeight > 120) {
+    inputChat.style.height = "120px";
+    inputChat.style.overflowY = "auto";
+  } else {
+    inputChat.style.height = scrollHeight + "px";
+    inputChat.style.overflowY = "hidden";
+  }
+};
+
 if (inputChat && btnSend) {
   // Typing indicator - emit typing events
   let typingTimeout = null;
@@ -74,6 +91,9 @@ if (inputChat && btnSend) {
     typingTimeout = setTimeout(() => {
       socket.emit("client_typing", { user_id: userId, typing: false });
     }, 2000);
+
+    // Auto resize textarea
+    autoResizeTextarea();
   });
 
   btnSend.addEventListener("click", async () => {
@@ -114,6 +134,9 @@ if (inputChat && btnSend) {
       previewContainer.innerHTML = "";
       previewContainer.classList.remove("active");
 
+      // Reset textarea height
+      autoResizeTextarea();
+
       // Stop typing immediately when message sent
       if (typingTimeout) clearTimeout(typingTimeout);
       socket.emit("client_typing", { user_id: userId, typing: false });
@@ -124,10 +147,13 @@ if (inputChat && btnSend) {
     }
   });
 
-  inputChat.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") {
+  inputChat.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       btnSend.click();
+    } else if (e.key === "Enter" && e.shiftKey) {
+      // Let browser insert newline first, then resize
+      setTimeout(autoResizeTextarea, 0);
     }
   });
 }
@@ -163,6 +189,7 @@ if (btnSticker && stickerPicker && stickerGrid) {
         // Chèn emoji vào ô input thay vì gửi ngay
         inputChat.value += sticker;
         inputChat.focus();
+        autoResizeTextarea();
       });
       stickerGrid.appendChild(btn);
     });

@@ -34,6 +34,14 @@ app.use(flash());
 const httpServer = http.createServer(app);
 const io = new Server(httpServer);
 global._io = io;
+
+const chatSocket = require("./socket/client/chat.socket");
+const usersSocket = require("./socket/client/users.socket");
+
+io.on("connection", (socket) => {
+  chatSocket(socket);
+  usersSocket(socket);
+});
 // end socket io
 app.set("views", `${__dirname}/views`);
 app.set("view engine", "pug");

@@ -2,6 +2,21 @@ extends ../../layouts/default.pug
 block main
     link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css")
     .container.my-4
+        .d-flex.justify-content-center.mb-4
+            .chat-nav-menu.d-flex.flex-wrap.gap-3
+                a.chat-nav-btn(href="/users/notFriend")
+                    i.bi.bi-people-fill
+                    span Danh sách người dùng
+                a.chat-nav-btn(href="/users/accept")
+                    i.bi.bi-envelope-paper-heart-fill
+                    span Lời mời kết bạn
+                a.chat-nav-btn(href="/users/request")
+                    i.bi.bi-send-check-fill
+                    span Lời mời đã gửi
+                a.chat-nav-btn(href="/users/friends")
+                    i.bi.bi-person-heart
+                    span Danh sách bạn bè
+
         .chat-container(data-user-id=currentUser.id)
             // Sidebar
             .chat-sidebar
@@ -87,7 +102,7 @@ block main
                 .chat-input-area
                     button.chat-btn-attach#btnAttach: i.bi.bi-paperclip
                     input(type="file" id="chat-file-input" multiple accept="image/*" class="d-none")
-                    input.chat-input(type="text" placeholder="Nhập tin nhắn...")
+                    textarea.chat-input(placeholder="Nhập tin nhắn..." rows="1")
                     .sticker-wrapper
                         button.chat-btn-sticker#btnSticker: i.bi.bi-emoji-smile
                         .sticker-picker#stickerPicker

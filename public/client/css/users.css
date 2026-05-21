@@ -1,0 +1,192 @@
+/* ==================== USER LIST PAGE STYLING ==================== */
+
+.page-title {
+    color: #1f2937;
+    font-size: 26px;
+    letter-spacing: -0.01em;
+}
+
+/* Reusing Friend Navigation Menu from Chat */
+.chat-nav-menu {
+    background: rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    padding: 12px 20px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    display: inline-flex !important;
+}
+
+.chat-nav-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 14px;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: #4b5563;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+}
+
+.chat-nav-btn i {
+    font-size: 16px;
+    color: #4b5563;
+    transition: color 0.3s ease;
+}
+
+.chat-nav-btn:hover {
+    color: #0d6efd;
+    background: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(13, 110, 253, 0.12);
+    border-color: rgba(13, 110, 253, 0.2);
+}
+
+.chat-nav-btn:hover i {
+    color: #0d6efd;
+}
+
+.chat-nav-btn.active {
+    color: #ffffff;
+    background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+    border-color: #0a58ca;
+    box-shadow: 0 6px 15px rgba(13, 110, 253, 0.25);
+}
+
+.chat-nav-btn.active i {
+    color: #ffffff;
+}
+
+/* ==================== USER CARDS GRID ==================== */
+.user-card {
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03);
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.user-card:hover {
+    background: #ffffff;
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+    border-color: rgba(13, 110, 253, 0.15);
+}
+
+.user-card__avatar {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 2px solid #fff;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+    transition: transform 0.35s ease;
+}
+
+.user-card:hover .user-card__avatar {
+    transform: scale(1.05);
+}
+
+.user-card__avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.user-card__info {
+    flex: 1;
+    overflow: hidden;
+}
+
+.user-card__name {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-card__actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* Buttons */
+.user-card__actions .btn {
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 13.5px;
+    padding: 7px 16px;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    border: none;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+}
+
+.btn-add-friend {
+    background: #0d6efd;
+    color: #ffffff;
+}
+
+.btn-add-friend:hover {
+    background: #0b5ed7;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(13, 110, 253, 0.2);
+}
+
+.btn-add-friend:active {
+    transform: scale(0.97);
+}
+
+.btn-cancel-friend {
+    background: #6c757d;
+    color: #ffffff;
+}
+
+.btn-cancel-friend:hover {
+    background: #5c636a;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(108, 117, 125, 0.25);
+}
+
+.btn-cancel-friend:active {
+    transform: scale(0.97);
+}
+
+/* Empty State Styling */
+.no-users-box {
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 24px;
+    padding: 48px;
+    border: 1px dashed rgba(0, 0, 0, 0.1);
+    display: inline-block;
+    max-width: 400px;
+}
+
+.no-users-icon {
+    font-size: 48px;
+    color: #9ca3af;
+    margin-bottom: 16px;
+    display: block;
+}
+
+.no-users-text {
+    font-size: 15px;
+    color: #6b7280;
+    font-weight: 500;
+    margin: 0;
+}

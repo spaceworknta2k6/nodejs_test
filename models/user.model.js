@@ -18,6 +18,14 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    requestFriend: Array,
+    acceptFriend: Array,
+    listFriend: [
+      {
+        user_id: String,
+        // room_chat_id: String
+      },
+    ],
     phone: {
       type: String,
       trim: true,
