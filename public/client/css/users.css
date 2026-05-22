@@ -153,14 +153,18 @@
 }
 
 .btn-cancel-friend {
-    background: #6c757d;
-    color: #ffffff;
+    background: rgba(0, 0, 0, 0.05) !important;
+    color: #4b5563 !important;
+    padding: 5px 12px !important;
+    font-size: 12px !important;
+    border-radius: 8px !important;
 }
 
 .btn-cancel-friend:hover {
-    background: #5c636a;
-    transform: translateY(-1px);
-    box-shadow: 0 6px 14px rgba(108, 117, 125, 0.25);
+    background: #ffe3e3 !important;
+    color: #e03131 !important;
+    transform: translateY(-1.5px);
+    box-shadow: 0 6px 15px rgba(224, 49, 49, 0.15) !important;
 }
 
 .btn-cancel-friend:active {
@@ -190,3 +194,45 @@
     font-weight: 500;
     margin: 0;
 }
+
+/* Premium Styling for Accept/Refuse buttons */
+.btn-accept-friend {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    color: #ffffff !important;
+    padding: 5px 12px !important;
+    font-size: 12px !important;
+    border-radius: 8px !important;
+}
+
+.btn-accept-friend:hover {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+    transform: translateY(-1.5px);
+    box-shadow: 0 6px 15px rgba(16, 185, 129, 0.25) !important;
+}
+
+.btn-accept-friend:active {
+    transform: scale(0.97);
+}
+
+.btn-refuse-friend,
+.btn-unfriend {
+    background: rgba(0, 0, 0, 0.05) !important;
+    color: #4b5563 !important;
+    padding: 5px 12px !important;
+    font-size: 12px !important;
+    border-radius: 8px !important;
+}
+
+.btn-refuse-friend:hover,
+.btn-unfriend:hover {
+    background: #ffe3e3 !important; /* Soft rose red tint */
+    color: #e03131 !important; /* Elegant modern red */
+    transform: translateY(-1.5px);
+    box-shadow: 0 6px 15px rgba(224, 49, 49, 0.15) !important;
+}
+
+.btn-refuse-friend:active,
+.btn-unfriend:active {
+    transform: scale(0.97);
+}
+

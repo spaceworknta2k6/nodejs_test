@@ -1,0 +1,49 @@
+extends ../../layouts/default.pug
+block main
+    link(rel="stylesheet", href="/client/css/users.css")
+    .container.my-4
+        .d-flex.justify-content-center.mb-4
+            .chat-nav-menu.d-flex.flex-wrap.gap-3
+                a.chat-nav-btn(href="/users/notFriend")
+                    i.bi.bi-people-fill
+                    span Danh sách người dùng
+                a.chat-nav-btn.active(href="/users/accept")
+                    i.bi.bi-envelope-paper-heart-fill
+                    span Lời mời kết bạn
+                a.chat-nav-btn(href="/users/request")
+                    i.bi.bi-send-check-fill
+                    span Lời mời đã gửi
+                a.chat-nav-btn(href="/users/friends")
+                    i.bi.bi-person-heart
+                    span Danh sách bạn bè
+
+        .row
+            .col-12.mb-4
+                h3.page-title.text-center.fw-bold.mb-4 Lời Mời Kết Bạn Nhận Được
+
+        .row.users-grid
+            if users && users.length > 0
+                each user in users
+                    .col-xl-3.col-lg-4.col-md-6.col-sm-6.col-12.mb-4
+                        .user-card
+                            .user-card__avatar
+                                if user.avatar
+                                    img(src=user.avatar alt=user.fullName)
+                                else
+                                    img(src=`https://ui-avatars.com/api/?name=${encodeURIComponent(user.fullName)}&background=random&color=fff&size=100` alt=user.fullName)
+                            .user-card__info
+                                h5.user-card__name= user.fullName
+                                .user-card__actions(data-user-id=user.id)
+                                    button.btn.btn-sm.btn-primary.btn-accept-friend(
+                                        data-user-id=user.id
+                                    ) Chấp nhận
+                                    button.btn.btn-sm.btn-secondary.btn-refuse-friend(
+                                        data-user-id=user.id
+                                    ) Từ chối
+            else
+                .col-12.text-center.my-5
+                    .no-users-box
+                        i.bi.bi-envelope-paper.no-users-icon
+                        p.no-users-text Không có lời mời kết bạn nào.
+
+    script(src="/client/js/users.js")
